@@ -56,17 +56,7 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_style( $handle, $src, $file, $deps = [], $media = 'all' ) {
-		if ( Option::get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
-			if ( TRAFFIC_ADMIN_URL === $src ) {
-				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
-			} else {
-				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
-			}
-			// phpcs:ignore
-			return wp_register_style( $handle, $file, $deps, null, $media );
-		} else {
-			return wp_register_style( $handle, $src . $file, $deps, TRAFFIC_VERSION, $media );
-		}
+		return wp_register_style( $handle, $src . $file, $deps, TRAFFIC_VERSION, $media );
 	}
 
 	/**
@@ -83,17 +73,7 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_script( $handle, $src, $file, $deps = [] ) {
-		if ( Option::get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
-			if ( TRAFFIC_ADMIN_URL === $src ) {
-				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
-			} else {
-				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
-			}
-			// phpcs:ignore
-			return wp_register_script( $handle, $file, $deps, null, Option::get( 'script_in_footer' ) );
-		} else {
-			return wp_register_script( $handle, $src . $file, $deps, TRAFFIC_VERSION, Option::get( 'script_in_footer' ) );
-		}
+		return wp_register_script( $handle, $src . $file, $deps, TRAFFIC_VERSION, Option::get( 'script_in_footer' ) );
 	}
 
 }
