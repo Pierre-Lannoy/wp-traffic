@@ -1,4 +1,4 @@
-=== WordPress plugin boiler plate ===
+=== Traffic ===
 Contributors: PierreLannoy
 Tags: tag1, tag2, tag3, tag4, tag5
 Requires at least: 4.9

@@ -7,7 +7,7 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\System;
+namespace Traffic\System;
 
 /**
  * The class responsible to handle assets management.
@@ -33,7 +33,7 @@ class Assets {
 	 * @since 1.0.0
 	 */
 	public function prefetch() {
-		if ( Option::get( 'use_cdn' ) && WPPB_CDN_AVAILABLE ) {
+		if ( Option::get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
 			echo '<meta http-equiv="x-dns-prefetch-control" content="on">';
 			echo '<link rel="dns-prefetch" href="//cdn.jsdelivr.net" />';
 		}
@@ -56,16 +56,16 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_style( $handle, $src, $file, $deps = [], $media = 'all' ) {
-		if ( Option::get( 'use_cdn' ) && WPPB_CDN_AVAILABLE ) {
-			if ( WPPB_ADMIN_URL === $src ) {
-				$file = 'https://cdn.jsdelivr.net/wp/' . WPPB_SLUG . '/tags/' . WPPB_VERSION . '/admin/' . $file;
+		if ( Option::get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
+			if ( TRAFFIC_ADMIN_URL === $src ) {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
 			} else {
-				$file = 'https://cdn.jsdelivr.net/wp/' . WPPB_SLUG . '/tags/' . WPPB_VERSION . '/public/' . $file;
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
 			}
 			// phpcs:ignore
 			return wp_register_style( $handle, $file, $deps, null, $media );
 		} else {
-			return wp_register_style( $handle, $src . $file, $deps, WPPB_VERSION, $media );
+			return wp_register_style( $handle, $src . $file, $deps, TRAFFIC_VERSION, $media );
 		}
 	}
 
@@ -83,16 +83,16 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_script( $handle, $src, $file, $deps = [] ) {
-		if ( Option::get( 'use_cdn' ) && WPPB_CDN_AVAILABLE ) {
-			if ( WPPB_ADMIN_URL === $src ) {
-				$file = 'https://cdn.jsdelivr.net/wp/' . WPPB_SLUG . '/tags/' . WPPB_VERSION . '/admin/' . $file;
+		if ( Option::get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
+			if ( TRAFFIC_ADMIN_URL === $src ) {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
 			} else {
-				$file = 'https://cdn.jsdelivr.net/wp/' . WPPB_SLUG . '/tags/' . WPPB_VERSION . '/public/' . $file;
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
 			}
 			// phpcs:ignore
 			return wp_register_script( $handle, $file, $deps, null, Option::get( 'script_in_footer' ) );
 		} else {
-			return wp_register_script( $handle, $src . $file, $deps, WPPB_VERSION, Option::get( 'script_in_footer' ) );
+			return wp_register_script( $handle, $src . $file, $deps, TRAFFIC_VERSION, Option::get( 'script_in_footer' ) );
 		}
 	}
 

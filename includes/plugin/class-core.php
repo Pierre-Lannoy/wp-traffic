@@ -10,13 +10,13 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Plugin;
+namespace Traffic\Plugin;
 
-use WPPluginBoilerplate\System\Loader;
-use WPPluginBoilerplate\System\I18n;
-use WPPluginBoilerplate\System\Assets;
-use WPPluginBoilerplate\Library\Libraries;
-use WPPluginBoilerplate\System\Nag;
+use Traffic\System\Loader;
+use Traffic\System\I18n;
+use Traffic\System\Assets;
+use Traffic\Library\Libraries;
+use Traffic\System\Nag;
 
 /**
  * The core plugin class.
@@ -84,9 +84,9 @@ class Core {
 		$this->loader->add_action( 'init', $bootstrap, 'initialize' );
 		$this->loader->add_action( 'wp_head', $assets, 'prefetch' );
 		$this->loader->add_action( 'auto_update_plugin', $updater, 'auto_update_plugin', 10, 2 );
-		add_shortcode( 'wppb-changelog', [ $updater, 'sc_get_changelog' ] );
-		add_shortcode( 'wppb-libraries', [ $libraries, 'sc_get_list' ] );
-		add_shortcode( 'wppb-statistics', [ 'WPPluginBoilerplate\System\Statistics', 'sc_get_raw' ] );
+		add_shortcode( 'traffic-changelog', [ $updater, 'sc_get_changelog' ] );
+		add_shortcode( 'traffic-libraries', [ $libraries, 'sc_get_list' ] );
+		add_shortcode( 'traffic-statistics', [ 'Traffic\System\Statistics', 'sc_get_raw' ] );
 	}
 
 	/**
@@ -97,16 +97,16 @@ class Core {
 	 * @access private
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Wp_Plugin_Boilerplate_Admin();
+		$plugin_admin = new Traffic_Admin();
 		$nag          = new Nag();
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'init_admin_menus' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'init_settings_sections' );
-		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( WPPB_PLUGIN_DIR . WPPB_SLUG . '.php' ), $plugin_admin, 'add_actions_links', 10, 4 );
+		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( TRAFFIC_PLUGIN_DIR . TRAFFIC_SLUG . '.php' ), $plugin_admin, 'add_actions_links', 10, 4 );
 		$this->loader->add_filter( 'plugin_row_meta', $plugin_admin, 'add_row_meta', 10, 2 );
 		$this->loader->add_action( 'admin_notices', $nag, 'display' );
-		$this->loader->add_action( 'wp_ajax_hide_wppb_nag', $nag, 'hide_callback' );
+		$this->loader->add_action( 'wp_ajax_hide_traffic_nag', $nag, 'hide_callback' );
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Core {
 	 * @access private
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new Wp_Plugin_Boilerplate_Public();
+		$plugin_public = new Traffic_Public();
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 	}

@@ -7,7 +7,7 @@
  * @since   1.0.0
  *
  * @wordpress-plugin
- * Plugin Name:       WordPress plugin boilerplate
+ * Plugin Name:       Traffic
  * Plugin URI:        --
  * Description:       --
  * Version:           1.0.0
@@ -15,7 +15,7 @@
  * Author URI:        https://pierre.lannoy.fr
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wp-plugin-boilerplate
+ * Text Domain:       traffic
  * Domain Path:       /languages
  */
 
@@ -36,8 +36,8 @@ require_once __DIR__ . '/includes/libraries/autoload.php';
  *
  * @since 1.0.0
  */
-function wppb_activate() {
-	WPPluginBoilerplate\Plugin\Activator::activate();
+function traffic_activate() {
+	Traffic\Plugin\Activator::activate();
 }
 
 /**
@@ -45,8 +45,8 @@ function wppb_activate() {
  *
  * @since 1.0.0
  */
-function wppb_deactivate() {
-	WPPluginBoilerplate\Plugin\Deactivator::deactivate();
+function traffic_deactivate() {
+	Traffic\Plugin\Deactivator::deactivate();
 }
 
 /**
@@ -54,8 +54,8 @@ function wppb_deactivate() {
  *
  * @since 1.0.0
  */
-function wppb_uninstall() {
-	WPPluginBoilerplate\Plugin\Uninstaller::uninstall();
+function traffic_uninstall() {
+	Traffic\Plugin\Uninstaller::uninstall();
 }
 
 /**
@@ -63,13 +63,13 @@ function wppb_uninstall() {
  *
  * @since 1.0.0
  */
-function wppb_run() {
-	WPPluginBoilerplate\System\Cache::init();
-	$plugin = new WPPluginBoilerplate\Plugin\Core();
+function traffic_run() {
+	Traffic\System\Cache::init();
+	$plugin = new Traffic\Plugin\Core();
 	$plugin->run();
 }
 
-register_activation_hook( __FILE__, 'wppb_activate' );
-register_deactivation_hook( __FILE__, 'wppb_deactivate' );
-register_uninstall_hook( __FILE__, 'wppb_uninstall' );
-wppb_run();
+register_activation_hook( __FILE__, 'traffic_activate' );
+register_deactivation_hook( __FILE__, 'traffic_deactivate' );
+register_uninstall_hook( __FILE__, 'traffic_uninstall' );
+traffic_run();

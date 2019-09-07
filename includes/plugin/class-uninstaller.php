@@ -7,10 +7,10 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Plugin;
+namespace Traffic\Plugin;
 
-use WPPluginBoilerplate\System\Option;
-use WPPluginBoilerplate\System\User;
+use Traffic\System\Option;
+use Traffic\System\User;
 
 /**
  * Fired during plugin deletion.

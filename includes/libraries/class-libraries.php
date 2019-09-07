@@ -9,9 +9,9 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Library;
+namespace Traffic\Library;
 
-use WPPluginBoilerplate\System\L10n;
+use Traffic\System\L10n;
 
 /**
  * Define the libraries functionality.
@@ -61,7 +61,7 @@ class Libraries {
 		self::$psr4_libraries['feather']   = [
 			'name'    => 'Feather',
 			'prefix'  => 'Feather',
-			'base'    => WPPB_VENDOR_DIR . 'feather/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'feather/',
 			'version' => '4.22.1',
 			// phpcs:ignore
 			'author'  => sprintf( esc_html__( '%s & contributors', 'decalog' ), 'Cole Bemis' ),
@@ -73,10 +73,10 @@ class Libraries {
 		self::$mono_libraries['parsedown'] = [
 			'name'    => 'Parsedown',
 			'detect'  => 'Parsedown',
-			'base'    => WPPB_VENDOR_DIR . 'parsedown/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'parsedown/',
 			'version' => '1.8.0-beta-7',
 			// phpcs:ignore
-			'author'  => sprintf( esc_html__( '%s & contributors', 'wp-plugin-boilerplate' ), 'Emanuil Rusev' ),
+			'author'  => sprintf( esc_html__( '%s & contributors', 'traffic' ), 'Emanuil Rusev' ),
 			'url'     => 'https://parsedown.org',
 			'license' => 'mit',
 			'langs'   => 'en',
@@ -113,19 +113,19 @@ class Libraries {
 	private function license_name( $license ) {
 		switch ( $license ) {
 			case 'mit':
-				$result = esc_html__( 'MIT license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'MIT license', 'traffic' );
 				break;
 			case 'apl2':
-				$result = esc_html__( 'Apache license, version 2.0', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'Apache license, version 2.0', 'traffic' );
 				break;
 			case 'gpl2':
-				$result = esc_html__( 'GPL-2.0 license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'GPL-2.0 license', 'traffic' );
 				break;
 			case 'gpl3':
-				$result = esc_html__( 'GPL-3.0 license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'GPL-3.0 license', 'traffic' );
 				break;
 			default:
-				$result = esc_html__( 'unknown license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'unknown license', 'traffic' );
 				break;
 		}
 		return $result;
@@ -171,7 +171,7 @@ class Libraries {
 			$items = [];
 			foreach ( $list as $library ) {
 				/* translators: as in the sentence "Product W version X by author Y (license Z)" */
-				$items[] = sprintf( esc_html__( '<a href="%1$s">%2$s %3$s</a>%4$s by %5$s (%6$s)', 'wp-plugin-boilerplate' ), $library['url'], $library['name'], $library['version'], $library['langs'], $library['author'], $library['license'] );
+				$items[] = sprintf( esc_html__( '<a href="%1$s">%2$s %3$s</a>%4$s by %5$s (%6$s)', 'traffic' ), $library['url'], $library['name'], $library['version'], $library['langs'], $library['author'], $library['license'] );
 			}
 			$result = implode( ', ', $items );
 		}

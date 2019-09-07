@@ -8,7 +8,7 @@
  * @noinspection PhpCSValidationInspection
  */
 
-namespace WPPluginBoilerplate\System;
+namespace Traffic\System;
 
 /**
  * The class responsible to handle cache management.

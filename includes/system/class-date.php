@@ -9,7 +9,7 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\System;
+namespace Traffic\System;
 
 /**
  * Define the date functionality.
@@ -54,10 +54,10 @@ class Date {
 	 */
 	public static function get_positive_time_diff_from_mysql_utc($from) {
 		if (strtotime($from) < time()) {
-			return sprintf( esc_html__('%s ago', 'wp-plugin-boilerplate'), human_time_diff(strtotime($from)));
+			return sprintf( esc_html__('%s ago', 'traffic'), human_time_diff(strtotime($from)));
 		}
 		else {
-			return esc_html__('currently', 'wp-plugin-boilerplate');
+			return esc_html__('currently', 'traffic');
 		}
 	}
 
@@ -70,10 +70,10 @@ class Date {
 	 */
 	public static function get_time_diff_from_mysql_utc($from) {
 		if (strtotime($from) < time()) {
-			return sprintf( esc_html__('%s ago', 'wp-plugin-boilerplate'), human_time_diff(strtotime($from)));
+			return sprintf( esc_html__('%s ago', 'traffic'), human_time_diff(strtotime($from)));
 		}
 		else {
-			return sprintf( esc_html__('in %s', 'wp-plugin-boilerplate'), human_time_diff(strtotime($from)));
+			return sprintf( esc_html__('in %s', 'traffic'), human_time_diff(strtotime($from)));
 		}
 	}
 
