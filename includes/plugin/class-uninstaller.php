@@ -11,6 +11,7 @@ namespace Traffic\Plugin;
 
 use Traffic\System\Option;
 use Traffic\System\User;
+use Traffic\Plugin\Feature\Schema;
 
 /**
  * Fired during plugin deletion.
@@ -31,7 +32,8 @@ class Uninstaller {
 	public static function uninstall() {
 		Option::delete_all();
 		User::delete_all_meta();
-		// Delete cache?
+		$schema = new Schema();
+		$schema->finalize();
 	}
 
 }

@@ -9,6 +9,8 @@
 
 namespace Traffic\Plugin;
 
+use Traffic\Plugin\Feature\Schema;
+
 /**
  * Fired during plugin activation.
  *
@@ -20,13 +22,14 @@ namespace Traffic\Plugin;
  */
 class Activator {
 
-
 	/**
 	 * Activate the plugin.
 	 *
 	 * @since 1.0.0
 	 */
 	public static function activate() {
+		$schema = new Schema();
+		$schema->initialize();
 	}
 
 }
