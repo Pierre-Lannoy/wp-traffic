@@ -11,6 +11,8 @@
 
 namespace Traffic\Plugin\Feature;
 
+use Traffic\System\Logger;
+
 /**
  * Define the captures functionality.
  *
@@ -95,6 +97,7 @@ class Capture {
 
 		$arrURL = @parse_url( $url );
 
+		Logger::emergency($arrURL['host']);
 	}
 
 	/**
