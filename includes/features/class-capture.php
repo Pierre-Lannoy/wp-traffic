@@ -93,7 +93,7 @@ class Capture {
 	 * @param string         $url      The request URL.
 	 * @since    1.0.0
 	 */
-	public function http_api_debug( $response, $context, $class, $args, $url ) {
+	public static function http_api_debug( $response, $context, $class, $args, $url ) {
 
 		$arrURL = @parse_url( $url );
 

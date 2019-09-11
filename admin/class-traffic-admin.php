@@ -159,7 +159,7 @@ class Traffic_Admin {
 		}
 		$nonce = filter_input( INPUT_GET, 'nonce' );
 		if ( $uuid ) {
-			$loggers = Option::get( 'loggers' );
+			$loggers = Option::site_get( 'loggers' );
 			if ( array_key_exists( $uuid, $loggers ) ) {
 				$this->current_logger         = $loggers[ $uuid ];
 				$this->current_logger['uuid'] = $uuid;
@@ -177,7 +177,7 @@ class Traffic_Admin {
 				'uuid'    => $uuid = UUID::generate_v4(),
 				'name'    => esc_html__( 'New logger', 'traffic' ),
 				'handler' => $this->current_handler['id'],
-				'running' => Option::get( 'logger_autostart' ),
+				'running' => Option::site_get( 'logger_autostart' ),
 			];
 		}
 		if ( $this->current_logger ) {
@@ -218,10 +218,10 @@ class Traffic_Admin {
 						case 'start':
 							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-start-' . $uuid ) ) {
-									$loggers = Option::get( 'loggers' );
+									$loggers = Option::site_get( 'loggers' );
 									if ( array_key_exists( $uuid, $loggers ) ) {
 										$loggers[ $uuid ]['running'] = true;
-										Option::set( 'loggers', $loggers );
+										Option::site_set( 'loggers', $loggers );
 										$this->logger = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION );
 										$message      = sprintf( esc_html__( 'Logger %s has started.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
 										$code         = 0;
@@ -234,13 +234,13 @@ class Traffic_Admin {
 						case 'pause':
 							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-pause-' . $uuid ) ) {
-									$loggers = Option::get( 'loggers' );
+									$loggers = Option::site_get( 'loggers' );
 									if ( array_key_exists( $uuid, $loggers ) ) {
 										$message = sprintf( esc_html__( 'Logger %s has been paused.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
 										$code    = 0;
 										$this->logger->notice( sprintf( 'Logger "%s" has been paused.', $loggers[ $uuid ]['name'] ), $code );
 										$loggers[ $uuid ]['running'] = false;
-										Option::set( 'loggers', $loggers );
+										Option::site_set( 'loggers', $loggers );
 										$this->logger = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION );
 										add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
 									}
@@ -249,7 +249,7 @@ class Traffic_Admin {
 						case 'test':
 							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-test-' . $uuid ) ) {
-									$loggers = Option::get( 'loggers' );
+									$loggers = Option::site_get( 'loggers' );
 									if ( array_key_exists( $uuid, $loggers ) ) {
 										$test = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION, $uuid );
 										$done = true;

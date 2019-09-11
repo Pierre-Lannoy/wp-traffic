@@ -32,7 +32,7 @@ class Updater {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$old = Option::get( 'version' );
+		$old = Option::site_get( 'version' );
 		if ( TRAFFIC_VERSION !== $old ) {
 			if ( '0.0.0' === $old ) {
 				$this->install();
@@ -44,7 +44,7 @@ class Updater {
 				$message = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
 			}
 			Nag::add( 'update', 'info', $message );
-			Option::set( 'version', TRAFFIC_VERSION );
+			Option::site_set( 'version', TRAFFIC_VERSION );
 		}
 	}
 
@@ -90,7 +90,7 @@ class Updater {
 	 * @since 1.0.0
 	 */
 	public function is_autoupdatable() {
-		return ( $this->is_updatable() && Option::get( 'auto_update' ) );
+		return ( $this->is_updatable() && Option::site_get( 'auto_update' ) );
 	}
 
 	/**
