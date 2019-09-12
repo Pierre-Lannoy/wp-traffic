@@ -97,7 +97,7 @@ class Capture {
 
 		$arrURL = @parse_url( $url );
 
-		Logger::emergency($arrURL['host']);
+		//Logger::emergency($arrURL['host']);
 	}
 
 	/**
