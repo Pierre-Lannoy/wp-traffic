@@ -12,6 +12,10 @@
 namespace Traffic\Plugin\Feature;
 
 use Traffic\System\Logger;
+use Traffic\Plugin\Feature\Schema;
+use Traffic\System\Timezone;
+use Traffic\System\Http;
+use function GuzzleHttp\Psr7\str;
 
 /**
  * Define the captures functionality.
@@ -41,6 +45,14 @@ class Capture {
 	private static $default_chrono = null;
 
 	/**
+	 * Local time zone.
+	 *
+	 * @since  1.0.0
+	 * @var    \Traffic\System\Timezone    $local_timezone    The local timezone.
+	 */
+	private static $local_timezone = null;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -57,6 +69,8 @@ class Capture {
 		add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
 		add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
 		self::$default_chrono = microtime( true );
+		self::$local_timezone = Timezone::network_get();
+		Logger::debug( 'Capture engine started.' );
 	}
 
 	/**
@@ -94,10 +108,48 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
-
-		$arrURL = @parse_url( $url );
-
-		//Logger::emergency($arrURL['host']);
+		$url_parts           = @parse_url( $url );
+		$record              = Schema::init_record();
+		$datetime            = new \DateTime( 'now', self::$local_timezone );
+		$record['timestamp'] = $datetime->format( 'Y-m-d' );
+		$record['site']      = get_current_blog_id();
+		$record['context']   = 'outbound';
+		if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
+			$record['id']        = Http::top_domain( $url_parts['host'] );
+			$record['authority'] = $url_parts['host'];
+		}
+		if ( array_key_exists( 'user', $url_parts ) && array_key_exists( 'pass', $url_parts ) && isset( $url_parts['user'] ) && isset( $url_parts['pass'] ) ) {
+			$record['authority'] = $url_parts['user'] . ':' . $url_parts['pass'] . '@' . $record['authority'];
+		}
+		if ( array_key_exists( 'port', $url_parts ) && isset( $url_parts['port'] ) ) {
+			$record['authority'] = $record['authority'] . ':' . $url_parts['port'];
+		}
+		if ( array_key_exists( 'method', $args ) && isset( $args['method'] ) ) {
+			$record['verb'] = strtolower( $args['method'] );
+		}
+		if ( array_key_exists( 'scheme', $url_parts ) && isset( $url_parts['scheme'] ) ) {
+			$record['scheme'] = $url_parts['scheme'];
+		}
+		if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
+			$record['endpoint'] = $url_parts['path'];
+			$pos                = strpos( $record['endpoint'], ':' );
+			if ( false !== $pos ) {
+				$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
+			}
+		}
+		$code = 0;
+		if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
+			$code = (int) $response['response']['code'];
+		} elseif ( function_exists( 'is_wp_error' ) && is_wp_error( $response ) ) {
+			$code = (int) $response->get_error_code();
+		}
+		if ( array_key_exists( $code, Http::$http_status_codes ) ) {
+			$record['code'] = $code;
+		}
+		$record['latency_min'] = self::stop( $url, $args );
+		$record['latency_avg'] = $record['latency_min'];
+		$record['latency_max'] = $record['latency_min'];
+		Schema::store_statistics( $record );
 	}
 
 	/**
@@ -122,6 +174,27 @@ class Capture {
 	 */
 	public static function start( $url, $args ) {
 		self::$chrono[ self::get_id( $url, $args ) ] = microtime( true );
+	}
+
+	/**
+	 * Stops the chrono.
+	 *
+	 * @param   string $url    The request URL.
+	 * @param   array  $args   HTTP request arguments.
+	 * @return  int The query latency, in ms.
+	 * @since    1.0.0
+	 */
+	private static function stop( $url, $args ) {
+		$id   = self::get_id( $url, $args );
+		$stop = microtime( true );
+		if ( array_key_exists( $id, self::$chrono ) ) {
+			$start = self::$chrono[ $id ];
+			unset( self::$chrono[ $id ] );
+		} else {
+			Logger::debug( sprintf( 'Unmatched query for %s.', $url ) );
+			$start = self::$default_chrono;
+		}
+		return (int) round( 1000 * ( $stop - $start ), 0 );
 	}
 
 }
