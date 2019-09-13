@@ -33,7 +33,7 @@ class Assets {
 	 * @since 1.0.0
 	 */
 	public function prefetch() {
-		if ( Option::site_get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
+		if ( Option::network_get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
 			echo '<meta http-equiv="x-dns-prefetch-control" content="on">';
 			echo '<link rel="dns-prefetch" href="//cdn.jsdelivr.net" />';
 		}
@@ -73,7 +73,7 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_script( $handle, $src, $file, $deps = [] ) {
-		return wp_register_script( $handle, $src . $file, $deps, TRAFFIC_VERSION, Option::site_get( 'script_in_footer' ) );
+		return wp_register_script( $handle, $src . $file, $deps, TRAFFIC_VERSION, Option::network_get( 'script_in_footer' ) );
 	}
 
 }

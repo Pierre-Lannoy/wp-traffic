@@ -68,6 +68,7 @@ class Capture {
 	public static function init() {
 		add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
 		add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
+		add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
 		self::$default_chrono = microtime( true );
 		self::$local_timezone = Timezone::network_get();
 		Logger::debug( 'Capture engine started.' );
@@ -108,48 +109,84 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
-		$url_parts           = @parse_url( $url );
-		$record              = Schema::init_record();
-		$datetime            = new \DateTime( 'now', self::$local_timezone );
-		$record['timestamp'] = $datetime->format( 'Y-m-d' );
-		$record['site']      = get_current_blog_id();
-		$record['context']   = 'outbound';
-		if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
-			$record['id']        = Http::top_domain( $url_parts['host'] );
-			$record['authority'] = $url_parts['host'];
-		}
-		if ( array_key_exists( 'user', $url_parts ) && array_key_exists( 'pass', $url_parts ) && isset( $url_parts['user'] ) && isset( $url_parts['pass'] ) ) {
-			$record['authority'] = $url_parts['user'] . ':' . $url_parts['pass'] . '@' . $record['authority'];
-		}
-		if ( array_key_exists( 'port', $url_parts ) && isset( $url_parts['port'] ) ) {
-			$record['authority'] = $record['authority'] . ':' . $url_parts['port'];
-		}
-		if ( array_key_exists( 'method', $args ) && isset( $args['method'] ) ) {
-			$record['verb'] = strtolower( $args['method'] );
-		}
-		if ( array_key_exists( 'scheme', $url_parts ) && isset( $url_parts['scheme'] ) ) {
-			$record['scheme'] = $url_parts['scheme'];
-		}
-		if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
-			$record['endpoint'] = $url_parts['path'];
-			$pos                = strpos( $record['endpoint'], ':' );
-			if ( false !== $pos ) {
-				$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
+		try {
+			$url_parts           = wp_parse_url( $url );
+			$record              = Schema::init_record();
+			$datetime            = new \DateTime( 'now', self::$local_timezone );
+			$record['timestamp'] = $datetime->format( 'Y-m-d' );
+			$record['site']      = get_current_blog_id();
+			$record['context']   = 'outbound';
+			if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
+				$record['id']        = Http::top_domain( $url_parts['host'] );
+				$record['authority'] = $url_parts['host'];
 			}
+			if ( array_key_exists( 'user', $url_parts ) && array_key_exists( 'pass', $url_parts ) && isset( $url_parts['user'] ) && isset( $url_parts['pass'] ) ) {
+				$record['authority'] = $url_parts['user'] . ':' . $url_parts['pass'] . '@' . $record['authority'];
+			}
+			if ( array_key_exists( 'port', $url_parts ) && isset( $url_parts['port'] ) ) {
+				$record['authority'] = $record['authority'] . ':' . $url_parts['port'];
+			}
+			if ( array_key_exists( 'method', $args ) && isset( $args['method'] ) ) {
+				$record['verb'] = strtolower( $args['method'] );
+			}
+			if ( array_key_exists( 'scheme', $url_parts ) && isset( $url_parts['scheme'] ) ) {
+				$record['scheme'] = $url_parts['scheme'];
+			}
+			if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
+				$record['endpoint'] = $url_parts['path'];
+				$pos                = strpos( $record['endpoint'], ':' );
+				if ( false !== $pos ) {
+					$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
+				}
+			}
+			$code = 0;
+			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
+				$code = (int) $response['response']['code'];
+			} elseif ( function_exists( 'is_wp_error' ) && is_wp_error( $response ) ) {
+				$code = (int) $response->get_error_code();
+			}
+			if ( array_key_exists( $code, Http::$http_status_codes ) ) {
+				$record['code'] = $code;
+			}
+			$record['latency_min'] = self::stop( $url, $args );
+			$record['latency_avg'] = $record['latency_min'];
+			$record['latency_max'] = $record['latency_min'];
+			Schema::store_statistics( $record );
+		} catch ( \Throwable $t ) {
+			Logger::warning( $t->getMessage(), $t->getCode() );
 		}
-		$code = 0;
-		if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
-			$code = (int) $response['response']['code'];
-		} elseif ( function_exists( 'is_wp_error' ) && is_wp_error( $response ) ) {
-			$code = (int) $response->get_error_code();
-		}
-		if ( array_key_exists( $code, Http::$http_status_codes ) ) {
-			$record['code'] = $code;
-		}
-		$record['latency_min'] = self::stop( $url, $args );
-		$record['latency_avg'] = $record['latency_min'];
-		$record['latency_max'] = $record['latency_min'];
-		Schema::store_statistics( $record );
+	}
+
+	/**
+	 * Filters the API response.
+	 *
+	 * Allows modification of the response data after inserting
+	 * embedded data (if any) and before echoing the response data.
+	 *
+	 *
+	 *
+	 * @param array            $result  Response data to send to the client.
+	 * @param \WP_REST_Server  $server    Server instance.
+	 * @param \WP_REST_Request $request Request used to generate the response.
+	 * @return array Response data to send to the client.
+	 * @since    1.0.0
+	 */
+	public static function rest_pre_echo_response( $result, $server, $request ) {
+		error_log( '********************************************************************' );
+		//error_log( '++ Result ' . print_r($result, true) );
+		//error_log( '++ Server ' . print_r($server, true) );
+		//error_log( '++ Request ' . print_r($request, true) );
+
+
+
+		error_log( '++ Method ' . $request->get_method() );
+		error_log( '++ Route ' . $request->get_route() );
+		error_log( '++ GET ' . print_r($_GET, true) );
+
+
+
+		error_log( '********************************************************************' );
+		return $result;
 	}
 
 	/**

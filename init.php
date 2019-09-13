@@ -19,3 +19,7 @@ define( 'TRAFFIC_MINIMUM_WP_VERSION', '5.0' );
 define( 'TRAFFIC_MINIMUM_PHP_VERSION', '7.2' );
 
 define( 'TRAFFIC_CDN_AVAILABLE', true );
+
+if ( ! defined( 'TRAFFIC_INBOUND_CHRONO' ) ) {
+	define( 'TRAFFIC_INBOUND_CHRONO', microtime( true ) );
+}
