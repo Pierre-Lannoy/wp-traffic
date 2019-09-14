@@ -209,8 +209,13 @@ class Capture {
 				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
 				'remote_ip' => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
 			];
+			if ( array_key_exists( 'HTTP_X_REAL_IP', $_SERVER ) ) {
+				$args['remote_ip'] = filter_input( INPUT_SERVER, 'HTTP_X_REAL_IP', FILTER_SANITIZE_STRING );
+			}
 			if ( array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
 				$code = (int) $result['data']['status'];
+			} elseif ( ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
+				$code = 200;
 			} else {
 				$code = 0;
 			}
