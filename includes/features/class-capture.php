@@ -94,30 +94,33 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function pre_http_request( $preempt, $args, $url ) {
-		self::start( $url, $args );
+		self::outbound_start( $url, $args );
 		return false;
 	}
 
 	/**
-	 * Fires after an HTTP API response is received and before the response is returned.
+	 * Records an entry.
 	 *
 	 * @param array|WP_Error $response HTTP response or WP_Error object.
-	 * @param string         $context  Context under which the hook is fired.
-	 * @param string         $class    HTTP transport used.
 	 * @param array          $args     HTTP request arguments.
 	 * @param string         $url      The request URL.
 	 * @since    1.0.0
 	 */
-	public static function http_api_debug( $response, $context, $class, $args, $url ) {
+	private static function record( $response, $args, $url, $bound = 'unknown' ) {
 		try {
 			$url_parts           = wp_parse_url( $url );
 			$record              = Schema::init_record();
 			$datetime            = new \DateTime( 'now', self::$local_timezone );
 			$record['timestamp'] = $datetime->format( 'Y-m-d' );
 			$record['site']      = get_current_blog_id();
-			$record['context']   = 'outbound';
+			$record['context']   = $bound;
 			if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
-				$record['id']        = Http::top_domain( $url_parts['host'] );
+				if ( 'outbound' === $bound ) {
+					$record['id'] = Http::top_domain( $url_parts['host'] );
+				}
+				if ( 'inbound' === $bound ) {
+					$record['id'] = $args['remote_ip'];
+				}
 				$record['authority'] = $url_parts['host'];
 			}
 			if ( array_key_exists( 'user', $url_parts ) && array_key_exists( 'pass', $url_parts ) && isset( $url_parts['user'] ) && isset( $url_parts['pass'] ) ) {
@@ -148,13 +151,32 @@ class Capture {
 			if ( array_key_exists( $code, Http::$http_status_codes ) ) {
 				$record['code'] = $code;
 			}
-			$record['latency_min'] = self::stop( $url, $args );
+			if ( 'outbound' === $bound ) {
+				$record['latency_min'] = self::outbound_stop( $url, $args );
+			}
+			if ( 'inbound' === $bound ) {
+				$record['latency_min'] = self::inbound_stop( $url, $args );
+			}
 			$record['latency_avg'] = $record['latency_min'];
 			$record['latency_max'] = $record['latency_min'];
 			Schema::store_statistics( $record );
 		} catch ( \Throwable $t ) {
-			Logger::warning( $t->getMessage(), $t->getCode() );
+			Logger::warning( ucfirst( $bound ) . ' API analysis: ' . $t->getMessage(), $t->getCode() );
 		}
+	}
+
+	/**
+	 * Fires after an HTTP API response is received and before the response is returned.
+	 *
+	 * @param array|WP_Error $response HTTP response or WP_Error object.
+	 * @param string         $context  Context under which the hook is fired.
+	 * @param string         $class    HTTP transport used.
+	 * @param array          $args     HTTP request arguments.
+	 * @param string         $url      The request URL.
+	 * @since    1.0.0
+	 */
+	public static function http_api_debug( $response, $context, $class, $args, $url ) {
+		self::record( $response, $args, $url, 'outbound' );
 	}
 
 	/**
@@ -163,8 +185,6 @@ class Capture {
 	 * Allows modification of the response data after inserting
 	 * embedded data (if any) and before echoing the response data.
 	 *
-	 *
-	 *
 	 * @param array            $result  Response data to send to the client.
 	 * @param \WP_REST_Server  $server    Server instance.
 	 * @param \WP_REST_Request $request Request used to generate the response.
@@ -172,20 +192,39 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
-		error_log( '********************************************************************' );
-		//error_log( '++ Result ' . print_r($result, true) );
-		//error_log( '++ Server ' . print_r($server, true) );
-		//error_log( '++ Request ' . print_r($request, true) );
+		$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
+		if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
+			$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_STRING ) );
+			$server = strtolower( filter_input( INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING ) );
+			$port   = filter_input( INPUT_SERVER, 'SERVER_PORT', FILTER_SANITIZE_NUMBER_INT );
+			if ( ( 'http' === $scheme && 80 === (int) $port ) || ( 'https' === $scheme && 443 === (int) $port ) ) {
+				$port = '';
+			} else {
+				$port = ':' . $port;
+			}
+			$url = $scheme . '://' . $server . $port . $url;
+		}
+		$args = [
+			'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
+			'remote_ip' => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
+		];
 
+		$response                     = [];
+		$response['response']['code'] = 1;
+		self::record( $response, $args, $url, 'inbound' );
 
+		// error_log( '********************************************************************' );
+		// error_log( '++ Result ' . print_r($result, true) );
+		// error_log( '++ Server ' . print_r($server, true) );
+		// error_log( '++ Request ' . print_r($_SERVER, true) );
 
-		error_log( '++ Method ' . $request->get_method() );
-		error_log( '++ Route ' . $request->get_route() );
-		error_log( '++ GET ' . print_r($_GET, true) );
+		//Logger::alert( $_SERVER['REMOTE_ADDR'] . ' / ' . $_SERVER['REQUEST_METHOD'] . ' / ' . $_SERVER['REQUEST_URI'] );
 
+		// error_log( '++ Method ' . $request->get_method() );
+		// error_log( '++ Route ' . $request->get_route() );
+		// error_log( '++ GET ' . print_r($_GET, true) );
 
-
-		error_log( '********************************************************************' );
+		// error_log( '********************************************************************' );
 		return $result;
 	}
 
@@ -209,7 +248,7 @@ class Capture {
 	 * @param   array  $args   HTTP request arguments.
 	 * @since    1.0.0
 	 */
-	public static function start( $url, $args ) {
+	public static function outbound_start( $url, $args ) {
 		self::$chrono[ self::get_id( $url, $args ) ] = microtime( true );
 	}
 
@@ -221,7 +260,7 @@ class Capture {
 	 * @return  int The query latency, in ms.
 	 * @since    1.0.0
 	 */
-	private static function stop( $url, $args ) {
+	private static function outbound_stop( $url, $args ) {
 		$id   = self::get_id( $url, $args );
 		$stop = microtime( true );
 		if ( array_key_exists( $id, self::$chrono ) ) {
@@ -230,6 +269,30 @@ class Capture {
 		} else {
 			Logger::debug( sprintf( 'Unmatched query for %s.', $url ) );
 			$start = self::$default_chrono;
+		}
+		return (int) round( 1000 * ( $stop - $start ), 0 );
+	}
+
+	/**
+	 * Stops the chrono.
+	 *
+	 * @param   string $url    The request URL.
+	 * @param   array  $args   HTTP request arguments.
+	 * @return  int The query latency, in ms.
+	 * @since    1.0.0
+	 */
+	private static function inbound_stop( $url, $args ) {
+		$stop = microtime( true );
+		if ( defined( 'TRAFFIC_INBOUND_CHRONO' ) ) {
+			$start = TRAFFIC_INBOUND_CHRONO;
+		} else {
+			$start = self::$default_chrono;
+		}
+		if ( array_key_exists( 'REQUEST_TIME_FLOAT', $_SERVER ) ) {
+			$time = filter_input( INPUT_SERVER, 'REQUEST_TIME_FLOAT', FILTER_SANITIZE_NUMBER_FLOAT );
+			if ( $time ) {
+				$start = (float) $time;
+			}
 		}
 		return (int) round( 1000 * ( $stop - $start ), 0 );
 	}
