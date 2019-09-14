@@ -192,39 +192,32 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
-		$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
-		if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
-			$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_STRING ) );
-			$server = strtolower( filter_input( INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING ) );
-			$port   = filter_input( INPUT_SERVER, 'SERVER_PORT', FILTER_SANITIZE_NUMBER_INT );
-			if ( ( 'http' === $scheme && 80 === (int) $port ) || ( 'https' === $scheme && 443 === (int) $port ) ) {
-				$port = '';
-			} else {
-				$port = ':' . $port;
+		try {
+			$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
+			if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
+				$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_STRING ) );
+				$server = strtolower( filter_input( INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING ) );
+				$port   = filter_input( INPUT_SERVER, 'SERVER_PORT', FILTER_SANITIZE_NUMBER_INT );
+				if ( ( 'http' === $scheme && 80 === (int) $port ) || ( 'https' === $scheme && 443 === (int) $port ) ) {
+					$port = '';
+				} else {
+					$port = ':' . $port;
+				}
+				$url = $scheme . '://' . $server . $port . $url;
 			}
-			$url = $scheme . '://' . $server . $port . $url;
+			$args = [
+				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
+				'remote_ip' => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
+			];
+			if ( array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
+				$code = (int) $result['data']['status'];
+			} else {
+				$code = 0;
+			}
+		} catch ( \Throwable $t ) {
+			Logger::warning( 'Inbound API pre-analysis: ' . $t->getMessage(), $t->getCode() );
 		}
-		$args = [
-			'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
-			'remote_ip' => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
-		];
-
-		$response                     = [];
-		$response['response']['code'] = 1;
-		self::record( $response, $args, $url, 'inbound' );
-
-		// error_log( '********************************************************************' );
-		// error_log( '++ Result ' . print_r($result, true) );
-		// error_log( '++ Server ' . print_r($server, true) );
-		// error_log( '++ Request ' . print_r($_SERVER, true) );
-
-		//Logger::alert( $_SERVER['REMOTE_ADDR'] . ' / ' . $_SERVER['REQUEST_METHOD'] . ' / ' . $_SERVER['REQUEST_URI'] );
-
-		// error_log( '++ Method ' . $request->get_method() );
-		// error_log( '++ Route ' . $request->get_route() );
-		// error_log( '++ GET ' . print_r($_GET, true) );
-
-		// error_log( '********************************************************************' );
+		self::record( [ 'response' => [ 'code' => $code ] ], $args, $url, 'inbound' );
 		return $result;
 	}
 
