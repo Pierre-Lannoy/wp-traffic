@@ -13,6 +13,7 @@ namespace Traffic\Plugin\Feature;
 
 use Traffic\System\Logger;
 use Traffic\Plugin\Feature\Schema;
+use Traffic\System\Option;
 use Traffic\System\Timezone;
 use Traffic\System\Http;
 use function GuzzleHttp\Psr7\str;
@@ -75,6 +76,26 @@ class Capture {
 	}
 
 	/**
+	 * Clean the endpoint.
+	 *
+	 * @param   string $host       The host for the request.
+	 * @param   string $endpoint   The endpoint to clean.
+	 * @param   int    $cut        Optional. The number of path levels to let.
+	 * @return string   The cleaned endpoint.
+	 * @since    1.0.0
+	 */
+	private static function clean_endpoint( $host, $endpoint, $cut = 3 ) {
+
+
+		/*$pos                = strpos( $record['endpoint'], ':' );
+		if ( false !== $pos ) {
+			$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
+		}*/
+
+		return $endpoint;
+	}
+
+	/**
 	 * Filters whether to preempt an HTTP request's return value.
 	 *
 	 * Returning a non-false value from the filter will short-circuit the HTTP request and return
@@ -108,6 +129,7 @@ class Capture {
 	 */
 	private static function record( $response, $args, $url, $bound = 'unknown' ) {
 		try {
+			$host                = '';
 			$url_parts           = wp_parse_url( $url );
 			$record              = Schema::init_record();
 			$datetime            = new \DateTime( 'now', self::$local_timezone );
@@ -121,7 +143,8 @@ class Capture {
 				if ( 'inbound' === $bound ) {
 					$record['id'] = $args['remote_ip'];
 				}
-				$record['authority'] = $url_parts['host'];
+				$host                = $url_parts['host'];
+				$record['authority'] = $host;
 			}
 			if ( array_key_exists( 'user', $url_parts ) && array_key_exists( 'pass', $url_parts ) && isset( $url_parts['user'] ) && isset( $url_parts['pass'] ) ) {
 				$record['authority'] = $url_parts['user'] . ':' . $url_parts['pass'] . '@' . $record['authority'];
@@ -136,11 +159,7 @@ class Capture {
 				$record['scheme'] = $url_parts['scheme'];
 			}
 			if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
-				$record['endpoint'] = $url_parts['path'];
-				$pos                = strpos( $record['endpoint'], ':' );
-				if ( false !== $pos ) {
-					$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
-				}
+				$record['endpoint'] = self::clean_endpoint( $host, $url_parts['path'], Option::network_get( $bound . '_cut_path', 3 ) );
 			}
 			$code = 0;
 			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
@@ -211,6 +230,9 @@ class Capture {
 			];
 			if ( array_key_exists( 'HTTP_X_REAL_IP', $_SERVER ) ) {
 				$args['remote_ip'] = filter_input( INPUT_SERVER, 'HTTP_X_REAL_IP', FILTER_SANITIZE_STRING );
+			}
+			if ( array_key_exists( 'X-FORWARDED_FOR', $_SERVER ) ) {
+				$args['remote_ip'] = filter_input( INPUT_SERVER, 'FORWARDED_FOR' );
 			}
 			if ( array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
 				$code = (int) $result['data']['status'];

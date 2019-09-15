@@ -37,12 +37,14 @@ class Option {
 	 * @since 1.0.0
 	 */
 	public static function init() {
-		self::$defaults['use_cdn']          = false;
-		self::$defaults['script_in_footer'] = false;
-		self::$defaults['auto_update']      = true;
-		self::$defaults['display_nag']      = true;
-		self::$defaults['nags']             = [];
-		self::$defaults['version']          = '0.0.0';
+		self::$defaults['use_cdn']           = false;
+		self::$defaults['script_in_footer']  = false;
+		self::$defaults['auto_update']       = true;
+		self::$defaults['display_nag']       = true;
+		self::$defaults['nags']              = [];
+		self::$defaults['version']           = '0.0.0';
+		self::$defaults['inbound_cut_path']  = 3;
+		self::$defaults['outbound_cut_path'] = 3;
 	}
 
 	/**
