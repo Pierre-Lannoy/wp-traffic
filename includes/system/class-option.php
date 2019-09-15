@@ -45,6 +45,8 @@ class Option {
 		self::$defaults['version']           = '0.0.0';
 		self::$defaults['inbound_cut_path']  = 4;
 		self::$defaults['outbound_cut_path'] = 3;
+		self::$defaults['outbound_capture']  = true;
+		self::$defaults['inbound_capture']   = true;
 	}
 
 	/**

@@ -16,7 +16,6 @@ use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Option;
 use Traffic\System\Timezone;
 use Traffic\System\Http;
-use function GuzzleHttp\Psr7\str;
 
 /**
  * Define the captures functionality.
@@ -67,12 +66,21 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
-		add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
-		add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
-		self::$default_chrono = microtime( true );
-		self::$local_timezone = Timezone::network_get();
-		Logger::debug( 'Capture engine started.' );
+		$started = false;
+		if ( Option::network_get( 'outbound_capture' ) ) {
+			add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
+			add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
+			$started = true;
+		}
+		if ( Option::network_get( 'inbound_capture' ) ) {
+			add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
+			$started = true;
+		}
+		if ( $started ) {
+			self::$default_chrono = microtime( true );
+			self::$local_timezone = Timezone::network_get();
+			Logger::debug( 'Capture engine started.' );
+		}
 	}
 
 	/**
