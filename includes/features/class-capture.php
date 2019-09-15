@@ -85,6 +85,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	private static function clean_endpoint( $host, $endpoint, $cut = 3 ) {
+
 		/**
 		 * Filters the cut level.
 		 *
@@ -96,14 +97,23 @@ class Capture {
 		 */
 		$cut = (int) apply_filters( 'traffic_path_level', $cut, $host, $endpoint );
 
-
-
-		/*$pos                = strpos( $record['endpoint'], ':' );
-		if ( false !== $pos ) {
-			$record['endpoint'] = substr( $record['endpoint'], 0, $pos );
-		}*/
-
-		return $endpoint;
+		if ( '/' !== substr( $endpoint, 0, 1 ) ) {
+			$endpoint = '/' . $endpoint;
+		}
+		$cpt = 0;
+		$ep  = '';
+		while ( $cpt < $cut ) {
+			if ( 0 === substr_count( $endpoint, '/' ) ) {
+				break;
+			}
+			do {
+				$ep       = $ep . substr( $endpoint, 0, 1 );
+				$endpoint = substr( $endpoint, 1 );
+				$length   = strlen( $endpoint );
+			} while ( ( 0 < $length ) && ( '/' !== substr( $endpoint, 0, 1 ) ) );
+			++$cpt;
+		}
+		return $ep;
 	}
 
 	/**
