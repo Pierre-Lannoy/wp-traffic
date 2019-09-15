@@ -85,6 +85,17 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	private static function clean_endpoint( $host, $endpoint, $cut = 3 ) {
+		/**
+		 * Filters the cut level.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param   int    $cut        The number of path levels to let.
+		 * @param   string $host       The host for the request.
+		 * @param   string $endpoint   The endpoint to clean.
+		 */
+		$cut = (int) apply_filters( 'traffic_path_level', $cut, $host, $endpoint );
+
 
 
 		/*$pos                = strpos( $record['endpoint'], ':' );
@@ -237,6 +248,8 @@ class Capture {
 			if ( array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
 				$code = (int) $result['data']['status'];
 			} elseif ( ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
+				$code = 200;
+			} elseif ( [] === $result ) {
 				$code = 200;
 			} else {
 				$code = 0;
