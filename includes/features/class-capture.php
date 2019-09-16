@@ -146,8 +146,6 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function pre_http_request( $preempt, $args, $url ) {
-		//error_log($url);
-		//error_log(print_r($args,true));
 		self::outbound_start( $url, $args );
 		return false;
 	}
@@ -234,6 +232,40 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
+		// Outbound request.
+		$header = '';
+		if ( array_key_exists( 'header', $args ) ) {
+			foreach ( $args['headers'] as $key => $value ) {
+				$header .= $key . ': ' . $value . PHP_EOL;
+			}
+		}
+		foreach ( headers_list() as $value ) {
+			$header .= $value . PHP_EOL;
+		}
+		if ( array_key_exists( 'user-agent', $args ) ) {
+			$header .= 'User-Agent: ' . $args['user-agent'] . PHP_EOL;
+		}
+
+		/*
+
+		GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1
+		Host: net.tutsplus.com
+
+		*/
+
+		$cookie = '';
+		if ( array_key_exists( 'cookies', $args ) ) {
+			$c = [];
+			foreach ( $args['cookies'] as $key => $value ) {
+				$c .= $key . '=' . $value;
+			}
+			$cookie = 'Cookie: ' . implode( '; ', $c ) . PHP_EOL;
+		}
+		$body = '';
+		if ( array_key_exists( 'body', $args ) ) {
+			$body = $args['body'] . PHP_EOL;
+		}
+		$response['sizes']['b_out'] = strlen( $header ) + strlen( $cookie ) + strlen( $body );
 		if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
 			$r                         = $response['http_response']->get_response_object();
 			$response['sizes']['b_in'] = strlen( $r->raw );
@@ -248,25 +280,27 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	private static function incoming_files() {
-		$files = $_FILES;
+		$files  = $_FILES;
 		$files2 = [];
-		foreach ($files as $input => $infoArr) {
-			$filesByInput = [];
-			foreach ($infoArr as $key => $valueArr) {
-				if (is_array($valueArr)) {
-					foreach($valueArr as $i=>$value) {
-						$filesByInput[$i][$key] = $value;
+		foreach ( $files as $input => $info_arr ) {
+			$files_by_input = [];
+			foreach ( $info_arr as $key => $value_arr ) {
+				if ( is_array( $value_arr ) ) {
+					foreach ( $value_arr as $i => $value ) {
+						$files_by_input[ $i ][ $key ] = $value;
 					}
 				} else {
-					$filesByInput[] = $infoArr;
+					$files_by_input[] = $info_arr;
 					break;
 				}
 			}
-			$files2 = array_merge($files2,$filesByInput);
+			$files2 = array_merge( $files2, $files_by_input );
 		}
 		$files3 = [];
-		foreach($files2 as $file) {
-			if (!$file['error']) $files3[] = $file;
+		foreach ( $files2 as $file ) {
+			if ( ! $file['error'] ) {
+				$files3[] = $file;
+			}
 		}
 		return $files3;
 	}
