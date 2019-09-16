@@ -11,6 +11,7 @@
 
 namespace Traffic\Plugin\Feature;
 
+use Traffic\System\Http;
 use Traffic\System\Logger;
 
 /**
@@ -136,10 +137,10 @@ class Schema {
 		$sql             = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->base_prefix . self::$statistics;
 		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
 		$sql            .= " `site` bigint(20) NOT NULL DEFAULT '0',";
-		$sql            .= " `context` enum('inbound','outbound','unknown') NOT NULL DEFAULT 'unknown',";
+		$sql            .= " `context` enum('" . implode( "','", Http::$contexts ) . "') NOT NULL DEFAULT 'unknown',";
 		$sql            .= " `id` varchar(40) NOT NULL DEFAULT '-',";
-		$sql            .= " `verb` enum('get','post','head','put','delete','trace','options','patch','unknown') NOT NULL DEFAULT 'unknown',";
-		$sql            .= " `scheme` enum('http','https','unknown') NOT NULL DEFAULT 'unknown',";
+		$sql            .= " `verb` enum('" . implode( "','", Http::$verbs ) . "') NOT NULL DEFAULT 'unknown',";
+		$sql            .= " `scheme` enum('" . implode( "','", Http::$schemes ) . "') NOT NULL DEFAULT 'unknown',";
 		$sql            .= " `authority` varchar(250) NOT NULL DEFAULT '-',";
 		$sql            .= " `endpoint` varchar(250) NOT NULL DEFAULT '-',";
 		$sql            .= " `code` smallint UNSIGNED NOT NULL DEFAULT '0',";
