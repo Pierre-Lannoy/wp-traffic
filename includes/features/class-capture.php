@@ -88,11 +88,12 @@ class Capture {
 	 *
 	 * @param   string $host       The host for the request.
 	 * @param   string $endpoint   The endpoint to clean.
+	 * @param   string $bound      Maybe 'inbound', 'outbound' or 'unknown'.
 	 * @param   int    $cut        Optional. The number of path levels to let.
 	 * @return string   The cleaned endpoint.
 	 * @since    1.0.0
 	 */
-	private static function clean_endpoint( $host, $endpoint, $cut = 3 ) {
+	private static function clean_endpoint( $host, $endpoint, $bound, $cut = 3 ) {
 
 		/**
 		 * Filters the cut level.
@@ -102,8 +103,9 @@ class Capture {
 		 * @param   int    $cut        The number of path levels to let.
 		 * @param   string $host       The host for the request.
 		 * @param   string $endpoint   The endpoint to clean.
+		 * @param   string $bound      Maybe 'inbound', 'outbound' or 'unknown'.
 		 */
-		$cut = (int) apply_filters( 'traffic_path_level', $cut, $host, $endpoint );
+		$cut = (int) apply_filters( 'traffic_path_level', $cut, $host, $endpoint, $bound );
 
 		if ( '/' !== substr( $endpoint, 0, 1 ) ) {
 			$endpoint = '/' . $endpoint;
@@ -188,7 +190,7 @@ class Capture {
 				$record['scheme'] = $url_parts['scheme'];
 			}
 			if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
-				$record['endpoint'] = self::clean_endpoint( $host, $url_parts['path'], Option::network_get( $bound . '_cut_path', 3 ) );
+				$record['endpoint'] = self::clean_endpoint( $host, $url_parts['path'], $bound, Option::network_get( $bound . '_cut_path', 3 ) );
 			}
 			$code = 0;
 			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
