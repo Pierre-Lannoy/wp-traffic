@@ -95,6 +95,12 @@ class Schema {
 			if ( 'hit' === $k ) {
 				$value_update[] = '`hit`=hit + 1';
 			}
+			if ( 'b_in' === $k ) {
+				$value_update[] = '`b_in`=b_in + ' . $v;
+			}
+			if ( 'b_out' === $k ) {
+				$value_update[] = '`b_out`=b_out + ' . $v;
+			}
 			if ( 'latency_min' === $k ) {
 				$value_update[] = '`latency_min`=if(latency_min>' . $v . ',' . $v . ',latency_min)';
 			}
@@ -148,6 +154,8 @@ class Schema {
 		$sql            .= " `latency_min` smallint UNSIGNED NOT NULL DEFAULT '0',";
 		$sql            .= " `latency_avg` smallint UNSIGNED NOT NULL DEFAULT '0',";
 		$sql            .= " `latency_max` smallint UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `b_in` int UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `b_out` int UNSIGNED NOT NULL DEFAULT '0',";
 		$sql            .= ' UNIQUE KEY u_stat (timestamp, site, context, id, verb, scheme, authority, endpoint, code)';
 		$sql            .= ") $charset_collate;";
 		// phpcs:ignore

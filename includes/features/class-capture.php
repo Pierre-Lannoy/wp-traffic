@@ -146,6 +146,8 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function pre_http_request( $preempt, $args, $url ) {
+		//error_log($url);
+		//error_log(print_r($args,true));
 		self::outbound_start( $url, $args );
 		return false;
 	}
@@ -201,6 +203,12 @@ class Capture {
 			if ( array_key_exists( $code, Http::$http_status_codes ) ) {
 				$record['code'] = $code;
 			}
+			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'sizes', $response ) && array_key_exists( 'b_in', $response['sizes'] ) ) {
+				$record['b_in'] = (int) $response['sizes']['b_in'];
+			}
+			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'sizes', $response ) && array_key_exists( 'b_out', $response['sizes'] ) ) {
+				$record['b_out'] = (int) $response['sizes']['b_out'];
+			}
 			if ( 'outbound' === $bound ) {
 				$record['latency_min'] = self::outbound_stop( $url, $args );
 			}
@@ -226,7 +234,41 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
+		if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+			$r                         = $response['http_response']->get_response_object();
+			$response['sizes']['b_in'] = strlen( $r->raw );
+		}
 		self::record( $response, $args, $url, 'outbound' );
+	}
+
+	/**
+	 * Get all files in a flat array.
+	 *
+	 * @return array The files.
+	 * @since    1.0.0
+	 */
+	private static function incoming_files() {
+		$files = $_FILES;
+		$files2 = [];
+		foreach ($files as $input => $infoArr) {
+			$filesByInput = [];
+			foreach ($infoArr as $key => $valueArr) {
+				if (is_array($valueArr)) {
+					foreach($valueArr as $i=>$value) {
+						$filesByInput[$i][$key] = $value;
+					}
+				} else {
+					$filesByInput[] = $infoArr;
+					break;
+				}
+			}
+			$files2 = array_merge($files2,$filesByInput);
+		}
+		$files3 = [];
+		foreach($files2 as $file) {
+			if (!$file['error']) $files3[] = $file;
+		}
+		return $files3;
 	}
 
 	/**
@@ -242,6 +284,34 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
+		$response                   = [];
+		$response['sizes']          = [];
+		$response['sizes']['b_in']  = 0;
+		$response['sizes']['b_out'] = 0;
+		$response['response']       = [];
+		if ( $server instanceof \WP_REST_Server ) {
+			// Inbound request.
+			$header = '';
+			foreach ( $server->get_headers( $_SERVER ) as $key => $value ) {
+				$header .= $key . ': ' . $value . PHP_EOL;
+			}
+			$body   = $server->get_raw_data();
+			$f_size = 0;
+			foreach ( self::incoming_files() as $file ) {
+				if ( array_key_exists( 'size', $file ) ) {
+					$f_size = $f_size + (int) $file['size'];
+				}
+			}
+			$response['sizes']['b_in'] = strlen( $header ) + strlen( $body ) + $f_size;
+
+			// Outbound response.
+			$header = '';
+			foreach ( headers_list() as $value ) {
+				$header .= $value . PHP_EOL;
+			}
+			$body                       = wp_json_encode( $result );
+			$response['sizes']['b_out'] = strlen( $header ) + strlen( $body );
+		}
 		try {
 			$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
 			if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
@@ -266,18 +336,18 @@ class Capture {
 				$args['remote_ip'] = filter_input( INPUT_SERVER, 'FORWARDED_FOR' );
 			}
 			if ( array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
-				$code = (int) $result['data']['status'];
+				$response['response']['code'] = (int) $result['data']['status'];
 			} elseif ( ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
-				$code = 200;
+				$response['response']['code'] = 200;
 			} elseif ( [] === $result ) {
-				$code = 200;
+				$response['response']['code'] = 200;
 			} else {
-				$code = 0;
+				$response['response']['code'] = 0;
 			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( 'Inbound API pre-analysis: ' . $t->getMessage(), $t->getCode() );
 		}
-		self::record( [ 'response' => [ 'code' => $code ] ], $args, $url, 'inbound' );
+		self::record( $response, $args, $url, 'inbound' );
 		return $result;
 	}
 
