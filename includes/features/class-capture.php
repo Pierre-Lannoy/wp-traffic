@@ -156,9 +156,12 @@ class Capture {
 	 * @param array|WP_Error $response HTTP response or WP_Error object.
 	 * @param array          $args     HTTP request arguments.
 	 * @param string         $url      The request URL.
+	 * @param string         $bound    Optional. The bound.
+	 * @param int            $b_in     Optional. Inbound bytes.
+	 * @param int            $b_out    Optional. Outbound bytes.
 	 * @since    1.0.0
 	 */
-	private static function record( $response, $args, $url, $bound = 'unknown' ) {
+	private static function record( $response, $args, $url, $bound = 'unknown', $b_in = 0, $b_out = 0 ) {
 		try {
 			$host                = '';
 			$url_parts           = wp_parse_url( $url );
@@ -201,11 +204,15 @@ class Capture {
 			if ( array_key_exists( $code, Http::$http_status_codes ) ) {
 				$record['code'] = $code;
 			}
-			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'sizes', $response ) && array_key_exists( 'b_in', $response['sizes'] ) ) {
-				$record['b_in'] = (int) $response['sizes']['b_in'];
+			if ( $b_in > 0 && $b_in < 1024 ) {
+				$record['kb_in'] = 1;
+			} else {
+				$record['kb_in'] = (int) round( $b_in / 1024, 0 );
 			}
-			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'sizes', $response ) && array_key_exists( 'b_out', $response['sizes'] ) ) {
-				$record['b_out'] = (int) $response['sizes']['b_out'];
+			if ( $b_out > 0 && $b_out < 1024 ) {
+				$record['kb_out'] = 1;
+			} else {
+				$record['kb_out'] = (int) round( $b_out / 1024, 0 );
 			}
 			if ( 'outbound' === $bound ) {
 				$record['latency_min'] = self::outbound_stop( $url, $args );
@@ -217,7 +224,7 @@ class Capture {
 			$record['latency_max'] = $record['latency_min'];
 			Schema::store_statistics( $record );
 		} catch ( \Throwable $t ) {
-			Logger::warning( ucfirst( $bound ) . ' API analysis: ' . $t->getMessage(), $t->getCode() );
+			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
 		}
 	}
 
@@ -232,45 +239,51 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
-		// Outbound request.
-		$header = '';
-		if ( array_key_exists( 'header', $args ) ) {
-			foreach ( $args['headers'] as $key => $value ) {
-				$header .= $key . ': ' . $value . PHP_EOL;
+		try {
+			$b_in  = 0;
+			$b_out = 0;
+			// Outbound request.
+			$header = '';
+			if ( array_key_exists( 'header', $args ) ) {
+				foreach ( $args['headers'] as $key => $value ) {
+					$header .= $key . ': ' . $value . PHP_EOL;
+				}
 			}
-		}
-		foreach ( headers_list() as $value ) {
-			$header .= $value . PHP_EOL;
-		}
-		if ( array_key_exists( 'user-agent', $args ) ) {
-			$header .= 'User-Agent: ' . $args['user-agent'] . PHP_EOL;
-		}
-
-		/*
-
-		GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1
-		Host: net.tutsplus.com
-
-		*/
-
-		$cookie = '';
-		if ( array_key_exists( 'cookies', $args ) ) {
-			$c = [];
-			foreach ( $args['cookies'] as $key => $value ) {
-				$c .= $key . '=' . $value;
+			foreach ( headers_list() as $value ) {
+				$header .= $value . PHP_EOL;
 			}
-			$cookie = 'Cookie: ' . implode( '; ', $c ) . PHP_EOL;
+			if ( array_key_exists( 'user-agent', $args ) ) {
+				$header .= 'User-Agent: ' . $args['user-agent'] . PHP_EOL;
+			}
+			$url_parts = wp_parse_url( $url );
+			$header   .= 'POST ' . $url_parts['path'] . ' HTTP/1.1' . PHP_EOL;
+			$header   .= 'Host: ' . $url_parts['host'] . PHP_EOL;
+			$cookie    = '';
+			if ( array_key_exists( 'cookies', $args ) ) {
+				$c = [];
+				foreach ( $args['cookies'] as $key => $value ) {
+					$c .= $key . '=' . $value;
+				}
+				$cookie = 'Cookie: ' . implode( '; ', $c ) . PHP_EOL;
+			}
+			$body = '';
+			if ( array_key_exists( 'body', $args ) ) {
+				// phpcs:ignore
+				$body = serialize( $args['body'] ) . PHP_EOL;
+			} else {
+				$body = $args['body'] . PHP_EOL;
+			}
+			$b_out = strlen( $header ) + strlen( $cookie ) + strlen( $body );
+			if ( is_array( $response ) ) {
+				if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+					$r    = $response['http_response']->get_response_object();
+					$b_in = strlen( $r->raw );
+				}
+			}
+		} catch ( \Throwable $t ) {
+			Logger::warning( 'Outbound API post-analysis: ' . $t->getMessage(), $t->getCode() );
 		}
-		$body = '';
-		if ( array_key_exists( 'body', $args ) ) {
-			$body = $args['body'] . PHP_EOL;
-		}
-		$response['sizes']['b_out'] = strlen( $header ) + strlen( $cookie ) + strlen( $body );
-		if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
-			$r                         = $response['http_response']->get_response_object();
-			$response['sizes']['b_in'] = strlen( $r->raw );
-		}
-		self::record( $response, $args, $url, 'outbound' );
+		self::record( $response, $args, $url, 'outbound', $b_in, $b_out );
 	}
 
 	/**
@@ -318,35 +331,34 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
-		$response                   = [];
-		$response['sizes']          = [];
-		$response['sizes']['b_in']  = 0;
-		$response['sizes']['b_out'] = 0;
-		$response['response']       = [];
-		if ( $server instanceof \WP_REST_Server ) {
-			// Inbound request.
-			$header = '';
-			foreach ( $server->get_headers( $_SERVER ) as $key => $value ) {
-				$header .= $key . ': ' . $value . PHP_EOL;
-			}
-			$body   = $server->get_raw_data();
-			$f_size = 0;
-			foreach ( self::incoming_files() as $file ) {
-				if ( array_key_exists( 'size', $file ) ) {
-					$f_size = $f_size + (int) $file['size'];
-				}
-			}
-			$response['sizes']['b_in'] = strlen( $header ) + strlen( $body ) + $f_size;
-
-			// Outbound response.
-			$header = '';
-			foreach ( headers_list() as $value ) {
-				$header .= $value . PHP_EOL;
-			}
-			$body                       = wp_json_encode( $result );
-			$response['sizes']['b_out'] = strlen( $header ) + strlen( $body );
-		}
 		try {
+			$b_in                 = 0;
+			$b_out                = 0;
+			$response             = [];
+			$response['response'] = [];
+			if ( $server instanceof \WP_REST_Server ) {
+				// Inbound request.
+				$header = '';
+				foreach ( $server->get_headers( $_SERVER ) as $key => $value ) {
+					$header .= $key . ': ' . $value . PHP_EOL;
+				}
+				$body   = $server->get_raw_data();
+				$f_size = 0;
+				foreach ( self::incoming_files() as $file ) {
+					if ( array_key_exists( 'size', $file ) ) {
+						$f_size = $f_size + (int) $file['size'];
+					}
+				}
+				$b_in = strlen( $header ) + strlen( $body ) + $f_size;
+
+				// Outbound response.
+				$header = '';
+				foreach ( headers_list() as $value ) {
+					$header .= $value . PHP_EOL;
+				}
+				$body  = wp_json_encode( $result );
+				$b_out = strlen( $header ) + strlen( $body );
+			}
 			$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
 			if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
 				$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_STRING ) );
@@ -381,7 +393,7 @@ class Capture {
 		} catch ( \Throwable $t ) {
 			Logger::warning( 'Inbound API pre-analysis: ' . $t->getMessage(), $t->getCode() );
 		}
-		self::record( $response, $args, $url, 'inbound' );
+		self::record( $response, $args, $url, 'inbound', $b_in, $b_out );
 		return $result;
 	}
 
