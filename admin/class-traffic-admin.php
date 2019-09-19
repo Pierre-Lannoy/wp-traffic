@@ -10,8 +10,10 @@
 namespace Traffic\Plugin;
 
 use Traffic\System\Assets;
+use Traffic\System\Logger;
 use Traffic\System\Role;
 use Traffic\System\Option;
+use Traffic\System\Form;
 use Traffic\Plugin\Feature\InlineHelp;
 
 /**
@@ -88,6 +90,10 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function init_settings_sections() {
+		add_settings_section( 'traffic_inbound_options_section', esc_html__( 'Inbound APIs', 'traffic' ), [ $this, 'inbound_options_section_callback' ], 'traffic_inbound_options_section' );
+		add_settings_section( 'traffic_outbound_options_section', esc_html__( 'Outbound APIs', 'traffic' ), [ $this, 'outbound_options_section_callback' ], 'traffic_outbound_options_section' );
+		add_settings_section( 'traffic_plugin_options_section', esc_html__( 'Plugin options', 'traffic' ), [ $this, 'plugin_options_section_callback' ], 'traffic_plugin_options_section' );
+
 	}
 
 	/**
@@ -143,140 +149,14 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function get_settings_page() {
-		/*$this->current_handler = null;
-		$this->current_logger  = null;
-		if ( ! ( $action = filter_input( INPUT_GET, 'action' ) ) ) {
-			$action = filter_input( INPUT_POST, 'action' );
-		}
 		if ( ! ( $tab = filter_input( INPUT_GET, 'tab' ) ) ) {
 			$tab = filter_input( INPUT_POST, 'tab' );
 		}
-		if ( ! ( $handler = filter_input( INPUT_GET, 'handler' ) ) ) {
-			$handler = filter_input( INPUT_POST, 'handler' );
+		if ( ! ( $action = filter_input( INPUT_GET, 'action' ) ) ) {
+			$action = filter_input( INPUT_POST, 'action' );
 		}
-		if ( ! ( $uuid = filter_input( INPUT_GET, 'uuid' ) ) ) {
-			$uuid = filter_input( INPUT_POST, 'uuid' );
-		}
-		$nonce = filter_input( INPUT_GET, 'nonce' );
-		if ( $uuid ) {
-			$loggers = Option::network_get( 'loggers' );
-			if ( array_key_exists( $uuid, $loggers ) ) {
-				$this->current_logger         = $loggers[ $uuid ];
-				$this->current_logger['uuid'] = $uuid;
-			}
-		}
-		if ( $handler ) {
-			$handlers              = new HandlerTypes();
-			$this->current_handler = $handlers->get( $handler );
-		} elseif ( $this->current_logger ) {
-			$handlers              = new HandlerTypes();
-			$this->current_handler = $handlers->get( $this->current_logger['handler'] );
-		}
-		if ( $this->current_handler && ! $this->current_logger ) {
-			$this->current_logger = [
-				'uuid'    => $uuid = UUID::generate_v4(),
-				'name'    => esc_html__( 'New logger', 'traffic' ),
-				'handler' => $this->current_handler['id'],
-				'running' => Option::network_get( 'logger_autostart' ),
-			];
-		}
-		if ( $this->current_logger ) {
-			$factory              = new LoggerFactory();
-			$this->current_logger = $factory->check( $this->current_logger );
-		}*/
-		$view = 'traffic-admin-settings-main';
-		/*if ( $action && $tab ) {
+		if ( $action && $tab ) {
 			switch ( $tab ) {
-				case 'loggers':
-					switch ( $action ) {
-						case 'form-edit':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								$current_logger  = $this->current_logger;
-								$current_handler = $this->current_handler;
-								$args            = compact( 'current_logger', 'current_handler' );
-								$view            = 'traffic-admin-settings-logger-edit';
-							}
-							break;
-						case 'form-delete':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								$current_logger  = $this->current_logger;
-								$current_handler = $this->current_handler;
-								$args            = compact( 'current_logger', 'current_handler' );
-								$view            = 'traffic-admin-settings-logger-delete';
-							}
-							break;
-						case 'do-edit':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								$this->save_current();
-							}
-							break;
-						case 'do-delete':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								$this->delete_current();
-							}
-							break;
-						case 'start':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-start-' . $uuid ) ) {
-									$loggers = Option::network_get( 'loggers' );
-									if ( array_key_exists( $uuid, $loggers ) ) {
-										$loggers[ $uuid ]['running'] = true;
-										Option::network_set( 'loggers', $loggers );
-										$this->logger = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION );
-										$message      = sprintf( esc_html__( 'Logger %s has started.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
-										$code         = 0;
-										add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
-										$this->logger->info( sprintf( 'Logger "%s" has started.', $loggers[ $uuid ]['name'] ), $code );
-									}
-								}
-							}
-							break;
-						case 'pause':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-pause-' . $uuid ) ) {
-									$loggers = Option::network_get( 'loggers' );
-									if ( array_key_exists( $uuid, $loggers ) ) {
-										$message = sprintf( esc_html__( 'Logger %s has been paused.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
-										$code    = 0;
-										$this->logger->notice( sprintf( 'Logger "%s" has been paused.', $loggers[ $uuid ]['name'] ), $code );
-										$loggers[ $uuid ]['running'] = false;
-										Option::network_set( 'loggers', $loggers );
-										$this->logger = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION );
-										add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
-									}
-								}
-							}
-						case 'test':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								if ( $nonce && $uuid && wp_verify_nonce( $nonce, 'traffic-logger-test-' . $uuid ) ) {
-									$loggers = Option::network_get( 'loggers' );
-									if ( array_key_exists( $uuid, $loggers ) ) {
-										$test = Log::bootstrap( 'plugin', TRAFFIC_PRODUCT_SHORTNAME, TRAFFIC_VERSION, $uuid );
-										$done = true;
-										$done = $done & $test->debug( 'Debug test message.', 210871 );
-										$done = $done & $test->info( 'Info test message.', 210871 );
-										$done = $done & $test->notice( 'Notice test message.', 210871 );
-										$done = $done & $test->warning( 'Warning test message.', 210871 );
-										$done = $done & $test->error( 'Error test message.', 210871 );
-										$done = $done & $test->critical( 'Critical test message.', 210871 );
-										$done = $done & $test->alert( 'Alert test message.', 210871 );
-										$done = $done & $test->emergency( 'Emergency test message.', 210871 );
-										if ( $done ) {
-											$message = sprintf( esc_html__( 'Test messages have been sent to logger %s.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
-											$code    = 0;
-											$this->logger->info( sprintf( 'Logger "%s" has been tested.', $loggers[ $uuid ]['name'] ), $code );
-											add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
-										} else {
-											$message = sprintf( esc_html__( 'Test messages have not been sent to logger %s. Please check the logger\'s settings.', 'traffic' ), '<em>' . $loggers[ $uuid ]['name'] . '</em>' );
-											$code    = 1;
-											$this->logger->warning( sprintf( 'Logger "%s" has been unsuccessfully tested.', $loggers[ $uuid ]['name'] ), $code );
-											add_settings_error( 'traffic_error', $code, $message, 'error' );
-										}
-									}
-								}
-							}
-					}
-					break;
 				case 'misc':
 					switch ( $action ) {
 						case 'do-save':
@@ -290,22 +170,185 @@ class Traffic_Admin {
 							break;
 					}
 					break;
-				case 'listeners':
-					switch ( $action ) {
-						case 'do-save':
-							if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-								if ( ! empty( $_POST ) && array_key_exists( 'submit', $_POST ) ) {
-									$this->save_listeners();
-								} elseif ( ! empty( $_POST ) && array_key_exists( 'reset-to-defaults', $_POST ) ) {
-									$this->reset_listeners();
-								}
-							}
-							break;
-					}
-					break;
 			}
-		}*/
-		include TRAFFIC_ADMIN_DIR . 'partials/' . $view . '.php';
+		}
+		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-settings-main.php';
+	}
+
+	/**
+	 * Save the plugin options.
+	 *
+	 * @since 1.0.0
+	 */
+	private function save_options() {
+		if ( ! empty( $_POST ) ) {
+			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
+				Option::network_set( 'auto_update', array_key_exists( 'traffic_plugin_options_autoupdate', $_POST ) );
+				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) );
+				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) );
+				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) );
+				Option::network_set( 'inbound_cut_path', array_key_exists( 'traffic_inbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_inbound_options_cut_path' ) : Option::network_get( 'traffic_inbound_options_cut_path' ) );
+				Option::network_set( 'outbound_cut_path', array_key_exists( 'traffic_outbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_outbound_options_cut_path' ) : Option::network_get( 'traffic_outbound_options_cut_path' ) );
+				$message = esc_html__( 'Plugin settings have been saved.', 'traffic' );
+				$code    = 0;
+				add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
+				Logger::info( 'Plugin settings updated.', $code );
+			} else {
+				$message = esc_html__( 'Plugin settings have not been saved. Please try again.', 'traffic' );
+				$code    = 2;
+				add_settings_error( 'traffic_nonce_error', $code, $message, 'error' );
+				Logger::warning( 'Plugin settings not updated.', $code );
+			}
+		}
+	}
+
+	/**
+	 * Reset the plugin options.
+	 *
+	 * @since 1.0.0
+	 */
+	private function reset_options() {
+		if ( ! empty( $_POST ) ) {
+			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
+				Option::reset_to_defaults();
+				$message = esc_html__( 'Plugin settings have been reset to defaults.', 'traffic' );
+				$code    = 0;
+				add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
+				Logger::info( 'Plugin settings reset to defaults.', $code );
+			} else {
+				$message = esc_html__( 'Plugin settings have not been reset to defaults. Please try again.', 'traffic' );
+				$code    = 2;
+				add_settings_error( 'traffic_nonce_error', $code, $message, 'error' );
+				Logger::warning( 'Plugin settings not reset to defaults.', $code );
+			}
+		}
+	}
+
+	/**
+	 * Callback for plugin options section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function plugin_options_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'traffic_plugin_options_autoupdate',
+			__( 'Plugin updates', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_plugin_options_section',
+			'traffic_plugin_options_section',
+			[
+				'text'        => esc_html__( 'Automatic (recommended)', 'traffic' ),
+				'id'          => 'traffic_plugin_options_autoupdate',
+				'checked'     => Option::network_get( 'auto_update' ),
+				'description' => esc_html__( 'If checked, Traffic will update itself as soon as a new version is available.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_autoupdate' );
+		add_settings_field(
+			'traffic_plugin_options_nag',
+			__( 'Admin notices', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_plugin_options_section',
+			'traffic_plugin_options_section',
+			[
+				'text'        => esc_html__( 'Display', 'traffic' ),
+				'id'          => 'traffic_plugin_options_nag',
+				'checked'     => Option::network_get( 'display_nag' ),
+				'description' => esc_html__( 'Allows Traffic to display admin notices throughout the admin dashboard.', 'traffic' ) . '<br/>' . esc_html__( 'Note: Traffic respects DISABLE_NAG_NOTICES flag.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_nag' );
+	}
+
+	/**
+	 * Callback for inbound APIs section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function inbound_options_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'traffic_inbound_options_capture',
+			__( 'Analytics', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_inbound_options_section',
+			'traffic_inbound_options_section',
+			[
+				'text'        => esc_html__( 'Activated', 'traffic' ),
+				'id'          => 'traffic_inbound_options_capture',
+				'checked'     => Option::network_get( 'inbound_capture' ),
+				'description' => esc_html__( 'If checked, Traffic will analyze inbound API calls (the calls made by external sites or apps to your site).', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_inbound_options_section', 'traffic_inbound_options_capture' );
+		add_settings_field(
+			'traffic_inbound_options_cut_path',
+			__( 'Path cut', 'traffic' ),
+			[ $form, 'echo_field_input_integer' ],
+			'traffic_inbound_options_section',
+			'traffic_inbound_options_section',
+			[
+				'id'          => 'traffic_inbound_options_cut_path',
+				'value'       => Option::network_get( 'inbound_cut_path' ),
+				'min'         => 0,
+				'max'         => 10,
+				'step'        => 1,
+				'description' => esc_html__( 'Allows to keep only the first most significative elements of the endpoint path.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_inbound_options_section', 'traffic_inbound_options_cut_path' );
+	}
+
+	/**
+	 * Callback for outbound APIs section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function outbound_options_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'traffic_outbound_options_capture',
+			__( 'Analytics', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_outbound_options_section',
+			'traffic_outbound_options_section',
+			[
+				'text'        => esc_html__( 'Activated', 'traffic' ),
+				'id'          => 'traffic_outbound_options_capture',
+				'checked'     => Option::network_get( 'outbound_capture' ),
+				'description' => esc_html__( 'If checked, Traffic will analyze outbound API calls (the calls made by your site to external services).', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_capture' );
+		add_settings_field(
+			'traffic_outbound_options_cut_path',
+			__( 'Path cut', 'traffic' ),
+			[ $form, 'echo_field_input_integer' ],
+			'traffic_outbound_options_section',
+			'traffic_outbound_options_section',
+			[
+				'id'          => 'traffic_outbound_options_cut_path',
+				'value'       => Option::network_get( 'outbound_cut_path' ),
+				'min'         => 0,
+				'max'         => 10,
+				'step'        => 1,
+				'description' => esc_html__( 'Allows to keep only the first most significative elements of the endpoint path.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_cut_path' );
 	}
 
 }

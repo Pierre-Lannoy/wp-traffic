@@ -11,6 +11,15 @@
 
 // phpcs:ignore
 $active_tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'misc' );
+$url        = esc_url(
+	add_query_arg(
+		[
+			'page' => 'traffic-viewer',
+		],
+		admin_url( 'tools.php' )
+	)
+);
+$note       = sprintf(__('Note: analytics are available via the <a href="%s">tools menu</a>.', 'traffic' ), $url );
 
 ?>
 
@@ -54,4 +63,7 @@ $active_tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'misc' );
 	<?php if ( 'about' === $active_tab ) { ?>
 		<?php include __DIR__ . '/traffic-admin-settings-about.php'; ?>
 	<?php } ?>
+
+    <p>&nbsp;</p>
+    <em><?php echo $note;?></em>
 </div>
