@@ -92,7 +92,7 @@ class Statistics {
 				$api   = plugins_api(
 					'plugin_information',
 					[
-						'slug'   => DECALOG_SLUG,
+						'slug'   => TRAFFIC_SLUG,
 						'fields' => $query,
 					]
 				);
