@@ -14,7 +14,8 @@ use Traffic\System\Logger;
 use Traffic\System\Role;
 use Traffic\System\Option;
 use Traffic\System\Form;
-use Traffic\Plugin\Feature\InlineHelp;
+use Traffic\System\Blog;
+use Traffic\System\Date;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -67,6 +68,7 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function init_admin_menus() {
+		wp_deregister_script('wp-a11y');
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			/* translators: as in the sentence "Traffic Settings" or "WordPress Settings" */
 			$settings = add_submenu_page( 'options-general.php', sprintf( esc_html__( '%s Settings', 'traffic' ), TRAFFIC_PRODUCT_NAME ), TRAFFIC_PRODUCT_NAME, 'manage_options', 'traffic-settings', [ $this, 'get_settings_page' ] );
@@ -136,11 +138,35 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function get_tools_page() {
-		if ( isset( $this->current_view ) ) {
-			$this->current_view->get();
-		} else {
-			include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-statistics.php';
+		// Analytics type.
+		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
+			$type = filter_input( INPUT_POST, 'type' );
 		}
+		if ( empty( $type ) || ( 'domain' !== $type && 'authority' !== $type  && 'endpoint' !== $type && 'country' !== $type  ) ) {
+			$type = 'summary';
+		}
+		// Filters.
+		if ( ! ( $context = filter_input( INPUT_GET, 'context' ) ) ) {
+			$context = filter_input( INPUT_POST, 'context' );
+		}
+		if ( empty( $context ) || ( 'inbound' !== $context && 'outbound' !== $context ) ) {
+			$context = 'both';
+		}
+		if ( ! ( $site = filter_input( INPUT_GET, 'site' ) ) ) {
+			$site = filter_input( INPUT_POST, 'site' );
+		}
+		if ( empty( $site ) || ! Blog::is_blog_exists( (int) $site ) ) {
+			$site = 'all';
+		}
+		if ( ! ( $start = filter_input( INPUT_GET, 'start' ) ) ) {
+			$start = filter_input( INPUT_POST, 'start' );
+		}
+		if ( empty( $start ) || ! Date::is_date_exists( $start, 'Y-m-d' ) ) {
+			$start = 'both';
+		}
+
+
+		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-' . strtolower( $type ). '.php';
 	}
 
 	/**

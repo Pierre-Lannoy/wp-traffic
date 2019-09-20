@@ -25,23 +25,22 @@ class Date {
 	/**
 	 * Converts an UTC date into the correct format.
 	 *
-	 * @param   string  $ts The UTC MySql datetime to be converted.
-	 * @param   string  $tz Optional. The timezone.
-	 * @param   string  $format Optional. The date format.
+	 * @param   string $ts The UTC MySql datetime to be converted.
+	 * @param   string $tz Optional. The timezone.
+	 * @param   string $format Optional. The date format.
 	 * @return  string   Formatted date relative to the given timezone.
 	 * @since    1.0.0
 	 */
-	public static function get_date_from_mysql_utc($ts, $tz='', $format='-') {
-		if ($format == '-') {
-			$format = get_option('date_format');
+	public static function get_date_from_mysql_utc( $ts, $tz = '', $format = '-' ) {
+		if ( '-' === $format ) {
+			$format = get_option( 'date_format' );
 		}
-		if ($tz != '') {
-			$datetime = new \DateTime($ts, new \DateTimeZone('UTC'));
-			$datetime->setTimezone(new \DateTimeZone($tz));
-			return date_i18n($format, strtotime($datetime->format('Y-m-d H:i:s')));
-		}
-		else {
-			return date_i18n($format, strtotime(get_date_from_gmt($ts)));
+		if ( '' !== $tz ) {
+			$datetime = new \DateTime( $ts, new \DateTimeZone( 'UTC' ) );
+			$datetime->setTimezone( new \DateTimeZone( $tz ) );
+			return date_i18n( $format, strtotime( $datetime->format( 'Y-m-d H:i:s' ) ) );
+		} else {
+			return date_i18n( $format, strtotime( get_date_from_gmt( $ts ) ) );
 		}
 	}
 
@@ -52,12 +51,11 @@ class Date {
 	 * @return  string  Human readable time difference.
 	 * @since    1.0.0
 	 */
-	public static function get_positive_time_diff_from_mysql_utc($from) {
-		if (strtotime($from) < time()) {
-			return sprintf( esc_html__('%s ago', 'traffic'), human_time_diff(strtotime($from)));
-		}
-		else {
-			return esc_html__('currently', 'traffic');
+	public static function get_positive_time_diff_from_mysql_utc( $from ) {
+		if ( strtotime( $from ) < time() ) {
+			return sprintf( esc_html__( '%s ago', 'traffic' ), human_time_diff( strtotime( $from ) ) );
+		} else {
+			return esc_html__( 'currently', 'traffic' );
 		}
 	}
 
@@ -68,12 +66,28 @@ class Date {
 	 * @return  string  Human readable time difference.
 	 * @since    1.0.0
 	 */
-	public static function get_time_diff_from_mysql_utc($from) {
-		if (strtotime($from) < time()) {
-			return sprintf( esc_html__('%s ago', 'traffic'), human_time_diff(strtotime($from)));
+	public static function get_time_diff_from_mysql_utc( $from ) {
+		if ( strtotime( $from ) < time() ) {
+			return sprintf( esc_html__( '%s ago', 'traffic' ), human_time_diff( strtotime( $from ) ) );
+		} else {
+			return sprintf( esc_html__( 'in %s', 'traffic' ), human_time_diff( strtotime( $from ) ) );
 		}
-		else {
-			return sprintf( esc_html__('in %s', 'traffic'), human_time_diff(strtotime($from)));
+	}
+
+	/**
+	 * Verify if a date exists.
+	 *
+	 * @param   string $date The date to check.
+	 * @param   string $format Optional. The format of the date.
+	 * @return  boolean  True if the date exists, false otherwise.
+	 * @since    1.0.0
+	 */
+	public static function is_date_exists( $date, $format = 'Y-m-d H:i:s' ) {
+		try {
+			$datetime = new \DateTime( $date );
+			return $date === $datetime->format( $format );
+		} catch ( \Throwable $e ) {
+			return false;
 		}
 	}
 
