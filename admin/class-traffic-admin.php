@@ -9,6 +9,7 @@
 
 namespace Traffic\Plugin;
 
+use Traffic\Plugin\Feature\Analytics;
 use Traffic\System\Assets;
 use Traffic\System\Logger;
 use Traffic\System\Role;
@@ -16,6 +17,7 @@ use Traffic\System\Option;
 use Traffic\System\Form;
 use Traffic\System\Blog;
 use Traffic\System\Date;
+use Traffic\System\Timezone;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -138,6 +140,14 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function get_tools_page() {
+		$timezone = Timezone::network_get();
+		// ID.
+		if ( ! ( $id = filter_input( INPUT_GET, 'id' ) ) ) {
+			$id = filter_input( INPUT_POST, 'id' );
+		}
+		if ( empty( $id ) ) {
+			$id = '';
+		}
 		// Analytics type.
 		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
 			$type = filter_input( INPUT_POST, 'type' );
@@ -162,11 +172,26 @@ class Traffic_Admin {
 			$start = filter_input( INPUT_POST, 'start' );
 		}
 		if ( empty( $start ) || ! Date::is_date_exists( $start, 'Y-m-d' ) ) {
-			$start = 'both';
+			$sdatetime = new \DateTime( 'now', $timezone );
+			$start     = $sdatetime->format( 'Y-m-d' );
+		} else {
+			$sdatetime = new \DateTime( $start, $timezone );
 		}
-
-
-		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-' . strtolower( $type ). '.php';
+		if ( ! ( $end = filter_input( INPUT_GET, 'end' ) ) ) {
+			$end = filter_input( INPUT_POST, 'end' );
+		}
+		if ( empty( $end ) || ! Date::is_date_exists( $end, 'Y-m-d' ) ) {
+			$edatetime = new \DateTime( 'now', $timezone );
+			$end       = $edatetime->format( 'Y-m-d' );
+		} else {
+			$edatetime = new \DateTime( $end, $timezone );
+		}
+		if ( $edatetime->getTimestamp() < $sdatetime->getTimestamp() ) {
+			$start = $edatetime->format( 'Y-m-d' );
+			$end   = $sdatetime->format( 'Y-m-d' );
+		}
+		$analytics = new Analytics( $type, $context, $site, $start, $end, $id );
+		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-' . strtolower( $type ) . '.php';
 	}
 
 	/**
