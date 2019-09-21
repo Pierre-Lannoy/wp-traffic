@@ -27,6 +27,14 @@ use Traffic\System\Logger;
 class Analytics {
 
 	/**
+	 * The unique ID of the instance.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $uniqid    The unique ID of the instance.
+	 */
+	private $uniqid = '';
+
+	/**
 	 * The query filter.
 	 *
 	 * @since  1.0.0
@@ -53,6 +61,7 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function __construct( $type, $context, $site, $start, $end, $id = '' ) {
+		$this->uniqid = substr( uniqid( '', true ), 10, 13 );
 		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$site = get_current_blog_id();
 		}
@@ -83,6 +92,37 @@ class Analytics {
 					break;
 			}
 		}
+		add_action( 'wp_ajax_traffic_' . $this->uniqid, [ $this, 'statistics_callback' ] );
+	}
+
+	/**
+	 * Get the title box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_title() {
+		$title = 'Traffic';
+		$subtitle = 'Summary for today';
+
+		$result = '<div class="traffic-box-full-line">';
+		$result .= '<div class="traffic-title">' . $title . '</div>';
+		$result .= '<div class="traffic-subtitle">' . $subtitle . '</div>';
+		$result .= '</div>';
+
+		return $result;
+	}
+
+	/**
+	 * Get a large kpi box.
+	 *
+	 * @param   string $kpi     The kpi to render.
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_large_kpi( $kpi ) {
+
+		return '<em>Hell Yeah!</em>';
 	}
 
 }
