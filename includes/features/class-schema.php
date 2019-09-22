@@ -281,7 +281,7 @@ class Schema {
 				$contexts[] = $item['context'];
 			}
 			if ( $cache ) {
-				Cache::set_global( $id, $contexts, 'plugin-statistics' );
+				Cache::set_global( $id, $contexts, 'infinite' );
 			}
 			return $contexts;
 		}
