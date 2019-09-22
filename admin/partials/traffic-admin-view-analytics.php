@@ -9,17 +9,31 @@
  * @since   1.0.0
  */
 
+wp_enqueue_script( 'moment-with-locale' );
+wp_enqueue_script( 'daterangepicker' );
+wp_enqueue_script( 'switchery' );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
+wp_enqueue_style( 'daterangepicker' );
+wp_enqueue_style( 'switchery' );
 
 ?>
 
 <div class="wrap">
 	<div class="traffic-dashboard">
 		<div class="traffic-row">
-			<?php echo $analytics->get_title() ?>
+			<?php echo $analytics->get_dashboard_title() ?>
 		</div>
+        <div class="traffic-row">
+
+        </div>
+
+
+
+
+
+
 		<div class="traffic-row">
-			<?php echo $analytics->get_large_kpi( 'server-error-rate') ?>
+
 		</div>
 
 	</div>

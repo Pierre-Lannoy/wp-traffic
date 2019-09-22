@@ -256,7 +256,7 @@ class Capture {
 				$header .= 'User-Agent: ' . $args['user-agent'] . PHP_EOL;
 			}
 			$url_parts = wp_parse_url( $url );
-			$header   .= 'POST ' . $url_parts['path'] . ' HTTP/1.1' . PHP_EOL;
+			$header   .= 'XXXX ' . $url_parts['path'] . ' HTTP/1.1' . PHP_EOL;
 			$header   .= 'Host: ' . $url_parts['host'] . PHP_EOL;
 			$cookie    = '';
 			if ( array_key_exists( 'cookies', $args ) ) {
@@ -275,6 +275,26 @@ class Capture {
 			}
 			$b_out = strlen( $header ) + strlen( $cookie ) + strlen( $body );
 			if ( is_array( $response ) ) {
+
+				if ( false !== strpos($url, 'nightly-builds/wordpress')) {
+					error_log('******************** RESPONSE ***************');
+					error_log(print_r($response,true));
+					if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+						error_log('******************** RESPONSE OBJECT ***************');
+						error_log(print_r($response['http_response']->get_response_object(),true));
+						$r    = $response['http_response']->get_response_object();
+						$b_in = strlen( $r->raw );
+
+						error_log('******************** RESPONSE OBJECT RAW ***************');
+						error_log($r->raw);
+					}
+				}
+
+
+
+
+
+
 				if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
 					$r    = $response['http_response']->get_response_object();
 					$b_in = strlen( $r->raw );

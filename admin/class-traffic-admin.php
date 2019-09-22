@@ -53,6 +53,8 @@ class Traffic_Admin {
 	 */
 	public function enqueue_styles() {
 		$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'css/traffic.min.css' );
+		$this->assets->register_style( 'daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
+		$this->assets->register_style( 'switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
 	}
 
 	/**
@@ -62,6 +64,9 @@ class Traffic_Admin {
 	 */
 	public function enqueue_scripts() {
 		$this->assets->register_script( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'js/traffic.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'moment-with-locale', TRAFFIC_ADMIN_URL, 'js/moment-with-locales.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'daterangepicker', TRAFFIC_ADMIN_URL, 'js/daterangepicker.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'switchery', TRAFFIC_ADMIN_URL, 'js/switchery.min.js', [ 'jquery' ] );
 	}
 
 	/**
@@ -70,7 +75,6 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function init_admin_menus() {
-		wp_deregister_script('wp-a11y');
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			/* translators: as in the sentence "Traffic Settings" or "WordPress Settings" */
 			$settings = add_submenu_page( 'options-general.php', sprintf( esc_html__( '%s Settings', 'traffic' ), TRAFFIC_PRODUCT_NAME ), TRAFFIC_PRODUCT_NAME, 'manage_options', 'traffic-settings', [ $this, 'get_settings_page' ] );
@@ -191,7 +195,7 @@ class Traffic_Admin {
 			$end   = $sdatetime->format( 'Y-m-d' );
 		}
 		$analytics = new Analytics( $type, $context, $site, $start, $end, $id );
-		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-' . strtolower( $type ) . '.php';
+		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-analytics.php';
 	}
 
 	/**
