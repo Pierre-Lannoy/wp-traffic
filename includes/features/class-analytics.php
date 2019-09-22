@@ -12,11 +12,13 @@
 namespace Traffic\Plugin\Feature;
 
 use Traffic\Plugin\Feature\Schema;
-use Traffic\System\I18n;
+use Traffic\System\Cache;
+use Traffic\System\Date;
 use Traffic\System\Role;
 use Traffic\System\Logger;
 use Traffic\System\L10n;
 use Feather;
+use Traffic\System\Timezone;
 
 /**
  * Define the analytics functionality.
@@ -78,6 +80,14 @@ class Analytics {
 	private $end = '';
 
 	/**
+	 * The timezone.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $timezone    The timezone.
+	 */
+	private $timezone = 'UTC';
+
+	/**
 	 * The query filter.
 	 *
 	 * @since  1.0.0
@@ -92,6 +102,14 @@ class Analytics {
 	 * @var    array    $data    The data.
 	 */
 	private $data = [];
+
+	/**
+	 * Is the start date today's date.
+	 *
+	 * @since  1.0.0
+	 * @var    boolean    $today    Is the start date today's date.
+	 */
+	private $is_today = false;
 
 	/**
 	 * Has the dataset inbound context.
@@ -143,11 +161,6 @@ class Analytics {
 		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$site = get_current_blog_id();
 		}
-		if ( 'inbound' === $context || 'outbound' === $context ) {
-			$this->filter[] = "context='" . $context . "'";
-		}
-		$this->is_inbound  = ( 'inbound' === $context || 'both' === $context );
-		$this->is_outbound = ( 'outbound' === $context || 'both' === $context );
 		if ( 'all' !== $site ) {
 			$this->filter[] = "site='" . $site . "'";
 		}
@@ -177,6 +190,29 @@ class Analytics {
 				default:
 					$this->type = 'summary';
 			}
+		}
+		$this->timezone     = Timezone::network_get();
+		$datetime           = new \DateTime( 'now', $this->timezone );
+		$this->is_today     = ( $this->start === $datetime->format( 'Y-m-d' ) );
+		$bounds             = Schema::get_distinct_context( $this->filter, ! $this->is_today );
+		$this->has_inbound  = ( in_array( 'inbound', $bounds, true ) );
+		$this->has_outbound = ( in_array( 'outbound', $bounds, true ) );
+		$this->is_inbound   = ( 'inbound' === $context || 'both' === $context );
+		$this->is_outbound  = ( 'outbound' === $context || 'both' === $context );
+		if ( 'inbound' === $context && ! $this->has_inbound ) {
+			$this->is_inbound  = false;
+			$this->is_outbound = true;
+		}
+		if ( 'outbound' === $context && ! $this->has_outbound ) {
+			$this->is_inbound  = true;
+			$this->is_outbound = false;
+		}
+		if ( $this->is_inbound xor $this->is_outbound ) {
+			$context = 'outbound';
+			if ( $this->is_inbound ) {
+				$context = 'inbound';
+			}
+			$this->filter[] = "context='" . $context . "'";
 		}
 		add_action( 'wp_ajax_traffic_' . $this->uniqid, [ $this, 'statistics_callback' ] );
 	}
@@ -280,11 +316,17 @@ class Analytics {
 	 */
 	private function get_switch_box( $bound ) {
 		$enabled = false;
+		$other   = false;
+		$other_t = 'both';
 		if ( 'inbound' === $bound ) {
 			$enabled = $this->has_inbound;
+			$other   = $this->is_outbound;
+			$other_t = 'outbound';
 		}
 		if ( 'outbound' === $bound ) {
 			$enabled = $this->has_outbound;
+			$other   = $this->is_inbound;
+			$other_t = 'inbound';
 		}
 		if ( $enabled ) {
 			$opacity = '';
@@ -298,12 +340,12 @@ class Analytics {
 			$opacity = ' style="opacity:0.4"';
 			$checked = false;
 		}
-		$result = '<input type="checkbox" class="input-' . $bound . '-switch"' . ( $checked ? ' checked' : '' ) . ' />';
+		$result = '<input type="checkbox" class="traffic-input-' . $bound . '-switch"' . ( $checked ? ' checked' : '' ) . ' />';
 		// phpcs:ignore
-		$result .= '&nbsp;<span class="text-' . $bound . '-switch"' . $opacity . '>' . esc_html__( $bound, 'traffic' ) . '</span>';
+		$result .= '&nbsp;<span class="traffic-text-' . $bound . '-switch"' . $opacity . '>' . esc_html__( $bound, 'traffic' ) . '</span>';
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
-		$result .= ' var elem = document.querySelector(".input-' . $bound . '-switch");';
+		$result .= ' var elem = document.querySelector(".traffic-input-' . $bound . '-switch");';
 		$result .= ' var params = {size: "small", color: "#5A738E", disabledOpacity:0.6 };';
 		$result .= ' var ' . $bound . ' = new Switchery(elem, params);';
 		if ( $enabled ) {
@@ -311,6 +353,15 @@ class Analytics {
 		} else {
 			$result .= ' ' . $bound . '.disable();';
 		}
+		$result .= ' elem.onchange = function() {';
+		$result .= '  var url="' . $this->get_url( [ 'context' ] ) . '";';
+		if ( $other ) {
+			$result .= ' if (!elem.checked) {url = url + "&context=' . $other_t . '";}';
+		} else {
+			$result .= ' if (elem.checked) {url = url + "&context=' . $other_t . '";}';
+		}
+		$result .= '  $(location).attr("href", url);';
+		$result .= ' };';
 		$result .= '});';
 		$result .= '</script>';
 		return $result;
@@ -336,6 +387,7 @@ class Analytics {
 		$result .= '  opens: "left",';
 		$result .= '  startDate: start,';
 		$result .= '  endDate: end,';
+		$result .= '  minDate: moment("' . Schema::get_oldest_date() . '"),';
 		$result .= '  maxDate: moment(),';
 		$result .= '  showCustomRangeLabel: true,';
 		$result .= '  alwaysShowCalendars: true,';

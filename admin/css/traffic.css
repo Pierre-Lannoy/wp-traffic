@@ -75,6 +75,11 @@
     vertical-align: middle;
 }
 
+.traffic-text-inbound-switch,
+.traffic-text-outbound-switch {
+    cursor: default;
+}
+
 
 
 

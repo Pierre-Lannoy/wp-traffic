@@ -33,7 +33,7 @@ class Cache {
 	 * @since  1.0.0
 	 * @var    boolean    $blog_aware    Is the item id must contain the blog id?
 	 */
-	private static $blog_aware = true;
+	private static $blog_aware = false;
 
 	/**
 	 * Differentiates cache items by current locale.
@@ -41,7 +41,7 @@ class Cache {
 	 * @since  1.0.0
 	 * @var    boolean    $blog_aware    Is the item id must contain the locale id?
 	 */
-	private static $locale_aware = true;
+	private static $locale_aware = false;
 
 	/**
 	 * Differentiates cache items by current user.
@@ -49,7 +49,7 @@ class Cache {
 	 * @since  1.0.0
 	 * @var    boolean    $blog_aware    Is the item id must contain the user id?
 	 */
-	private static $user_aware = true;
+	private static $user_aware = false;
 
 	/**
 	 * Available TTLs.

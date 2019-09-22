@@ -13,6 +13,8 @@ namespace Traffic\Plugin\Feature;
 
 use Traffic\System\Http;
 use Traffic\System\Logger;
+use Traffic\System\Cache;
+use function GuzzleHttp\Psr7\str;
 
 /**
  * Define the schema functionality.
@@ -205,6 +207,86 @@ class Schema {
 		return $record;
 	}
 
+	/**
+	 * Get "where" clause of a query.
+	 *
+	 * @param array $filters Optional. An array of filters.
+	 * @return string The "where" clause.
+	 * @since 1.0.0
+	 */
+	private static function get_where_clause( $filters = [] ) {
+		$result = '';
+		if ( 0 < count( $filters ) ) {
+			$w = [];
+			foreach ( $filters as $key => $filter ) {
+				if ( is_array( $filter ) ) {
+					$w[] = '`' . $key . '` IN (' . implode( ',', $filter ) . ')';
+				} else {
+					$w[] = '`' . $key . '`="' . $filter . '"';
+				}
+			}
+			$result = 'WHERE (' . implode( ' AND ', $w ) . ')';
+		}
+		return $result;
+	}
+
+	/**
+	 * Get the oldest date.
+	 *
+	 * @return  string   The oldest timestamp in the statistics table.
+	 * @since    1.0.0
+	 */
+	public static function get_oldest_date() {
+		$result = Cache::get_global( 'get_oldest_date' );
+		if ( $result ) {
+			return $result;
+		}
+		global $wpdb;
+		$sql = 'SELECT * FROM ' . $wpdb->base_prefix . self::$statistics . ' ORDER BY `timestamp` ASC LIMIT 1';
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		if ( is_array( $result ) && array_key_exists( 'timestamp', $result[0] ) ) {
+			Cache::set_global( 'get_oldest_date', $result[0]['timestamp'], 'infinite' );
+			return $result[0]['timestamp'];
+		}
+		return '';
+	}
+
+	/**
+	 * Get the distinct contexts.
+	 *
+	 * @param   array $filter   The filter of the query.
+	 * @return  array   The distinct contexts.
+	 * @since    1.0.0
+	 */
+	public static function get_distinct_context( $filter, $cache = true ) {
+		if ( array_key_exists( 'context', $filter ) ) {
+			unset( $filter['context'] );
+		}
+		// phpcs:ignore
+		$id     = md5( serialize( $filter ) );
+		if ( $cache ) {
+			$result = Cache::get_global( $id );
+			if ( $result ) {
+				return $result;
+			}
+		}
+		global $wpdb;
+		$sql = 'SELECT DISTINCT context FROM ' . $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ')';
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		if ( is_array( $result ) && 0 < count( $result ) ) {
+			$contexts = [];
+			foreach ( $result as $item ) {
+				$contexts[] = $item['context'];
+			}
+			if ( $cache ) {
+				Cache::set_global( $id, $contexts, 'plugin-statistics' );
+			}
+			return $contexts;
+		}
+		return [];
+	}
 }
 
 Schema::init();
