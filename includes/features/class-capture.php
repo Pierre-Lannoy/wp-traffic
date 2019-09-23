@@ -274,28 +274,21 @@ class Capture {
 				$body = $args['body'] . PHP_EOL;
 			}
 			$b_out = strlen( $header ) + strlen( $cookie ) + strlen( $body );
+			$sized = false;
 			if ( is_array( $response ) ) {
-
-				if ( false !== strpos($url, 'nightly-builds/wordpress')) {
-					error_log('******************** RESPONSE ***************');
-					error_log(print_r($response,true));
-					if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
-						error_log('******************** RESPONSE OBJECT ***************');
-						error_log(print_r($response['http_response']->get_response_object(),true));
-						$r    = $response['http_response']->get_response_object();
-						$b_in = strlen( $r->raw );
-
-						error_log('******************** RESPONSE OBJECT RAW ***************');
-						error_log($r->raw);
+				$oheaders = wp_remote_retrieve_headers( $response );
+				if ( method_exists( $oheaders, 'getAll' ) ) {
+					$headers = $oheaders->getAll();
+					if ( array_key_exists( 'content-length', $headers ) && array_key_exists( 'accept-ranges', $headers ) && 'bytes' === $headers['accept-ranges'] ) {
+						$header = '';
+						foreach ( $headers as $key => $value ) {
+							$header .= $key . ': ' . $value . PHP_EOL;
+						}
+						$b_in  = (int) $headers['content-length'] + strlen( $header );
+						$sized = true;
 					}
 				}
-
-
-
-
-
-
-				if ( $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+				if ( ! $sized && $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
 					$r    = $response['http_response']->get_response_object();
 					$b_in = strlen( $r->raw );
 				}
