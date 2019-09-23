@@ -271,18 +271,12 @@ class Analytics {
 	public function get_kpi_bar() {
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result  .= '<div class="traffic-kpi-bar">';
-
-
-
-
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
-
-
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'call' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'data' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'server' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'quota' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'pass' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'uptime' ) . '</div>';
 		$result .= '</div>';
 		$result .= '</div>';
 		return $result;
@@ -296,7 +290,41 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function get_large_kpi( $kpi ) {
-		$result = '<div class="traffic-kpi-large-top">' . 'TOP' . '</div>';
+		switch ( $kpi ) {
+			case 'call':
+				$icon  = Feather\Icons::get_base64( 'hash', 'none', '#73879C' );
+				$title = esc_html_x( 'Number of Calls', 'Noun - Number API calls.', 'traffic' );
+				$help  = esc_html__( 'Number of API calls', 'traffic' );
+				break;
+			case 'data':
+				$icon  = Feather\Icons::get_base64( 'activity', 'none', '#73879C' );
+				$title = esc_html_x( 'Data Volume', 'Noun - Volume of transferred data.', 'traffic' );
+				$help  = esc_html__( 'Volume of transferred data', 'traffic' );
+				break;
+			case 'server':
+				$icon  = Feather\Icons::get_base64( 'x-octagon', 'none', '#73879C' );
+				$title = esc_html_x( 'Server Error Rate', 'Noun - Ratio of the number of HTTP errors to the total number of calls.', 'traffic' );
+				$help  = esc_html__( 'Ratio of the number of HTTP errors to the total number of calls.', 'traffic' );
+				break;
+			case 'quota':
+				$icon  = Feather\Icons::get_base64( 'shield-off', 'none', '#73879C' );
+				$title = esc_html_x( 'Quotas Error Rate', 'Noun - Ratio of the quota enforcement number to the total number of calls.', 'traffic' );
+				$help  = esc_html__( 'Ratio of the quota enforcement number to the total number of calls.', 'traffic' );
+				break;
+			case 'pass':
+				$icon  = Feather\Icons::get_base64( 'check-circle', 'none', '#73879C' );
+				$title = esc_html_x( 'Effective Pass Rate', 'Noun - Ratio of the number of HTTP success to the total number of calls.', 'traffic' );
+				$help  = esc_html__( 'Ratio of the number of HTTP success to the total number of calls.', 'traffic' );
+				break;
+			case 'uptime':
+				$icon  = Feather\Icons::get_base64( 'power', 'none', '#73879C' );
+				$title = esc_html_x( 'Perceived Uptime', 'Noun - Perceived uptime, from the viewpoint of the site.', 'traffic' );
+				$help  = esc_html__( 'Perceived uptime, from the viewpoint of the site.', 'traffic' );
+				break;
+		}
+		$top = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
+
+		$result = '<div class="traffic-kpi-large-top">' . $top . '</div>';
 		$result .= '<div class="traffic-kpi-large-middle">' . 'MIDDLE' . '</div>';
 		$result .= '<div class="traffic-kpi-large-bottom">' . 'BOTTOM' . '</div>';
 

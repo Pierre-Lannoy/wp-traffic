@@ -85,14 +85,13 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: stretch;
 }
 
 .traffic-kpi-large {
     flex-grow: 1;
-    margin: 4px;
-    padding: 4px;
+    /*overflow: hidden;*/
     position: relative;
     text-align: center;
 }
@@ -100,14 +99,18 @@
 .traffic-kpi-large:before {
     content: "";
     position: absolute;
-    left: 0;
-    height: 60px;
+    left: -1px;
+    top: 15%;
+    height: 70%;
     vertical-align: middle;
-    border-left: 2px solid #ADB2B5;
+    border-left: 2px solid var(--title-font-color);
     box-sizing: border-box;
 }
 
 @media only screen and (min-width: 901px) {
+    .traffic-kpi-large {
+        min-width: 15%;
+    }
     .traffic-kpi-large:first-child:before {
         border: none;
     }
@@ -115,8 +118,8 @@
 
 @media only screen and (min-width: 501px) and (max-width: 900px) {
     .traffic-kpi-large {
-        max-width: 25%;
-        min-width: 25%;
+        min-width: 33.333333%;
+        margin-bottom: 14px;
     }
     .traffic-kpi-large:nth-child(3n+1):before {
         border: none;
@@ -125,12 +128,28 @@
 
 @media only screen and (max-width: 500px) {
     .traffic-kpi-large {
-        max-width: 33%;
-        min-width: 33%;
+        min-width: 50%;
+        margin-bottom: 14px;
     }
     .traffic-kpi-large:nth-child(2n+1):before {
         border: none;
     }
+}
+
+@media only screen and (max-width: 300px) {
+    .traffic-kpi-large {
+        min-width: 100%;
+        margin-bottom: 14px;
+    }
+    .traffic-kpi-large:before {
+        border: none;
+    }
+}
+
+.traffic-kpi-large-top-text {
+    font-size: 12px;
+    vertical-align: bottom;
+    color: var(--title-font-color);
 }
 
 
@@ -141,23 +160,14 @@
 
 .traffic-kpi-large-top {
     padding: 4px;
-
-    border: 1px solid #F0F0F0;
-    text-align: center;
 }
 
 .traffic-kpi-large-middle {
     padding: 4px;
-
-    border: 1px solid #F0F0F0;
-    text-align: center;
 }
 
 .traffic-kpi-large-bottom {
     padding: 4px;
-
-    border: 1px solid #F0F0F0;
-    text-align: center;
 }
 
 

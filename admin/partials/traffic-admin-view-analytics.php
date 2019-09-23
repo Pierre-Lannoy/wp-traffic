@@ -15,6 +15,7 @@ wp_enqueue_script( 'switchery' );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( 'daterangepicker' );
 wp_enqueue_style( 'switchery' );
+wp_enqueue_style( 'traffic-tooltip' );
 
 ?>
 

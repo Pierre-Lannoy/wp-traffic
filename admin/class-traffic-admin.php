@@ -55,6 +55,7 @@ class Traffic_Admin {
 		$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'css/traffic.min.css' );
 		$this->assets->register_style( 'daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
 		$this->assets->register_style( 'switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
+		$this->assets->register_style( 'traffic-tooltip', TRAFFIC_ADMIN_URL, 'css/tooltip.min.css' );
 	}
 
 	/**
@@ -78,7 +79,8 @@ class Traffic_Admin {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			/* translators: as in the sentence "Traffic Settings" or "WordPress Settings" */
 			$settings = add_submenu_page( 'options-general.php', sprintf( esc_html__( '%s Settings', 'traffic' ), TRAFFIC_PRODUCT_NAME ), TRAFFIC_PRODUCT_NAME, 'manage_options', 'traffic-settings', [ $this, 'get_settings_page' ] );
-			//add_action( 'load-' . $settings, [ new InlineHelp(), 'set_contextual_settings' ] );
+		}
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$name = add_submenu_page(
 				'tools.php',
 				/* translators: as in the sentence "Traffic Viewer" */
@@ -88,7 +90,6 @@ class Traffic_Admin {
 				'traffic-viewer',
 				[ $this, 'get_tools_page' ]
 			);
-			//add_action( 'load-' . $name, [ new InlineHelp(), 'set_contextual_viewer' ] );
 		}
 	}
 
@@ -101,7 +102,6 @@ class Traffic_Admin {
 		add_settings_section( 'traffic_inbound_options_section', esc_html__( 'Inbound APIs', 'traffic' ), [ $this, 'inbound_options_section_callback' ], 'traffic_inbound_options_section' );
 		add_settings_section( 'traffic_outbound_options_section', esc_html__( 'Outbound APIs', 'traffic' ), [ $this, 'outbound_options_section_callback' ], 'traffic_outbound_options_section' );
 		add_settings_section( 'traffic_plugin_options_section', esc_html__( 'Plugin options', 'traffic' ), [ $this, 'plugin_options_section_callback' ], 'traffic_plugin_options_section' );
-
 	}
 
 	/**
