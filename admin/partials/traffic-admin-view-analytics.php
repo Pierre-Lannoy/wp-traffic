@@ -21,10 +21,10 @@ wp_enqueue_style( 'switchery' );
 <div class="wrap">
 	<div class="traffic-dashboard">
 		<div class="traffic-row">
-			<?php echo $analytics->get_dashboard_title() ?>
+			<?php echo $analytics->get_title_bar() ?>
 		</div>
         <div class="traffic-row">
-
+	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
 
 

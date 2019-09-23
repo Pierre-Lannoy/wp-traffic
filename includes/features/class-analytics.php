@@ -218,12 +218,12 @@ class Analytics {
 	}
 
 	/**
-	 * Get the title box.
+	 * Get the title bar.
 	 *
-	 * @return string  The box ready to print.
+	 * @return string  The bar ready to print.
 	 * @since    1.0.0
 	 */
-	public function get_dashboard_title() {
+	public function get_title_bar() {
 		switch ( $this->type ) {
 			case 'summary':
 				$title    = esc_html__( 'Summary', 'traffic' );
@@ -263,15 +263,44 @@ class Analytics {
 	}
 
 	/**
+	 * Get the KPI bar.
+	 *
+	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_kpi_bar() {
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result  .= '<div class="traffic-kpi-bar">';
+
+
+
+
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'outbound' ) . '</div>';
+
+
+		$result .= '</div>';
+		$result .= '</div>';
+		return $result;
+	}
+
+	/**
 	 * Get a large kpi box.
 	 *
 	 * @param   string $kpi     The kpi to render.
 	 * @return string  The box ready to print.
 	 * @since    1.0.0
 	 */
-	public function get_large_kpi( $kpi ) {
+	private function get_large_kpi( $kpi ) {
+		$result = '<div class="traffic-kpi-large-top">' . 'TOP' . '</div>';
+		$result .= '<div class="traffic-kpi-large-middle">' . 'MIDDLE' . '</div>';
+		$result .= '<div class="traffic-kpi-large-bottom">' . 'BOTTOM' . '</div>';
 
-		return '<em>Hell Yeah!</em>';
+		return $result;
 	}
 
 	/**
