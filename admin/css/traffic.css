@@ -11,6 +11,13 @@
     --subtitle-font-weight: 400;
     --header-action-font-color: #5A738E;
     --header-action-font-size: 12px;
+    --kpi-font-color: #73879C;
+    --kpi-big-font-size: 32px;
+    --kpi-big-font-weight: 400;
+    --kpi-big-letter-spacing: 0.8px;
+    --kpi-small-font-size: 10px;
+    --kpi-small-font-weight: 100;
+    --kpi-small-letter-spacing: 0.1px;
 }
 
 .traffic-row {
@@ -91,7 +98,6 @@
 
 .traffic-kpi-large {
     flex-grow: 1;
-    /*overflow: hidden;*/
     position: relative;
     text-align: center;
 }
@@ -107,9 +113,66 @@
     box-sizing: border-box;
 }
 
+
+
+.traffic-kpi-large-top-text {
+    font-size: 12px;
+    vertical-align: bottom;
+    color: var(--title-font-color);
+}
+
+
+
+
+
+
+
+.traffic-kpi-large-top {
+    padding: 4px;
+}
+
+.traffic-kpi-large-middle {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    margin-top: 8px;
+}
+
+.traffic-kpi-large-bottom {
+    padding: 4px;
+}
+
+.traffic-kpi-large-middle-left {
+    color: var(--kpi-font-color);
+    font-size: var(--kpi-big-font-size);
+    font-weight: var(--kpi-big-font-weight);
+    letter-spacing: var(--kpi-big-letter-spacing);
+}
+
+.traffic-kpi-large-middle-right {
+    color: var(--kpi-font-color);
+    font-size: var(--kpi-small-font-size);
+    font-weight: var(--kpi-small-font-weight);
+    letter-spacing: var(--kpi-small-letter-spacing);
+    padding-left: 4px;
+    top: -5px;
+    position: relative;
+}
+
+button.btn {
+    color: var(--main-bg-color);
+    background-color: var(--header-action-font-color);
+    border: none;
+    border-radius: 2px;
+}
+
+
 @media only screen and (min-width: 901px) {
     .traffic-kpi-large {
-        min-width: 15%;
+        min-width: 14.8%;
     }
     .traffic-kpi-large:first-child:before {
         border: none;
@@ -144,38 +207,7 @@
     .traffic-kpi-large:before {
         border: none;
     }
-}
-
-.traffic-kpi-large-top-text {
-    font-size: 12px;
-    vertical-align: bottom;
-    color: var(--title-font-color);
-}
-
-
-
-
-
-
-
-.traffic-kpi-large-top {
-    padding: 4px;
-}
-
-.traffic-kpi-large-middle {
-    padding: 4px;
-}
-
-.traffic-kpi-large-bottom {
-    padding: 4px;
-}
-
-
-
-
-button.btn {
-    color: var(--main-bg-color);
-    background-color: var(--header-action-font-color);
-    border: none;
-    border-radius: 2px;
+    .traffic-kpi-large-middle {
+        margin-top: 0px;
+    }
 }

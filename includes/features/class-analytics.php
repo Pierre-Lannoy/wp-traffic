@@ -322,11 +322,21 @@ class Analytics {
 				$help  = esc_html__( 'Perceived uptime, from the viewpoint of the site.', 'traffic' );
 				break;
 		}
-		$top = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
+		$top     = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
+		$value = '182M';
+		$indicator = '+21%';
 
-		$result = '<div class="traffic-kpi-large-top">' . $top . '</div>';
-		$result .= '<div class="traffic-kpi-large-middle">' . 'MIDDLE' . '</div>';
+
+
+
+		$result  = '<div class="traffic-kpi-large-top">' . $top . '</div>';
+		$result .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left">' . $value . '</div><div class="traffic-kpi-large-middle-right">' . $indicator . '</div></div>';
 		$result .= '<div class="traffic-kpi-large-bottom">' . 'BOTTOM' . '</div>';
+
+
+
+
+		//SELECT sum(hit), sum(kb_in), sum(kb_out), sum(hit*latency_avg)/sum(hit) FROM `wp_traffic_statistics` WHERE 1
 
 		return $result;
 	}
