@@ -17,6 +17,7 @@ use Traffic\System\Date;
 use Traffic\System\Role;
 use Traffic\System\Logger;
 use Traffic\System\L10n;
+use Traffic\System\UUID;
 use Feather;
 use Traffic\System\Timezone;
 
@@ -38,6 +39,14 @@ class Analytics {
 	 * @var    string    $uniqid    The unique ID of the instance.
 	 */
 	private $uniqid = '';
+
+	/**
+	 * The ajax callback name.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $ajax    The ajax callback name.
+	 */
+	private $ajax = '';
 
 	/**
 	 * The dashboard type.
@@ -155,12 +164,12 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function __construct( $type, $context, $site, $start, $end, $id = '' ) {
-		$this->uniqid = substr( uniqid( '', true ), 10, 13 );
+		$this->uniqid = UUID::generate_unique_id();
 		$this->id     = $id;
 		$this->site   = $site;
-		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
+		/*if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$site = get_current_blog_id();
-		}
+		}*/
 		if ( 'all' !== $site ) {
 			$this->filter[] = "site='" . $site . "'";
 		}
@@ -214,7 +223,24 @@ class Analytics {
 			}
 			$this->filter[] = "context='" . $context . "'";
 		}
-		add_action( 'wp_ajax_traffic_' . $this->uniqid, [ $this, 'statistics_callback' ] );
+		$this->ajax = 'traffic_' . $this->uniqid;
+		add_action( 'wp_ajax_' . $this->ajax, [ $this, 'statistics_callback' ] );
+
+		//add_action( 'wp_ajax_' . $this->ajax, [ 'Traffic\Plugin\Feature\Analytics', 'statistics_callback' ] );
+	}
+
+	/**
+	 * Ajax callback.
+	 *
+	 * @since    1.0.0
+	 */
+	public static function statistics_callback() {
+		//Logger::warning('DONE');
+		//check_ajax_referer( 'traffic_' . $this->id, 'nonce' );
+
+		$response = ['OK'];
+
+		exit (json_encode ($response));
 	}
 
 	/**
@@ -322,17 +348,61 @@ class Analytics {
 				$help  = esc_html__( 'Perceived uptime, from the viewpoint of the site.', 'traffic' );
 				break;
 		}
-		$top     = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
-		$value = '182M';
-		$indicator = '+21%';
+		$top       = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
+		$value     = '-';
+		$indicator = '-';
+		$bottom    = '';
+		$result    = '<div class="traffic-kpi-large-top">' . $top . '</div>';
+		$result   .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left" id="kpi-main-' . $kpi . '">' . $value . '</div><div class="traffic-kpi-large-middle-right" id="kpi-index-' . $kpi . '">' . $indicator . '</div></div>';
+		$result   .= '<div class="traffic-kpi-large-bottom" id="kpi-bottom-' . $kpi . '">' . $bottom . '</div>';
+
+
+		$result .= '<script>';
+		$result .= 'jQuery(document).ready( function($) {';
+		$result .= ' var data = {';
+		$result .= '  action:"' . $this->ajax . '",';
+		$result .= '  nonce:"' . wp_create_nonce( 'traffic_' . $this->uniqid ) . '",';
+		$result .= '  query:"kpi",';
+		$result .= '  id:"' . $kpi . '",';
+		$result .= ' };';
+		$result .= ' $.post(ajaxurl, data, function(response) {';
+		$result .= '';
+		$result .= '   console.log(response);';
+		$result .= '';
+		$result .= ' })';
+		$result .= '';
 
 
 
 
-		$result  = '<div class="traffic-kpi-large-top">' . $top . '</div>';
-		$result .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left">' . $value . '</div><div class="traffic-kpi-large-middle-right">' . $indicator . '</div></div>';
-		$result .= '<div class="traffic-kpi-large-bottom">' . 'BOTTOM' . '</div>';
 
+
+
+		/*$result .= ' var http = new XMLHttpRequest();';
+		$result .= ' var params = "action=' . $this->ajax . '";';
+		$result .= ' params = params+"&type=kpi";';
+		$result .= ' params = params+"&id=' . $kpi . '";';
+		$result .= ' http.open("POST", "' . TRAFFIC_AJAX_RELATIVE_URL . '", true);';
+		$result .= ' http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");';
+		$result .= ' http.onreadystatechange = function () {';
+		$result .= '  if (http.readyState == 4 && http.status == 200) {';
+		$result .= '   var data = JSON.parse(http.responseText);';*/
+
+
+
+
+		/*$result .= '        if ( typeof odatas != "undefined") {';
+		$result .= '          g'.$uniq.'.refresh(odatas.value, odatas.max);';
+		$result .= '        }';*/
+
+
+		/*$result .= '  }';
+		$result .= ' }';
+		$result .= ' http.send(params);';*/
+
+
+		$result .= '});';
+		$result .= '</script>';
 
 
 

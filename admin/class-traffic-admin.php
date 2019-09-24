@@ -38,12 +38,22 @@ class Traffic_Admin {
 	protected $assets;
 
 	/**
+	 * The analytics instance.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    Assets    $analytics    The analytics instance.
+	 */
+	protected $analytics;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->assets = new Assets();
+		$this->init_tools_page();
 	}
 
 	/**
@@ -139,11 +149,11 @@ class Traffic_Admin {
 	}
 
 	/**
-	 * Get the content of the tools page.
+	 * Init analytics instance.
 	 *
 	 * @since 1.0.0
 	 */
-	public function get_tools_page() {
+	private function init_tools_page() {
 		$timezone = Timezone::network_get();
 		// ID.
 		if ( ! ( $id = filter_input( INPUT_GET, 'id' ) ) ) {
@@ -194,7 +204,16 @@ class Traffic_Admin {
 			$start = $edatetime->format( 'Y-m-d' );
 			$end   = $sdatetime->format( 'Y-m-d' );
 		}
-		$analytics = new Analytics( $type, $context, $site, $start, $end, $id );
+		$this->analytics = new Analytics( $type, $context, $site, $start, $end, $id );
+	}
+
+	/**
+	 * Get the content of the tools page.
+	 *
+	 * @since 1.0.0
+	 */
+	public function get_tools_page() {
+		$analytics = $this->analytics;
 		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-analytics.php';
 	}
 
