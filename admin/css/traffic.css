@@ -9,6 +9,7 @@
     --subtitle-font-size: 14px;
     --subtitle-font-color: #777777;
     --subtitle-font-weight: 400;
+    --subtitle-border: 1px solid #DDDDDD;
     --header-action-font-color: #5A738E;
     --header-action-font-size: 12px;
     --kpi-font-color: #73879C;
@@ -22,18 +23,79 @@
 
 .traffic-row {
     margin-bottom: 10px;
-}
-
-.traffic-box {
-    padding: 8px;
-    border-radius: 2px;
-    box-shadow: var(--main-box-shadow);
+    width: 100%;
 }
 
 .traffic-box-full-line {
     display: inline-block;
-    width: 98%;
+    padding: 8px;
     background-color: var(--main-bg-color);
+    border-radius: 2px;
+    box-shadow: var(--main-box-shadow);
+}
+
+.traffic-box-40-60-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    padding: 8px;
+}
+
+.traffic-40-module {
+    flex-grow: 2;
+    background-color: var(--main-bg-color);
+    border-radius: 2px;
+    box-shadow: var(--main-box-shadow);
+    margin-left: -8px;
+    margin-top: -8px;
+    margin-right: 10px;
+    padding: 8px;
+}
+
+.traffic-60-module {
+    flex-grow: 3;
+    background-color: var(--main-bg-color);
+    border-radius: 2px;
+    box-shadow: var(--main-box-shadow);
+    margin-right: -8px;
+    margin-top: -8px;
+    padding: 8px;
+}
+
+.traffic-module-title-bar {
+    border-bottom: var(--subtitle-border);
+    margin-left: 6px;
+    margin-right: 6px;
+    padding-bottom: 6px;
+}
+
+.traffic-module-title {
+    margin-left: 2px;
+    font-size: var(--subtitle-font-size);
+    font-weight: var(--subtitle-font-weight);
+    color: var(--subtitle-font-color);
+}
+
+.traffic-module-more {
+    margin-right: 2px;
+    float: right;
+}
+
+.traffic-module-content {
+    padding: 8px;
+}
+
+
+
+.traffic-kpi-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
 }
 
 .traffic-home {
@@ -113,8 +175,6 @@
     box-sizing: border-box;
 }
 
-
-
 .traffic-kpi-large-top-text {
     font-size: 12px;
     vertical-align: bottom;
@@ -126,12 +186,6 @@
     vertical-align: bottom;
     color: var(--title-font-color);
 }
-
-
-
-
-
-
 
 .traffic-kpi-large-top {
     padding: 4px;
@@ -176,18 +230,18 @@ button.btn {
 }
 
 
-@media only screen and (min-width: 901px) {
+@media only screen and (min-width: 1101px) {
     .traffic-kpi-large {
-        min-width: 14.8%;
+        width: 16.666%;
     }
     .traffic-kpi-large:first-child:before {
         border: none;
     }
 }
 
-@media only screen and (min-width: 501px) and (max-width: 900px) {
+@media only screen and (min-width: 501px) and (max-width: 1100px) {
     .traffic-kpi-large {
-        min-width: 33.333333%;
+        width: 33.333%;
         margin-bottom: 14px;
     }
     .traffic-kpi-large:nth-child(3n+1):before {
@@ -197,7 +251,7 @@ button.btn {
 
 @media only screen and (max-width: 500px) {
     .traffic-kpi-large {
-        min-width: 50%;
+        width: 50%;
         margin-bottom: 14px;
     }
     .traffic-kpi-large:nth-child(2n+1):before {
@@ -217,3 +271,65 @@ button.btn {
         margin-top: 0px;
     }
 }
+
+@media only screen and (max-width: 1100px) {
+    .traffic-40-module {
+        margin-right: -8px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .traffic-60-module {
+        margin-left: -8px;
+        margin-top: 0px;
+    }
+}
+
+@media only screen and (min-width: 1801px) {
+    .traffic-box {
+        width: 99.5%;
+    }
+}
+
+@media only screen and (max-width: 1800px) {
+    .traffic-box {
+        width: 99%;
+    }
+}
+
+@media only screen and (max-width: 1400px) {
+    .traffic-box {
+        width: 98.5%;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .traffic-box {
+        width: 98%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .traffic-box {
+        width: 97.5%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .traffic-box {
+        width: 97%;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .traffic-box {
+        width: 96%;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .traffic-box {
+        width: 95.5%;
+    }
+}
+

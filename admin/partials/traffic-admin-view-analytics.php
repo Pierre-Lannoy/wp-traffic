@@ -27,12 +27,19 @@ wp_enqueue_style( 'traffic-tooltip' );
         <div class="traffic-row">
 	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
+        <?php if ( 'summary' === $analytics->type) { ?>
+            <div class="traffic-row">
+                <div class="traffic-box traffic-box-40-60-line">
+                    <?php echo $analytics->get_top_domain_box() ?>
+                    <?php echo $analytics->get_map_box() ?>
+                </div>
+            </div>
 
 
 
 
 
-
+		<?php } ?>
 		<div class="traffic-row">
 
 		</div>

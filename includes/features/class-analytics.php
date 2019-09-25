@@ -39,7 +39,7 @@ class Analytics {
 	 * @since  1.0.0
 	 * @var    string    $title    The dashboard type.
 	 */
-	private $type = '';
+	public $type = '';
 
 	/**
 	 * The dashboard context.
@@ -80,6 +80,14 @@ class Analytics {
 	 * @var    string    $end    The end date.
 	 */
 	private $end = '';
+
+	/**
+	 * The period duration in seconds.
+	 *
+	 * @since  1.0.0
+	 * @var    integer    $duration    The period duration in seconds.
+	 */
+	private $duration = 0;
 
 	/**
 	 * The timezone.
@@ -233,6 +241,7 @@ class Analytics {
 			$start->sub( $delta );
 			$end->sub( $delta );
 		}
+		$this->duration = $delta->d + 1;
 		if ( $start === $end ) {
 			$this->previous[] = "timestamp='" . $start->format( 'Y-m-d' ) . "'";
 		} else {
@@ -325,8 +334,8 @@ class Analytics {
 			} elseif ( 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
-			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_in, 1 ) . '</span>';
-			$out                                = '<span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_out, 1 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_in, 2 ) . '</span>';
+			$out                                = '<span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_out, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
 			$result[ 'kpi-bottom-' . $queried ] = $in . ' &nbsp;&nbsp; ' . $out;
 		}
 		if ( 'server' === $queried || 'quota' === $queried || 'pass' === $queried || 'uptime' === $queried ) {
@@ -395,6 +404,28 @@ class Analytics {
 			} elseif ( 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
+			switch ( $queried ) {
+				case 'server':
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s calls in error', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					break;
+				case 'quota':
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s blocked calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					break;
+				case 'pass':
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s successful calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					break;
+				case 'uptime':
+					if ( 0.0 !== $base_value ) {
+						$duration = implode( ', ', Date::get_age_array_from_seconds( $this->duration * DAY_IN_SECONDS * ( 1 - ( $data_value / $base_value ) ), true, true ) );
+						if ( '' === $duration ) {
+							$duration = esc_html__( 'no downtime', 'traffic' );
+						} else {
+							$duration = sprintf( esc_html__( 'down %s', 'traffic' ), $duration );
+						}
+						$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . $duration . '</span>';
+					}
+					break;
+			}
 		}
 		return $result;
 	}
@@ -452,7 +483,7 @@ class Analytics {
 	 */
 	public function get_kpi_bar() {
 		$result  = '<div class="traffic-box traffic-box-full-line">';
-		$result  .= '<div class="traffic-kpi-bar">';
+		$result .= '<div class="traffic-kpi-bar">';
 		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'call' ) . '</div>';
 		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'data' ) . '</div>';
 		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'server' ) . '</div>';
@@ -460,6 +491,34 @@ class Analytics {
 		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'pass' ) . '</div>';
 		$result .= '<div class="traffic-kpi-large">' . $this->get_large_kpi( 'uptime' ) . '</div>';
 		$result .= '</div>';
+		$result .= '</div>';
+		return $result;
+	}
+
+	/**
+	 * Get the KPI bar.
+	 *
+	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_top_domain_box() {
+		$result  = '<div class="traffic-40-module">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
+		$result .= '</div>';
+		return $result;
+	}
+
+	/**
+	 * Get the KPI bar.
+	 *
+	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_map_box() {
+		$result  = '<div class="traffic-60-module">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
 		$result .= '</div>';
 		return $result;
 	}

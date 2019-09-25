@@ -190,6 +190,13 @@ class Libraries {
 		$item['license'] = $this->license_name( 'mit' );
 		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
 		$list[]          = $item;
+		$item['name']    = 'SVG-Loaders';
+		$item['version'] = '1.0.2';
+		$item['author']  = sprintf( esc_html__( '%s & contributors', 'traffic' ), 'Sam Herbert' );
+		$item['url']     = 'https://github.com/SamHerbert/SVG-Loaders';
+		$item['license'] = $this->license_name( 'mit' );
+		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
+		$list[]          = $item;
 		usort( $list, function ( $a, $b ) { return strcmp( strtolower( $a['name'] ), strtolower( $b['name'] ) );} );
 		if ( 'html' === $style ) {
 			$items = [];
