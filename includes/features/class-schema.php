@@ -14,7 +14,6 @@ namespace Traffic\Plugin\Feature;
 use Traffic\System\Http;
 use Traffic\System\Logger;
 use Traffic\System\Cache;
-use function GuzzleHttp\Psr7\str;
 
 /**
  * Define the schema functionality.
@@ -264,7 +263,7 @@ class Schema {
 			unset( $filter['context'] );
 		}
 		// phpcs:ignore
-		$id     = md5( serialize( $filter ) );
+		$id = md5( __FUNCTION__ . serialize( $filter ) );
 		if ( $cache ) {
 			$result = Cache::get_global( $id );
 			if ( $result ) {
@@ -284,6 +283,46 @@ class Schema {
 				Cache::set_global( $id, $contexts, 'infinite' );
 			}
 			return $contexts;
+		}
+		return [];
+	}
+
+	/**
+	 * Get the standard KPIs.
+	 *
+	 * @param   array   $filter      The filter of the query.
+	 * @param   boolean $cache       Has the query to be cached.
+	 * @param   string  $extra_field Optional. The extra field to filter.
+	 * @param   array   $extras      Optional. The extra values to match.
+	 * @param   boolean $not         Optional. Exclude extra filter.
+	 * @return  array   The standard KPIs.
+	 * @since    1.0.0
+	 */
+	public static function get_std_kpi( $filter, $cache = true, $extra_field = '', $extras = [], $not = false ) {
+		if ( array_key_exists( 'context', $filter ) ) {
+			unset( $filter['context'] );
+		}
+		// phpcs:ignore
+		$id = md5( __FUNCTION__ . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') );
+		if ( $cache ) {
+			$result = Cache::get_global( $id );
+			if ( $result ) {
+				return $result;
+			}
+		}
+		$where_extra = '';
+		if ( 0 < count( $extras ) && '' !== $extra_field ) {
+			$where_extra = ' AND ' . $extra_field . ( $not ? ' NOT' : '' ) . " IN ( '" . implode( $extras, "', '" ) . "' )";
+		}
+		global $wpdb;
+		$sql = 'SELECT sum(hit) as sum_hit, sum(kb_in) as sum_kb_in, sum(kb_out) as sum_kb_out, sum(hit*latency_avg)/sum(hit) as avg_latency, min(latency_min) as min_latency, max(latency_max) as max_latency FROM ' . $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ') ' . $where_extra;
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		if ( is_array( $result ) && 1 === count( $result ) ) {
+			if ( $cache ) {
+				Cache::set_global( $id, $result[0], 'infinite' );
+			}
+			return $result[0];
 		}
 		return [];
 	}

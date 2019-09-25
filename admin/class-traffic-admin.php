@@ -10,6 +10,7 @@
 namespace Traffic\Plugin;
 
 use Traffic\Plugin\Feature\Analytics;
+use Traffic\Plugin\Feature\AnalyticsFactory;
 use Traffic\System\Assets;
 use Traffic\System\Logger;
 use Traffic\System\Role;
@@ -38,22 +39,12 @@ class Traffic_Admin {
 	protected $assets;
 
 	/**
-	 * The analytics instance.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    Assets    $analytics    The analytics instance.
-	 */
-	protected $analytics;
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->assets = new Assets();
-		$this->init_tools_page();
 	}
 
 	/**
@@ -66,6 +57,7 @@ class Traffic_Admin {
 		$this->assets->register_style( 'daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
 		$this->assets->register_style( 'switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
 		$this->assets->register_style( 'traffic-tooltip', TRAFFIC_ADMIN_URL, 'css/tooltip.min.css' );
+
 	}
 
 	/**
@@ -149,71 +141,12 @@ class Traffic_Admin {
 	}
 
 	/**
-	 * Init analytics instance.
-	 *
-	 * @since 1.0.0
-	 */
-	private function init_tools_page() {
-		$timezone = Timezone::network_get();
-		// ID.
-		if ( ! ( $id = filter_input( INPUT_GET, 'id' ) ) ) {
-			$id = filter_input( INPUT_POST, 'id' );
-		}
-		if ( empty( $id ) ) {
-			$id = '';
-		}
-		// Analytics type.
-		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
-			$type = filter_input( INPUT_POST, 'type' );
-		}
-		if ( empty( $type ) || ( 'domain' !== $type && 'authority' !== $type  && 'endpoint' !== $type && 'country' !== $type  ) ) {
-			$type = 'summary';
-		}
-		// Filters.
-		if ( ! ( $context = filter_input( INPUT_GET, 'context' ) ) ) {
-			$context = filter_input( INPUT_POST, 'context' );
-		}
-		if ( empty( $context ) || ( 'inbound' !== $context && 'outbound' !== $context ) ) {
-			$context = 'both';
-		}
-		if ( ! ( $site = filter_input( INPUT_GET, 'site' ) ) ) {
-			$site = filter_input( INPUT_POST, 'site' );
-		}
-		if ( empty( $site ) || ! Blog::is_blog_exists( (int) $site ) ) {
-			$site = 'all';
-		}
-		if ( ! ( $start = filter_input( INPUT_GET, 'start' ) ) ) {
-			$start = filter_input( INPUT_POST, 'start' );
-		}
-		if ( empty( $start ) || ! Date::is_date_exists( $start, 'Y-m-d' ) ) {
-			$sdatetime = new \DateTime( 'now', $timezone );
-			$start     = $sdatetime->format( 'Y-m-d' );
-		} else {
-			$sdatetime = new \DateTime( $start, $timezone );
-		}
-		if ( ! ( $end = filter_input( INPUT_GET, 'end' ) ) ) {
-			$end = filter_input( INPUT_POST, 'end' );
-		}
-		if ( empty( $end ) || ! Date::is_date_exists( $end, 'Y-m-d' ) ) {
-			$edatetime = new \DateTime( 'now', $timezone );
-			$end       = $edatetime->format( 'Y-m-d' );
-		} else {
-			$edatetime = new \DateTime( $end, $timezone );
-		}
-		if ( $edatetime->getTimestamp() < $sdatetime->getTimestamp() ) {
-			$start = $edatetime->format( 'Y-m-d' );
-			$end   = $sdatetime->format( 'Y-m-d' );
-		}
-		$this->analytics = new Analytics( $type, $context, $site, $start, $end, $id );
-	}
-
-	/**
 	 * Get the content of the tools page.
 	 *
 	 * @since 1.0.0
 	 */
 	public function get_tools_page() {
-		$analytics = $this->analytics;
+		$analytics = AnalyticsFactory::get_analytics();
 		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-analytics.php';
 	}
 

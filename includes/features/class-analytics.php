@@ -14,10 +14,11 @@ namespace Traffic\Plugin\Feature;
 use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Cache;
 use Traffic\System\Date;
+use Traffic\System\Conversion;
 use Traffic\System\Role;
 use Traffic\System\Logger;
 use Traffic\System\L10n;
-use Traffic\System\UUID;
+use Traffic\System\Http;
 use Feather;
 use Traffic\System\Timezone;
 
@@ -33,28 +34,20 @@ use Traffic\System\Timezone;
 class Analytics {
 
 	/**
-	 * The unique ID of the instance.
-	 *
-	 * @since  1.0.0
-	 * @var    string    $uniqid    The unique ID of the instance.
-	 */
-	private $uniqid = '';
-
-	/**
-	 * The ajax callback name.
-	 *
-	 * @since  1.0.0
-	 * @var    string    $ajax    The ajax callback name.
-	 */
-	private $ajax = '';
-
-	/**
 	 * The dashboard type.
 	 *
 	 * @since  1.0.0
 	 * @var    string    $title    The dashboard type.
 	 */
 	private $type = '';
+
+	/**
+	 * The dashboard context.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $context    The dashboard context.
+	 */
+	private $context = '';
 
 	/**
 	 * The queried ID.
@@ -97,20 +90,20 @@ class Analytics {
 	private $timezone = 'UTC';
 
 	/**
-	 * The query filter.
+	 * The main query filter.
 	 *
 	 * @since  1.0.0
-	 * @var    array    $filter    The query filter.
+	 * @var    array    $filter    The main query filter.
 	 */
 	private $filter = [];
 
 	/**
-	 * The data.
+	 * The query filter fro the previous range.
 	 *
 	 * @since  1.0.0
-	 * @var    array    $data    The data.
+	 * @var    array    $previous    The query filter fro the previous range.
 	 */
-	private $data = [];
+	private $previous = [];
 
 	/**
 	 * Is the start date today's date.
@@ -155,24 +148,27 @@ class Analytics {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @param   string $type    The type of analytics ( summary, domain, authority, endpoint, country).
-	 * @param   string $context The context of analytics (both, inbound, outbound).
-	 * @param   string $site    The site to analyze (all or ID).
-	 * @param   string $start   The start date.
-	 * @param   string $end     The end date.
-	 * @param   string $id      The queried ID.
+	 * @param   string  $type    The type of analytics ( summary, domain, authority, endpoint, country).
+	 * @param   string  $context The context of analytics (both, inbound, outbound).
+	 * @param   string  $site    The site to analyze (all or ID).
+	 * @param   string  $start   The start date.
+	 * @param   string  $end     The end date.
+	 * @param   string  $id      Optional. The queried ID.
+	 * @param   boolean $reload  Optional. Is it a reload of an already displayed analytics.
 	 * @since    1.0.0
 	 */
-	public function __construct( $type, $context, $site, $start, $end, $id = '' ) {
-		$this->uniqid = UUID::generate_unique_id();
-		$this->id     = $id;
-		$this->site   = $site;
-		/*if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
+	public function __construct( $type, $context, $site, $start, $end, $id = '', $reload = false ) {
+		$this->id      = $id;
+		$this->context = $context;
+		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$site = get_current_blog_id();
-		}*/
-		if ( 'all' !== $site ) {
-			$this->filter[] = "site='" . $site . "'";
 		}
+		$this->site = $site;
+		if ( 'all' !== $site ) {
+			$this->filter[]   = "site='" . $site . "'";
+			$this->previous[] = "site='" . $site . "'";
+		}
+
 		if ( $start === $end ) {
 			$this->filter[] = "timestamp='" . $start . "'";
 		} else {
@@ -185,16 +181,20 @@ class Analytics {
 			$this->type = $type;
 			switch ( $type ) {
 				case 'domain':
-					$this->filter[] = "id='" . $id . "'";
+					$this->filter[]   = "id='" . $id . "'";
+					$this->previous[] = "id='" . $id . "'";
 					break;
 				case 'authority':
-					$this->filter[] = "authority='" . $id . "'";
+					$this->filter[]   = "authority='" . $id . "'";
+					$this->previous[] = "authority='" . $id . "'";
 					break;
 				case 'endpoint':
-					$this->filter[] = "endpoint='" . $id . "'";
+					$this->filter[]   = "endpoint='" . $id . "'";
+					$this->previous[] = "endpoint='" . $id . "'";
 					break;
 				case 'country':
-					$this->filter[] = "country='" . strtoupper( $id ) . "'";
+					$this->filter[]   = "country='" . strtoupper( $id ) . "'";
+					$this->previous[] = "country='" . strtoupper( $id ) . "'";
 					break;
 				default:
 					$this->type = 'summary';
@@ -202,7 +202,7 @@ class Analytics {
 		}
 		$this->timezone     = Timezone::network_get();
 		$datetime           = new \DateTime( 'now', $this->timezone );
-		$this->is_today     = ( $this->start === $datetime->format( 'Y-m-d' ) );
+		$this->is_today     = ( $this->start === $datetime->format( 'Y-m-d' ) || $this->end === $datetime->format( 'Y-m-d' ) );
 		$bounds             = Schema::get_distinct_context( $this->filter, ! $this->is_today );
 		$this->has_inbound  = ( in_array( 'inbound', $bounds, true ) );
 		$this->has_outbound = ( in_array( 'outbound', $bounds, true ) );
@@ -221,26 +221,164 @@ class Analytics {
 			if ( $this->is_inbound ) {
 				$context = 'inbound';
 			}
-			$this->filter[] = "context='" . $context . "'";
+			$this->filter[]   = "context='" . $context . "'";
+			$this->previous[] = "context='" . $context . "'";
 		}
-		$this->ajax = 'traffic_' . $this->uniqid;
-		add_action( 'wp_ajax_' . $this->ajax, [ $this, 'statistics_callback' ] );
-
-		//add_action( 'wp_ajax_' . $this->ajax, [ 'Traffic\Plugin\Feature\Analytics', 'statistics_callback' ] );
+		$start = new \DateTime( $this->start, $this->timezone );
+		$end   = new \DateTime( $this->end, $this->timezone );
+		$start->sub( new \DateInterval( 'P1D' ) );
+		$end->sub( new \DateInterval( 'P1D' ) );
+		$delta = $start->diff( $end, true );
+		if ( $delta ) {
+			$start->sub( $delta );
+			$end->sub( $delta );
+		}
+		if ( $start === $end ) {
+			$this->previous[] = "timestamp='" . $start->format( 'Y-m-d' ) . "'";
+		} else {
+			$this->previous[] = "timestamp>='" . $start->format( 'Y-m-d' ) . "' and timestamp<='" . $end->format( 'Y-m-d' ) . "'";
+		}
 	}
 
 	/**
-	 * Ajax callback.
+	 * Query statistics table.
 	 *
+	 * @param   string $query   The query type.
+	 * @param   mixed  $queried The query params.
+	 * @return array  The result of the query, ready to encode.
 	 * @since    1.0.0
 	 */
-	public static function statistics_callback() {
-		//Logger::warning('DONE');
-		//check_ajax_referer( 'traffic_' . $this->id, 'nonce' );
+	public function query( $query, $queried ) {
+		switch ( $query ) {
+			case 'kpi':
+				return $this->query_kpi( $queried );
+		}
+		return [];
+	}
 
-		$response = ['OK'];
-
-		exit (json_encode ($response));
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed  $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_kpi( $queried ) {
+		$result = [];
+		if ( 'call' === $queried ) {
+			$data     = Schema::get_std_kpi( $this->filter, ! $this->is_today );
+			$pdata    = Schema::get_std_kpi( $this->previous );
+			$current  = 0.0;
+			$previous = 0.0;
+			if ( is_array( $data ) && array_key_exists( 'sum_hit', $data ) && ! empty( $data['sum_hit'] ) ) {
+				$current = (float) $data['sum_hit'];
+			}
+			if ( is_array( $pdata ) && array_key_exists( 'sum_hit', $pdata ) && ! empty( $pdata['sum_hit'] ) ) {
+				$previous = (float) $pdata['sum_hit'];
+			}
+			$result[ 'kpi-main-' . $queried ] = Conversion::number_shorten( $current, 1 );
+			if ( 0.0 !== $current && 0.0 !== $previous ) {
+				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
+				if ( 0.1 > abs( $percent ) ) {
+					$percent = 0;
+				}
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+			} elseif ( 0.0 === $previous ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
+			} elseif ( 0.0 === $current ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
+			}
+		}
+		if ( 'data' === $queried ) {
+			$data         = Schema::get_std_kpi( $this->filter, ! $this->is_today );
+			$pdata        = Schema::get_std_kpi( $this->previous );
+			$current_in   = 0.0;
+			$current_out  = 0.0;
+			$previous_in  = 0.0;
+			$previous_out = 0.0;
+			if ( is_array( $data ) && array_key_exists( 'sum_kb_in', $data ) && ! empty( $data['sum_kb_in'] ) ) {
+				$current_in = (float) $data['sum_kb_in'] * 1024;
+			}
+			if ( is_array( $data ) && array_key_exists( 'sum_kb_out', $data ) && ! empty( $data['sum_kb_out'] ) ) {
+				$current_out = (float) $data['sum_kb_out'] * 1024;
+			}
+			if ( is_array( $pdata ) && array_key_exists( 'sum_kb_in', $pdata ) && ! empty( $pdata['sum_kb_in'] ) ) {
+				$previous_in = (float) $pdata['sum_kb_in'] * 1024;
+			}
+			if ( is_array( $pdata ) && array_key_exists( 'sum_kb_out', $pdata ) && ! empty( $pdata['sum_kb_out'] ) ) {
+				$previous_out = (float) $pdata['sum_kb_out'] * 1024;
+			}
+			$current                          = $current_in + $current_out;
+			$previous                         = $previous_in + $previous_out;
+			$result[ 'kpi-main-' . $queried ] = Conversion::data_shorten( $current, 1 );
+			if ( 0.0 !== $current && 0.0 !== $previous ) {
+				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
+				if ( 0.1 > abs( $percent ) ) {
+					$percent = 0;
+				}
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+			} elseif ( 0.0 === $previous ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
+			} elseif ( 0.0 === $current ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
+			}
+		}
+		if ( 'server' === $queried || 'quota' === $queried || 'pass' === $queried || 'uptime' === $queried ) {
+			$not = false;
+			if ( 'server' === $queried ) {
+				$codes = Http::$http_error_codes;
+			} elseif ( 'quota' === $queried ) {
+				$codes = Http::$http_quota_codes;
+			} elseif ( 'pass' === $queried ) {
+				$codes = Http::$http_effective_pass_codes;
+			} elseif ( 'uptime' === $queried ) {
+				$codes = Http::$http_failure_codes;
+				$not   = true;
+			}
+			$base        = Schema::get_std_kpi( $this->filter, ! $this->is_today );
+			$pbase       = Schema::get_std_kpi( $this->previous );
+			$data        = Schema::get_std_kpi( $this->filter, ! $this->is_today, 'code', $codes, $not );
+			$pdata       = Schema::get_std_kpi( $this->previous, true, 'code', $codes, $not );
+			$base_value  = 0.0;
+			$pbase_value = 0.0;
+			$data_value  = 0.0;
+			$pdata_value = 0.0;
+			$current     = 0.0;
+			$previous    = 0.0;
+			if ( is_array( $data ) && array_key_exists( 'sum_hit', $base ) && ! empty( $base['sum_hit'] ) ) {
+				$base_value = (float) $base['sum_hit'];
+			}
+			if ( is_array( $pbase ) && array_key_exists( 'sum_hit', $pbase ) && ! empty( $pbase['sum_hit'] ) ) {
+				$pbase_value = (float) $pbase['sum_hit'];
+			}
+			if ( is_array( $data ) && array_key_exists( 'sum_hit', $data ) && ! empty( $data['sum_hit'] ) ) {
+				$data_value = (float) $data['sum_hit'];
+			}
+			if ( is_array( $pdata ) && array_key_exists( 'sum_hit', $pdata ) && ! empty( $pdata['sum_hit'] ) ) {
+				$pdata_value = (float) $pdata['sum_hit'];
+			}
+			if ( 0.0 !== $base_value && 0.0 !== $data_value ) {
+				$current                          = 100 * $data_value / $base_value;
+				$result[ 'kpi-main-' . $queried ] = round( $current, 1 ) . '%';
+			} else {
+				$result[ 'kpi-main-' . $queried ] = '-';
+			}
+			if ( 0.0 !== $pbase_value && 0.0 !== $pdata_value ) {
+				$previous = 100 * $pdata_value / $pbase_value;
+			}
+			if ( 0.0 !== $current && 0.0 !== $previous ) {
+				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
+				if ( 0.1 > abs( $percent ) ) {
+					$percent = 0;
+				}
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+			} elseif ( 0.0 === $previous ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
+			} elseif ( 0.0 === $current ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -360,54 +498,27 @@ class Analytics {
 		$result .= '<script>';
 		$result .= 'jQuery(document).ready( function($) {';
 		$result .= ' var data = {';
-		$result .= '  action:"' . $this->ajax . '",';
-		$result .= '  nonce:"' . wp_create_nonce( 'traffic_' . $this->uniqid ) . '",';
+		$result .= '  action:"traffic_get_stats",';
+		$result .= '  nonce:"' . wp_create_nonce( 'ajax_traffic' ) . '",';
 		$result .= '  query:"kpi",';
-		$result .= '  id:"' . $kpi . '",';
+		$result .= '  queried:"' . $kpi . '",';
+		if ( '' !== $this->id ) {
+			$result .= '  id:"' . $this->id . '",';
+		}
+		$result .= '  type:"' . $this->type . '",';
+		if ( '' !== $this->context ) {
+			$result .= '  context:"' . $this->context . '",';
+		}
+		$result .= '  site:"' . $this->site . '",';
+		$result .= '  start:"' . $this->start . '",';
+		$result .= '  end:"' . $this->end . '",';
 		$result .= ' };';
 		$result .= ' $.post(ajaxurl, data, function(response) {';
-		$result .= '';
-		$result .= '   console.log(response);';
-		$result .= '';
+		$result .= ' var val = JSON.parse(response);';
+		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);console.log(index+" "+value)})';
 		$result .= ' })';
-		$result .= '';
-
-
-
-
-
-
-
-		/*$result .= ' var http = new XMLHttpRequest();';
-		$result .= ' var params = "action=' . $this->ajax . '";';
-		$result .= ' params = params+"&type=kpi";';
-		$result .= ' params = params+"&id=' . $kpi . '";';
-		$result .= ' http.open("POST", "' . TRAFFIC_AJAX_RELATIVE_URL . '", true);';
-		$result .= ' http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");';
-		$result .= ' http.onreadystatechange = function () {';
-		$result .= '  if (http.readyState == 4 && http.status == 200) {';
-		$result .= '   var data = JSON.parse(http.responseText);';*/
-
-
-
-
-		/*$result .= '        if ( typeof odatas != "undefined") {';
-		$result .= '          g'.$uniq.'.refresh(odatas.value, odatas.max);';
-		$result .= '        }';*/
-
-
-		/*$result .= '  }';
-		$result .= ' }';
-		$result .= ' http.send(params);';*/
-
-
 		$result .= '});';
 		$result .= '</script>';
-
-
-
-		//SELECT sum(hit), sum(kb_in), sum(kb_out), sum(hit*latency_avg)/sum(hit) FROM `wp_traffic_statistics` WHERE 1
-
 		return $result;
 	}
 
