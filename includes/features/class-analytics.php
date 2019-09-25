@@ -288,6 +288,9 @@ class Analytics {
 			} elseif ( 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
+			if ( is_array( $data ) && array_key_exists( 'avg_latency', $data ) && ! empty( $data['avg_latency'] ) ) {
+				$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( 'avg latency: %sms.', 'traffic' ), (int) $data['avg_latency'] ) . '</span>';
+			}
 		}
 		if ( 'data' === $queried ) {
 			$data         = Schema::get_std_kpi( $this->filter, ! $this->is_today );
@@ -322,6 +325,9 @@ class Analytics {
 			} elseif ( 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
+			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_in, 1 ) . '</span>';
+			$out                                = '<span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_out, 1 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$result[ 'kpi-bottom-' . $queried ] = $in . ' &nbsp;&nbsp; ' . $out;
 		}
 		if ( 'server' === $queried || 'quota' === $queried || 'pass' === $queried || 'uptime' === $queried ) {
 			$not = false;
@@ -361,10 +367,22 @@ class Analytics {
 				$current                          = 100 * $data_value / $base_value;
 				$result[ 'kpi-main-' . $queried ] = round( $current, 1 ) . '%';
 			} else {
-				$result[ 'kpi-main-' . $queried ] = '-';
+				if ( 0.0 !== $data_value ) {
+					$result[ 'kpi-main-' . $queried ] = '100%';
+				}
+				if ( 0.0 !== $base_value ) {
+					$result[ 'kpi-main-' . $queried ] = '0%';
+				}
 			}
 			if ( 0.0 !== $pbase_value && 0.0 !== $pdata_value ) {
 				$previous = 100 * $pdata_value / $pbase_value;
+			} else {
+				if ( 0.0 !== $pdata_value ) {
+					$previous = 100;
+				}
+				if ( 0.0 !== $pbase_value ) {
+					$previous = 0;
+				}
 			}
 			if ( 0.0 !== $current && 0.0 !== $previous ) {
 				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
@@ -461,7 +479,7 @@ class Analytics {
 				$help  = esc_html__( 'Number of API calls', 'traffic' );
 				break;
 			case 'data':
-				$icon  = Feather\Icons::get_base64( 'activity', 'none', '#73879C' );
+				$icon  = Feather\Icons::get_base64( 'link-2', 'none', '#73879C' );
 				$title = esc_html_x( 'Data Volume', 'Noun - Volume of transferred data.', 'traffic' );
 				$help  = esc_html__( 'Volume of transferred data', 'traffic' );
 				break;
@@ -481,15 +499,15 @@ class Analytics {
 				$help  = esc_html__( 'Ratio of the number of HTTP success to the total number of calls.', 'traffic' );
 				break;
 			case 'uptime':
-				$icon  = Feather\Icons::get_base64( 'power', 'none', '#73879C' );
+				$icon  = Feather\Icons::get_base64( 'activity', 'none', '#73879C' );
 				$title = esc_html_x( 'Perceived Uptime', 'Noun - Perceived uptime, from the viewpoint of the site.', 'traffic' );
 				$help  = esc_html__( 'Perceived uptime, from the viewpoint of the site.', 'traffic' );
 				break;
 		}
-		$top       = '<img style="width:12px;vertical-align:baseline;"src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
-		$value     = '-';
-		$indicator = '-';
-		$bottom    = '';
+		$top       = '<img style="width:12px;vertical-align:baseline;" src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
+		$value     = '<img style="width:26px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/three-dots.svg" />';
+		$indicator = '&nbsp;';
+		$bottom    = '<span class="traffic-kpi-large-bottom-text">&nbsp;</span>';
 		$result    = '<div class="traffic-kpi-large-top">' . $top . '</div>';
 		$result   .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left" id="kpi-main-' . $kpi . '">' . $value . '</div><div class="traffic-kpi-large-middle-right" id="kpi-index-' . $kpi . '">' . $indicator . '</div></div>';
 		$result   .= '<div class="traffic-kpi-large-bottom" id="kpi-bottom-' . $kpi . '">' . $bottom . '</div>';

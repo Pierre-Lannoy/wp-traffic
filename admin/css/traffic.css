@@ -121,6 +121,12 @@
     color: var(--title-font-color);
 }
 
+.traffic-kpi-large-bottom-text {
+    font-size: 10px;
+    vertical-align: bottom;
+    color: var(--title-font-color);
+}
+
 
 
 
