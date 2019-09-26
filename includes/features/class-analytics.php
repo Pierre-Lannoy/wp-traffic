@@ -184,9 +184,8 @@ class Analytics {
 		}
 		$this->start = $start;
 		$this->end   = $end;
-		$this->type  = 'summary';
+		$this->type  = $type;
 		if ( '' !== $id ) {
-			$this->type = $type;
 			switch ( $type ) {
 				case 'domain':
 					$this->filter[]   = "id='" . $id . "'";
@@ -446,6 +445,10 @@ class Analytics {
 				$title    = esc_html__( 'Top Domain', 'traffic' );
 				$subtitle = $this->id;
 				break;
+			case 'domains':
+				$title    = esc_html__( 'All Domains', 'traffic' );
+				$subtitle = '';
+				break;
 			case 'authority':
 				$title    = esc_html__( 'Service', 'traffic' );
 				$subtitle = $this->id;
@@ -502,8 +505,10 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_domain_box() {
+		$url     = $this->get_url( [], [ 'type' => 'domains' ] );
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-40-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
 		$result .= '</div>';
 		return $result;
@@ -603,10 +608,11 @@ class Analytics {
 	 * Get the url.
 	 *
 	 * @param   array $exclude Optional. The args to exclude.
+	 * @param   array $replace Optional. The args to replace or add.
 	 * @return string  The url.
 	 * @since    1.0.0
 	 */
-	private function get_url( $exclude = [] ) {
+	private function get_url( $exclude = [], $replace = [] ) {
 		$params         = [];
 		$params['type'] = $this->type;
 		$params['site'] = $this->site;
@@ -625,6 +631,9 @@ class Analytics {
 		}
 		foreach ( $exclude as $arg ) {
 			unset( $params[ $arg ] );
+		}
+		foreach ( $replace as $key => $arg ) {
+			$params[ $key ] = $arg;
 		}
 		$url = admin_url( 'tools.php?page=traffic-viewer' );
 		foreach ( $params as $key => $arg ) {

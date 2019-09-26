@@ -59,7 +59,7 @@ class AnalyticsFactory {
 		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
 			$type = filter_input( INPUT_POST, 'type' );
 		}
-		if ( empty( $type ) || ( 'domain' !== $type && 'authority' !== $type  && 'endpoint' !== $type && 'country' !== $type  ) ) {
+		if ( empty( $type ) || ( 'domain' !== $type && 'domains' !== $type && 'authority' !== $type  && 'endpoint' !== $type && 'country' !== $type  ) ) {
 			$type = 'summary';
 		}
 		// Filters.
