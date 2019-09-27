@@ -360,6 +360,9 @@ class Analytics {
 					'id'   => $data[ $cpt ][ $group ],
 				]
 			);
+			if ( 0.5 > $percent ) {
+				$percent = 0.5;
+			}
 			$result .= '<div class="traffic-top-line">';
 			$result .= '<div class="traffic-top-line-title">';
 			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[ $cpt ][ $group ] . '</a></span>';
