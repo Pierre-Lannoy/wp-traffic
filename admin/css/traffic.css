@@ -1,18 +1,20 @@
 :root {
     --main-bg-color: #FFFFFF;
+    --main-font-color: #73879C;
     --main-box-shadow: 1px 1px 8px #DDDDDD;
+    --aux-bg-color: #EEEEEE;
+    --aux-font-color: #888888;
+
+
 
     --title-font-size: 22px;
-    --title-font-color: #73879C;
     --title-font-weight: 500;
     --title-letter-spacing: 1.2px;
     --subtitle-font-size: 14px;
-    --subtitle-font-color: #777777;
     --subtitle-font-weight: 400;
     --subtitle-border: 1px solid #DDDDDD;
     --header-action-font-color: #5A738E;
     --header-action-font-size: 12px;
-    --kpi-font-color: #73879C;
     --kpi-big-font-size: 32px;
     --kpi-big-font-weight: 400;
     --kpi-big-letter-spacing: 0.8px;
@@ -75,7 +77,7 @@
     margin-left: 2px;
     font-size: var(--subtitle-font-size);
     font-weight: var(--subtitle-font-weight);
-    color: var(--subtitle-font-color);
+    color: var(--main-font-color);
 }
 
 .traffic-module-more {
@@ -86,8 +88,6 @@
 .traffic-module-content {
     padding: 8px;
 }
-
-
 
 .traffic-kpi-bar {
     width: 100%;
@@ -106,7 +106,7 @@
     font-size: var(--title-font-size);
     font-weight: var(--title-font-weight);
     letter-spacing: var(--title-letter-spacing);
-    color: var(--title-font-color);
+    color: var(--main-font-color);
     padding: 2px 8px;
     vertical-align: baseline;
 }
@@ -114,7 +114,7 @@
 .traffic-subtitle {
     font-size: var(--subtitle-font-size);
     font-weight: var(--subtitle-font-weight);
-    color: var(--subtitle-font-color);
+    color: var(--aux-font-color);
     vertical-align: text-bottom;
 }
 
@@ -171,20 +171,20 @@
     top: 15%;
     height: 70%;
     vertical-align: middle;
-    border-left: 2px solid var(--title-font-color);
+    border-left: 2px solid var(--main-font-color);
     box-sizing: border-box;
 }
 
 .traffic-kpi-large-top-text {
     font-size: 12px;
     vertical-align: bottom;
-    color: var(--title-font-color);
+    color: var(--main-font-color);
 }
 
 .traffic-kpi-large-bottom-text {
     font-size: 10px;
     vertical-align: bottom;
-    color: var(--title-font-color);
+    color: var(--main-font-color);
 }
 
 .traffic-kpi-large-top {
@@ -206,14 +206,14 @@
 }
 
 .traffic-kpi-large-middle-left {
-    color: var(--kpi-font-color);
+    color: var(--main-font-color);
     font-size: var(--kpi-big-font-size);
     font-weight: var(--kpi-big-font-weight);
     letter-spacing: var(--kpi-big-letter-spacing);
 }
 
 .traffic-kpi-large-middle-right {
-    color: var(--kpi-font-color);
+    color: var(--main-font-color);
     font-size: var(--kpi-small-font-size);
     font-weight: var(--kpi-small-font-weight);
     letter-spacing: var(--kpi-small-letter-spacing);
@@ -221,6 +221,56 @@
     top: -5px;
     position: relative;
 }
+
+.traffic-top-line {
+    margin-bottom: -8px;
+}
+
+.traffic-top-line-title {
+    color: var(--aux-font-color);
+}
+
+.traffic-top-line-content {
+    margin-bottom: 16px;
+    margin-top: -2px;
+}
+
+.traffic-top-line-title-text {
+    vertical-align: baseline;
+}
+
+.traffic-top-line-title-text a {
+    text-decoration: none;
+    color: var(--aux-font-color);
+}
+
+.traffic-bar-graph {
+    display: inline-block;
+    width: 90%;
+    height: 6px;
+    border-radius: 2px;
+    background-color: var(--aux-bg-color);
+}
+
+.traffic-bar-graph-value {
+    height: 6px;
+    border-radius: 2px;
+    background-color: var(--main-font-color);
+}
+
+.traffic-bar-detail {
+    float: right;
+    display: inline-block;
+    color: var(--main-font-color);
+    font-size: var(--subtitle-font-size);
+    font-weight: var(--subtitle-font-weight);
+    margin-top: -8px;
+}
+
+.traffic-minor-data {
+    opacity: 0.4;
+}
+
 
 button.btn {
     color: var(--main-bg-color);

@@ -326,6 +326,47 @@ class Schema {
 		}
 		return [];
 	}
+
+	/**
+	 * Get the standard KPIs.
+	 *
+	 * @param   array   $group       The group of the query.
+	 * @param   array   $filter      The filter of the query.
+	 * @param   boolean $cache       Has the query to be cached.
+	 * @param   string  $extra_field Optional. The extra field to filter.
+	 * @param   array   $extras      Optional. The extra values to match.
+	 * @param   boolean $not         Optional. Exclude extra filter.
+	 * @param   string  $order       Optional. The sort order of results.
+	 * @param   integer $limit       Optional. The number of results to return.
+	 * @return  array   The standard KPIs.
+	 * @since    1.0.0
+	 */
+	public static function get_grouped_list( $group, $filter, $cache = true, $extra_field = '', $extras = [], $not = false, $order = '', $limit = 0 ) {
+		// phpcs:ignore
+		$id = md5( __FUNCTION__ . $group . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
+		if ( $cache ) {
+			$result = Cache::get_global( $id );
+			if ( $result ) {
+				return $result;
+			}
+		}
+		$where_extra = '';
+		if ( 0 < count( $extras ) && '' !== $extra_field ) {
+			$where_extra = ' AND ' . $extra_field . ( $not ? ' NOT' : '' ) . " IN ( '" . implode( $extras, "', '" ) . "' )";
+		}
+		global $wpdb;
+		$sql  = 'SELECT ' . $group . ', sum(hit) as sum_hit, sum(kb_in) as sum_kb_in, sum(kb_out) as sum_kb_out, sum(hit*latency_avg)/sum(hit) as avg_latency, min(latency_min) as min_latency, max(latency_max) as max_latency FROM ';
+		$sql .= $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ') ' . $where_extra . ' GROUP BY ' . $group . ' ' . $order . ( $limit > 0 ? 'LIMIT ' . $limit : '') .';';
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		if ( is_array( $result ) && 0 < count( $result ) ) {
+			if ( $cache ) {
+				Cache::set_global( $id, $result, 'infinite' );
+			}
+			return $result;
+		}
+		return [];
+	}
 }
 
 Schema::init();

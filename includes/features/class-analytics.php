@@ -19,6 +19,7 @@ use Traffic\System\Role;
 use Traffic\System\Logger;
 use Traffic\System\L10n;
 use Traffic\System\Http;
+use Traffic\System\Favicon;
 use Feather;
 use Traffic\System\Timezone;
 
@@ -260,6 +261,8 @@ class Analytics {
 		switch ( $query ) {
 			case 'kpi':
 				return $this->query_kpi( $queried );
+			case 'top-domains':
+				return $this->query_top_domains( $queried );
 		}
 		return [];
 	}
@@ -267,7 +270,62 @@ class Analytics {
 	/**
 	 * Query statistics table.
 	 *
-	 * @param   mixed  $queried The query params.
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_top_domains( $queried ) {
+		$limit = (int) $queried;
+		$data  = Schema::get_grouped_list( 'id', $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$total = 0;
+		$other = 0;
+		foreach ( $data as $key => $row ) {
+			$total = $total + $row['sum_hit'];
+			if ( $limit <= $key ) {
+				$other = $other + $row['sum_hit'];
+			}
+		}
+		$result = '';
+		$cpt    = 0;
+		while ( $cpt < $limit && array_key_exists( $cpt, $data ) ) {
+			if ( 0 < $total ) {
+				$percent = round( 100 * $data[$cpt]['sum_hit'] / $total, 1 );
+			} else {
+				$percent = 100;
+			}
+			$url     = $this->get_url( [], [ 'type' => 'domain', 'id' => $data[$cpt]['id'] ] );
+			$result .= '<div class="traffic-top-line">';
+			$result .= '<div class="traffic-top-line-title">';
+			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[$cpt]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[$cpt]['id'] .'</a></span>';
+			$result .= '</div>';
+			$result .= '<div class="traffic-top-line-content">';
+			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent. '%"></div></div>';
+			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[$cpt]['sum_hit'], 2 ) . '</div>';
+			$result .= '</div>';
+			$result .= '</div>';
+			++$cpt;
+		}
+		if ( 0 < $total ) {
+			$percent = round( 100 * $other / $total, 1 );
+		} else {
+			$percent = 100;
+		}
+		$result .= '<div class="traffic-top-line traffic-minor-data">';
+		$result .= '<div class="traffic-top-line-title">';
+		$result .= '<span class="traffic-top-line-title-text">' . esc_html__( 'Other', 'traffic') .'</span>';
+		$result .= '</div>';
+		$result .= '<div class="traffic-top-line-content">';
+		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent. '%"></div></div>';
+		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2 ) . '</div>';
+		$result .= '</div>';
+		$result .= '</div>';
+		return [ 'traffic-top-domains' => $result];
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
 	 * @return array  The result of the query, ready to encode.
 	 * @since    1.0.0
 	 */
@@ -297,7 +355,7 @@ class Analytics {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
 			if ( is_array( $data ) && array_key_exists( 'avg_latency', $data ) && ! empty( $data['avg_latency'] ) ) {
-				$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( 'avg latency: %sms.', 'traffic' ), (int) $data['avg_latency'] ) . '</span>';
+				$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( 'avg latency: %sms.', 'traffic' ), (int) $data['avg_latency'] ) . '</span>';
 			}
 		}
 		if ( 'data' === $queried ) {
@@ -405,13 +463,13 @@ class Analytics {
 			}
 			switch ( $queried ) {
 				case 'server':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s calls in error', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s calls in error', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
 					break;
 				case 'quota':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s blocked calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s blocked calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
 					break;
 				case 'pass':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf ( esc_html__( '%s successful calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s successful calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
 					break;
 				case 'uptime':
 					if ( 0.0 !== $base_value ) {
@@ -507,10 +565,17 @@ class Analytics {
 	public function get_top_domain_box() {
 		$url     = $this->get_url( [], [ 'type' => 'domains' ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$result  = '<div class="traffic-40-module">';
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-40-module" style="height:290px">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
-		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-domains">' . $value . '</div>';
 		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'top-domains',
+				'queried' => 5,
+			]
+		);
 		return $result;
 	}
 
@@ -575,15 +640,39 @@ class Analytics {
 		$result    = '<div class="traffic-kpi-large-top">' . $top . '</div>';
 		$result   .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left" id="kpi-main-' . $kpi . '">' . $value . '</div><div class="traffic-kpi-large-middle-right" id="kpi-index-' . $kpi . '">' . $indicator . '</div></div>';
 		$result   .= '<div class="traffic-kpi-large-bottom" id="kpi-bottom-' . $kpi . '">' . $bottom . '</div>';
+		$result   .= $this->get_refresh_script(
+			[
+				'query'   => 'kpi',
+				'queried' => $kpi,
+			]
+		);
+		return $result;
+	}
 
-
-		$result .= '<script>';
+	/**
+	 * Get refresh script.
+	 *
+	 * @param   array $args Optional. The args for the ajax call.
+	 * @return string  The script, ready to print.
+	 * @since    1.0.0
+	 */
+	private function get_refresh_script( $args = [] ) {
+		$result  = '<script>';
 		$result .= 'jQuery(document).ready( function($) {';
 		$result .= ' var data = {';
 		$result .= '  action:"traffic_get_stats",';
 		$result .= '  nonce:"' . wp_create_nonce( 'ajax_traffic' ) . '",';
-		$result .= '  query:"kpi",';
-		$result .= '  queried:"' . $kpi . '",';
+		foreach ( $args as $key => $val ) {
+			$s = '  ' . $key . ':';
+			if ( is_string( $val ) ) {
+				$s .= '"' . $val . '"';
+			} elseif ( is_numeric( $val ) ) {
+				$s .= $val;
+			} elseif ( is_bool( $val ) ) {
+				$s .= $val ? 'true' : 'false';
+			}
+			$result .= $s . ',';
+		}
 		if ( '' !== $this->id ) {
 			$result .= '  id:"' . $this->id . '",';
 		}
