@@ -311,7 +311,12 @@ button.btn {
 
 
 @media only screen and (min-width: 501px) {
-    .traffic-table th, .traffic-table td {
+    .traffic-table th {
+        display: table-cell;
+        padding: .25em 1em;
+    }
+
+    .traffic-table td {
         display: table-cell;
         padding: .25em .5em;
     }

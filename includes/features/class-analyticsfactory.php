@@ -28,6 +28,14 @@ use Traffic\System\Timezone;
 class AnalyticsFactory {
 
 	/**
+	 * Allowed types.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $allowed_types    Maintain the allowed types.
+	 */
+	private static $allowed_types = [ 'domain', 'domains', 'authority', 'authorities', 'endpoint', 'endpoints', 'country' ];
+
+	/**
 	 * Ajax callback.
 	 *
 	 * @since    1.0.0
@@ -59,7 +67,7 @@ class AnalyticsFactory {
 		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
 			$type = filter_input( INPUT_POST, 'type' );
 		}
-		if ( empty( $type ) || ( 'domain' !== $type && 'domains' !== $type && 'authority' !== $type  && 'endpoint' !== $type && 'country' !== $type  ) ) {
+		if ( empty( $type ) || ! in_array( $type, self::$allowed_types ) ) {
 			$type = 'summary';
 		}
 		// Filters.

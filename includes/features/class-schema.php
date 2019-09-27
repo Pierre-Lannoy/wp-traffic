@@ -364,7 +364,7 @@ class Schema {
 			$c = $c . ', ';
 		}
 		global $wpdb;
-		$sql  = 'SELECT ' . $group . ', ' . $c . 'sum(hit) as sum_hit, sum(kb_in) as sum_kb_in, sum(kb_out) as sum_kb_out, sum(hit*latency_avg)/sum(hit) as avg_latency, min(latency_min) as min_latency, max(latency_max) as max_latency FROM ';
+		$sql  = 'SELECT ' . ( '' !== $group && 'id' !== $group && 'authority' !== $group ? $group . ', ' : '' ) . $c . 'id, authority, sum(hit) as sum_hit, sum(kb_in) as sum_kb_in, sum(kb_out) as sum_kb_out, sum(hit*latency_avg)/sum(hit) as avg_latency, min(latency_min) as min_latency, max(latency_max) as max_latency FROM ';
 		$sql .= $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ') ' . $where_extra . ' GROUP BY ' . $group . ' ' . $order . ( $limit > 0 ? 'LIMIT ' . $limit : '') .';';
 		// phpcs:ignore
 		$result = $wpdb->get_results( $sql, ARRAY_A );

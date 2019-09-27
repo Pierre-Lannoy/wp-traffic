@@ -35,9 +35,35 @@ wp_enqueue_style( 'traffic-tooltip' );
                 </div>
             </div>
 		<?php } ?>
+		<?php if ( 'domain' === $analytics->type) { ?>
+            <div class="traffic-row">
+                <div class="traffic-box traffic-box-40-60-line">
+					<?php echo $analytics->get_top_authority_box() ?>
+					<?php echo $analytics->get_map_box() ?>
+                </div>
+            </div>
+		<?php } ?>
+		<?php if ( 'authority' === $analytics->type) { ?>
+            <div class="traffic-row">
+                <div class="traffic-box traffic-box-40-60-line">
+					<?php echo $analytics->get_top_endpoint_box() ?>
+					<?php echo $analytics->get_map_box() ?>
+                </div>
+            </div>
+		<?php } ?>
 		<?php if ( 'domains' === $analytics->type) { ?>
             <div class="traffic-row">
 	            <?php echo $analytics->get_domains_list() ?>
+            </div>
+		<?php } ?>
+		<?php if ( 'authorities' === $analytics->type) { ?>
+            <div class="traffic-row">
+				<?php echo $analytics->get_authorities_list() ?>
+            </div>
+		<?php } ?>
+		<?php if ( 'endpoints' === $analytics->type) { ?>
+            <div class="traffic-row">
+				<?php echo $analytics->get_endpoints_list() ?>
             </div>
 		<?php } ?>
 		<div class="traffic-row">

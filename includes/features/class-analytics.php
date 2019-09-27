@@ -189,10 +189,12 @@ class Analytics {
 		if ( '' !== $id ) {
 			switch ( $type ) {
 				case 'domain':
+				case 'authorities':
 					$this->filter[]   = "id='" . $id . "'";
 					$this->previous[] = "id='" . $id . "'";
 					break;
 				case 'authority':
+				case 'endpoints':
 					$this->filter[]   = "authority='" . $id . "'";
 					$this->previous[] = "authority='" . $id . "'";
 					break;
@@ -263,8 +265,16 @@ class Analytics {
 				return $this->query_kpi( $queried );
 			case 'top-domains':
 				return $this->query_top_domains( $queried );
+			case 'top-authorities':
+				return $this->query_top_authorities( $queried );
+			case 'top-endpoints':
+				return $this->query_top_endpoints( $queried );
 			case 'domains':
 				return $this->query_domains( $queried );
+			case 'authorities':
+				return $this->query_authorities( $queried );
+			case 'endpoints':
+				return $this->query_endpoints( $queried );
 		}
 		return [];
 	}
@@ -277,8 +287,56 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_top_domains( $queried ) {
-		$limit = (int) $queried;
-		$data  = Schema::get_grouped_list( 'id', [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		return $this->query_top( 'domains', (int) $queried );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_top_authorities( $queried ) {
+		return $this->query_top( 'authorities', (int) $queried );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_top_endpoints( $queried ) {
+		return $this->query_top( 'endpoints', (int) $queried );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   string  $type    The type of top.
+	 * @param   integer $limit  The number to display.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_top( $type, $limit ) {
+		switch ( $type ) {
+			case 'authorities':
+				$group  = 'authority';
+				$follow = 'authority';
+				break;
+			case 'endpoints':
+				$group  = 'endpoint';
+				$follow = 'endpoint';
+				break;
+			default:
+				$group  = 'id';
+				$follow = 'domain';
+				break;
+
+		}
+		$data  = Schema::get_grouped_list( $group, [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
 		$total = 0;
 		$other = 0;
 		foreach ( $data as $key => $row ) {
@@ -291,18 +349,24 @@ class Analytics {
 		$cpt    = 0;
 		while ( $cpt < $limit && array_key_exists( $cpt, $data ) ) {
 			if ( 0 < $total ) {
-				$percent = round( 100 * $data[$cpt]['sum_hit'] / $total, 1 );
+				$percent = round( 100 * $data[ $cpt ]['sum_hit'] / $total, 1 );
 			} else {
 				$percent = 100;
 			}
-			$url     = $this->get_url( [], [ 'type' => 'domain', 'id' => $data[$cpt]['id'] ] );
+			$url     = $this->get_url(
+				[],
+				[
+					'type' => $follow,
+					'id'   => $data[ $cpt ][ $group ],
+				]
+			);
 			$result .= '<div class="traffic-top-line">';
 			$result .= '<div class="traffic-top-line-title">';
-			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[$cpt]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[$cpt]['id'] .'</a></span>';
+			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[ $cpt ][ $group ] . '</a></span>';
 			$result .= '</div>';
 			$result .= '<div class="traffic-top-line-content">';
-			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent. '%"></div></div>';
-			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[$cpt]['sum_hit'], 2 ) . '</div>';
+			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
+			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[ $cpt ]['sum_hit'], 2 ) . '</div>';
 			$result .= '</div>';
 			$result .= '</div>';
 			++$cpt;
@@ -314,14 +378,14 @@ class Analytics {
 		}
 		$result .= '<div class="traffic-top-line traffic-minor-data">';
 		$result .= '<div class="traffic-top-line-title">';
-		$result .= '<span class="traffic-top-line-title-text">' . esc_html__( 'Other', 'traffic') .'</span>';
+		$result .= '<span class="traffic-top-line-title-text">' . esc_html__( 'Other', 'traffic' ) . '</span>';
 		$result .= '</div>';
 		$result .= '<div class="traffic-top-line-content">';
-		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent. '%"></div></div>';
+		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
 		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2 ) . '</div>';
 		$result .= '</div>';
 		$result .= '</div>';
-		return [ 'traffic-top-domains' => $result];
+		return [ 'traffic-top-' . $type => $result ];
 	}
 
 	/**
@@ -332,7 +396,55 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_domains( $queried ) {
-		$data         = Schema::get_grouped_list( 'id', [ 'authority', 'endpoint'], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		return $this->query_list( 'domains' );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_authorities( $queried ) {
+		return $this->query_list( 'authorities' );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_endpoints( $queried ) {
+		return $this->query_list( 'endpoints' );
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   string $type    The type of list.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_list( $type ) {
+		switch ( $type ) {
+			case 'authorities':
+				$group  = 'authority';
+				$follow = 'authority';
+				break;
+			case 'endpoints':
+				$group  = 'endpoint';
+				$follow = 'endpoint';
+				break;
+			default:
+				$group  = 'id';
+				$follow = 'domain';
+				break;
+
+		}
+		$data         = Schema::get_grouped_list( $group, [ 'authority', 'endpoint' ], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
 		$detail_name  = esc_html__( 'Details', 'traffic' );
 		$calls_name   = esc_html__( 'Calls', 'traffic' );
 		$data_name    = esc_html__( 'Data Volume', 'traffic' );
@@ -340,43 +452,69 @@ class Analytics {
 		$result       = '<table class="traffic-table">';
 		$result      .= '<tr>';
 		$result      .= '<th>&nbsp;</th>';
-		$result      .= '<th>' . $detail_name . '</th>';
-		$result      .= '<th>' . $calls_name . '</th>';
-		$result      .= '<th>' . $data_name . '</th>';
-		$result      .= '<th>' . $latency_name . '</th>';
-		$result      .= '</tr>';
+		if ( 'endpoints' !== $type ) {
+			$result .= '<th>' . $detail_name . '</th>';
+		}
+		$result .= '<th>' . $calls_name . '</th>';
+		$result .= '<th>' . $data_name . '</th>';
+		$result .= '<th>' . $latency_name . '</th>';
+		$result .= '</tr>';
 		foreach ( $data as $row ) {
-			$url    = $this->get_url( [], [ 'type' => 'domain', 'id' => $row['id'] ] );
-			$name   = $row['id'];
-			$detail = sprintf( esc_html( _n( '%d authority', '%d authorities', $row['cnt_authority'], 'traffic'  ) ), $row['cnt_authority'] ) . ' - ' . sprintf( esc_html( _n( '%d endpoint', '%d endpoints', $row['cnt_endpoint'], 'traffic'  ) ), $row['cnt_endpoint'] );
-			$domain = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name .'</a></span>';
+			$url         = $this->get_url(
+				[],
+				[
+					'type' => $follow,
+					'id'   => $row[ $group ],
+				]
+			);
+			$name        = $row[ $group ];
+			$authorities = sprintf( esc_html( _n( '%d subdomain', '%d subdomains', $row['cnt_authority'], 'traffic' ) ), $row['cnt_authority'] );
+			$endpoints   = sprintf( esc_html( _n( '%d endpoint', '%d endpoints', $row['cnt_endpoint'], 'traffic' ) ), $row['cnt_endpoint'] );
+			switch ( $type ) {
+				case 'domains':
+					$detail = $authorities . ' - ' . $endpoints;
+					break;
+				case 'authorities':
+					$detail = $endpoints;
+					break;
+				default:
+					$detail = '';
+
+			}
+			$domain = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
 			$calls  = Conversion::number_shorten( $row['sum_hit'], 2 );
 			$in     = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
-			$out    = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024 , 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$out    = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
 			$data   = $in . ' &nbsp;&nbsp; ' . $out;
-			$min    = Conversion::number_shorten( $row['min_latency'] , 0 );
-			if ( false !== strpos( $min, 'K' ) ) {
-				$min = str_replace( 'K', 's', $min );
+			if ( 1 < $row['sum_hit'] ) {
+				$min = Conversion::number_shorten( $row['min_latency'], 0 );
+				if ( false !== strpos( $min, 'K' ) ) {
+					$min = str_replace( 'K', 's', $min );
+				} else {
+					$min = $min . 'ms';
+				}
+				$max = Conversion::number_shorten( $row['max_latency'], 0 );
+				if ( false !== strpos( $max, 'K' ) ) {
+					$max = str_replace( 'K', 's', $max );
+				} else {
+					$max = $max . 'ms';
+				}
+				$latency = (int) $row['avg_latency'] . 'ms&nbsp;<small>' . $min . '→' . $max . '</small>';
 			} else {
-				$min = $min . 'ms';
+				$latency = (int) $row['avg_latency'] . 'ms';
 			}
-			$max = Conversion::number_shorten( $row['max_latency'] , 0 );
-			if ( false !== strpos( $max, 'K' ) ) {
-				$max = str_replace( 'K', 's', $max );
-			} else {
-				$max = $max . 'ms';
-			}
-			$latency = (int) $row['avg_latency'] . 'ms&nbsp;<small>' . $min . '→' . $max .  '</small>';
 			$result .= '<tr>';
 			$result .= '<td data-th="">' . $domain . '</td>';
-			$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
+			if ( 'endpoints' !== $type ) {
+				$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
+			}
 			$result .= '<td data-th="' . $calls_name . '">' . $calls . '</td>';
 			$result .= '<td data-th="' . $data_name . '">' . $data . '</td>';
 			$result .= '<td data-th="' . $latency_name . '">' . $latency . '</td>';
 			$result .= '</tr>';
 		}
 		$result .= '</table>';
-		return [ 'traffic-domains' => $result];
+		return [ 'traffic-' . $type => $result ];
 	}
 
 	/**
@@ -556,16 +694,18 @@ class Analytics {
 				$title    = esc_html__( 'Summary', 'traffic' );
 				$subtitle = '';
 				break;
-			case 'domain':
-				$title    = esc_html__( 'Top Domain', 'traffic' );
-				$subtitle = $this->id;
-				break;
 			case 'domains':
 				$title    = esc_html__( 'All Domains', 'traffic' );
 				$subtitle = '';
 				break;
+			case 'domain':
+			case 'authorities':
+				$title    = esc_html__( 'Domain', 'traffic' );
+				$subtitle = $this->id;
+				break;
 			case 'authority':
-				$title    = esc_html__( 'Service', 'traffic' );
+			case 'endpoints':
+				$title    = esc_html__( 'Subdomain', 'traffic' );
 				$subtitle = $this->id;
 				break;
 			case 'endpoint':
@@ -616,7 +756,7 @@ class Analytics {
 	/**
 	 * Get the domains list.
 	 *
-	 * @return string  The bar ready to print.
+	 * @return string  The table ready to print.
 	 * @since    1.0.0
 	 */
 	public function get_domains_list() {
@@ -628,6 +768,48 @@ class Analytics {
 		$result .= $this->get_refresh_script(
 			[
 				'query'   => 'domains',
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the authorities list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_authorities_list() {
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Subdomains', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-authorities">' . $value . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'authorities',
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the endpoints list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_endpoints_list() {
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Endpoints', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-endpoints">' . $value . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'endpoints',
 				'queried' => 0,
 			]
 		);
@@ -651,6 +833,52 @@ class Analytics {
 		$result .= $this->get_refresh_script(
 			[
 				'query'   => 'top-domains',
+				'queried' => 5,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the top authority box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_top_authority_box() {
+		$url     = $this->get_url( [], [ 'type' => 'authorities' ] );
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-40-module" style="height:290px">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-authorities">' . $value . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'top-authorities',
+				'queried' => 5,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the top endpoint box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_top_endpoint_box() {
+		$url     = $this->get_url( [], [ 'type' => 'endpoints' ] );
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-40-module" style="height:290px">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-endpoints">' . $value . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'top-endpoints',
 				'queried' => 5,
 			]
 		);
