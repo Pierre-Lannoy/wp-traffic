@@ -263,6 +263,8 @@ class Analytics {
 				return $this->query_kpi( $queried );
 			case 'top-domains':
 				return $this->query_top_domains( $queried );
+			case 'domains':
+				return $this->query_domains( $queried );
 		}
 		return [];
 	}
@@ -276,7 +278,7 @@ class Analytics {
 	 */
 	private function query_top_domains( $queried ) {
 		$limit = (int) $queried;
-		$data  = Schema::get_grouped_list( 'id', $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$data  = Schema::get_grouped_list( 'id', [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
 		$total = 0;
 		$other = 0;
 		foreach ( $data as $key => $row ) {
@@ -320,6 +322,61 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '</div>';
 		return [ 'traffic-top-domains' => $result];
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   mixed $queried The query params.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_domains( $queried ) {
+		$data         = Schema::get_grouped_list( 'id', [ 'authority', 'endpoint'], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$detail_name  = esc_html__( 'Details', 'traffic' );
+		$calls_name   = esc_html__( 'Calls', 'traffic' );
+		$data_name    = esc_html__( 'Data Volume', 'traffic' );
+		$latency_name = esc_html__( 'Latency', 'traffic' );
+		$result       = '<table class="traffic-table">';
+		$result      .= '<tr>';
+		$result      .= '<th>&nbsp;</th>';
+		$result      .= '<th>' . $detail_name . '</th>';
+		$result      .= '<th>' . $calls_name . '</th>';
+		$result      .= '<th>' . $data_name . '</th>';
+		$result      .= '<th>' . $latency_name . '</th>';
+		$result      .= '</tr>';
+		foreach ( $data as $row ) {
+			$url    = $this->get_url( [], [ 'type' => 'domain', 'id' => $row['id'] ] );
+			$name   = $row['id'];
+			$detail = sprintf( esc_html( _n( '%d authority', '%d authorities', $row['cnt_authority'], 'traffic'  ) ), $row['cnt_authority'] ) . ' - ' . sprintf( esc_html( _n( '%d endpoint', '%d endpoints', $row['cnt_endpoint'], 'traffic'  ) ), $row['cnt_endpoint'] );
+			$domain = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name .'</a></span>';
+			$calls  = Conversion::number_shorten( $row['sum_hit'], 2 );
+			$in     = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
+			$out    = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024 , 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$data   = $in . ' &nbsp;&nbsp; ' . $out;
+			$min    = Conversion::number_shorten( $row['min_latency'] , 0 );
+			if ( false !== strpos( $min, 'K' ) ) {
+				$min = str_replace( 'K', 's', $min );
+			} else {
+				$min = $min . 'ms';
+			}
+			$max = Conversion::number_shorten( $row['max_latency'] , 0 );
+			if ( false !== strpos( $max, 'K' ) ) {
+				$max = str_replace( 'K', 's', $max );
+			} else {
+				$max = $max . 'ms';
+			}
+			$latency = (int) $row['avg_latency'] . 'ms&nbsp;<small>' . $min . '→' . $max .  '</small>';
+			$result .= '<tr>';
+			$result .= '<td data-th="">' . $domain . '</td>';
+			$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
+			$result .= '<td data-th="' . $calls_name . '">' . $calls . '</td>';
+			$result .= '<td data-th="' . $data_name . '">' . $data . '</td>';
+			$result .= '<td data-th="' . $latency_name . '">' . $latency . '</td>';
+			$result .= '</tr>';
+		}
+		$result .= '</table>';
+		return [ 'traffic-domains' => $result];
 	}
 
 	/**
@@ -391,8 +448,8 @@ class Analytics {
 			} elseif ( 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
-			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_in, 2 ) . '</span>';
-			$out                                = '<span class="traffic-kpi-large-bottom-text"">' . Conversion::data_shorten( $current_out, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_in, 2 ) . '</span>';
+			$out                                = '<span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_out, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
 			$result[ 'kpi-bottom-' . $queried ] = $in . ' &nbsp;&nbsp; ' . $out;
 		}
 		if ( 'server' === $queried || 'quota' === $queried || 'pass' === $queried || 'uptime' === $queried ) {
@@ -557,9 +614,30 @@ class Analytics {
 	}
 
 	/**
-	 * Get the KPI bar.
+	 * Get the domains list.
 	 *
 	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_domains_list() {
+		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Domains', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-domains">' . $value . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'domains',
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the top domains box.
+	 *
+	 * @return string  The box ready to print.
 	 * @since    1.0.0
 	 */
 	public function get_top_domain_box() {
@@ -580,9 +658,9 @@ class Analytics {
 	}
 
 	/**
-	 * Get the KPI bar.
+	 * Get the map box.
 	 *
-	 * @return string  The bar ready to print.
+	 * @return string  The box ready to print.
 	 * @since    1.0.0
 	 */
 	public function get_map_box() {

@@ -4,7 +4,7 @@
     --main-box-shadow: 1px 1px 8px #DDDDDD;
     --aux-bg-color: #EEEEEE;
     --aux-font-color: #888888;
-
+    --table-bg-color: #F9F9FB;
 
 
     --title-font-size: 22px;
@@ -15,6 +15,7 @@
     --subtitle-border: 1px solid #DDDDDD;
     --header-action-font-color: #5A738E;
     --header-action-font-size: 12px;
+    --header-action-font-weight: 100;
     --kpi-big-font-size: 32px;
     --kpi-big-font-weight: 400;
     --kpi-big-letter-spacing: 0.8px;
@@ -271,6 +272,35 @@
     opacity: 0.4;
 }
 
+.traffic-table {
+    width:100%;
+    border-spacing: 0px;
+}
+
+.traffic-table th {
+    display: none;
+    font-size: var(--header-action-font-size);
+    color: var(--aux-font-color);
+    font-weight: var(--header-action-font-weight);
+    text-align: left;
+}
+.traffic-table td {
+    color: var(--main-font-color);
+}
+
+.traffic-table tr:nth-child(even) {
+    background: var(--table-bg-color);
+}
+
+.traffic-table-text a {
+    text-decoration: none;
+    color: var(--aux-font-color);
+}
+
+.traffic-table small {
+    font-size: xx-small;
+}
+
 
 button.btn {
     color: var(--main-bg-color);
@@ -279,6 +309,20 @@ button.btn {
     border-radius: 2px;
 }
 
+
+@media only screen and (min-width: 501px) {
+    .traffic-table th, .traffic-table td {
+        display: table-cell;
+        padding: .25em .5em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .traffic-table td {
+        display: block;
+        padding: .25em .5em;
+    }
+}
 
 @media only screen and (min-width: 1101px) {
     .traffic-kpi-large {

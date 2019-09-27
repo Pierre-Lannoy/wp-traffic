@@ -34,11 +34,11 @@ wp_enqueue_style( 'traffic-tooltip' );
                     <?php echo $analytics->get_map_box() ?>
                 </div>
             </div>
-
-
-
-
-
+		<?php } ?>
+		<?php if ( 'domains' === $analytics->type) { ?>
+            <div class="traffic-row">
+	            <?php echo $analytics->get_domains_list() ?>
+            </div>
 		<?php } ?>
 		<div class="traffic-row">
 
