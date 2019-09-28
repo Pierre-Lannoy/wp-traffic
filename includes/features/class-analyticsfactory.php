@@ -63,6 +63,13 @@ class AnalyticsFactory {
 		if ( empty( $id ) ) {
 			$id = '';
 		}
+		// Domain.
+		if ( ! ( $domain = filter_input( INPUT_GET, 'domain' ) ) ) {
+			$domain = filter_input( INPUT_POST, 'domain' );
+		}
+		if ( empty( $domain ) ) {
+			$domain = '';
+		}
 		// Analytics type.
 		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
 			$type = filter_input( INPUT_POST, 'type' );
@@ -105,7 +112,8 @@ class AnalyticsFactory {
 			$start = $edatetime->format( 'Y-m-d' );
 			$end   = $sdatetime->format( 'Y-m-d' );
 		}
-		return new Analytics( $type, $context, $site, $start, $end, $id, $reload );
+
+		return new Analytics( $domain, $type, $context, $site, $start, $end, $id, $reload );
 	}
 
 }

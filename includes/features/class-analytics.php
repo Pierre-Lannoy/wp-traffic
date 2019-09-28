@@ -35,6 +35,14 @@ use Traffic\System\Timezone;
 class Analytics {
 
 	/**
+	 * The domain name.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $domain    The domain name.
+	 */
+	public $domain = '';
+
+	/**
 	 * The dashboard type.
 	 *
 	 * @since  1.0.0
@@ -157,6 +165,7 @@ class Analytics {
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * @param   string  $domain  The domain name, if disambiguation is needed.
 	 * @param   string  $type    The type of analytics ( summary, domain, authority, endpoint, country).
 	 * @param   string  $context The context of analytics (both, inbound, outbound).
 	 * @param   string  $site    The site to analyze (all or ID).
@@ -166,7 +175,7 @@ class Analytics {
 	 * @param   boolean $reload  Optional. Is it a reload of an already displayed analytics.
 	 * @since    1.0.0
 	 */
-	public function __construct( $type, $context, $site, $start, $end, $id = '', $reload = false ) {
+	public function __construct( $domain, $type, $context, $site, $start, $end, $id = '', $reload = false ) {
 		$this->id      = $id;
 		$this->context = $context;
 		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
@@ -177,7 +186,11 @@ class Analytics {
 			$this->filter[]   = "site='" . $site . "'";
 			$this->previous[] = "site='" . $site . "'";
 		}
-
+		if ( '' !== $domain ) {
+			$this->domain     = $domain;
+			$this->filter[]   = "id='" . $domain . "'";
+			$this->previous[] = "id='" . $domain . "'";
+		}
 		if ( $start === $end ) {
 			$this->filter[] = "timestamp='" . $start . "'";
 		} else {
@@ -197,6 +210,7 @@ class Analytics {
 				case 'endpoints':
 					$this->filter[]   = "authority='" . $id . "'";
 					$this->previous[] = "authority='" . $id . "'";
+
 					break;
 				case 'endpoint':
 					$this->filter[]   = "endpoint='" . $id . "'";
@@ -209,6 +223,11 @@ class Analytics {
 				default:
 					$this->type = 'summary';
 			}
+		}
+		if ( '' !== $domain && 'domain' !== $type && 'authorities' !== $type ) {
+			$this->domain     = $domain;
+			$this->filter[]   = "id='" . $domain . "'";
+			$this->previous[] = "id='" . $domain . "'";
 		}
 		$this->timezone     = Timezone::network_get();
 		$datetime           = new \DateTime( 'now', $this->timezone );
@@ -353,11 +372,12 @@ class Analytics {
 			} else {
 				$percent = 100;
 			}
-			$url     = $this->get_url(
+			$url = $this->get_url(
 				[],
 				[
-					'type' => $follow,
-					'id'   => $data[ $cpt ][ $group ],
+					'type'   => $follow,
+					'id'     => $data[ $cpt ][ $group ],
+					'domain' => $data[ $cpt ]['id'],
 				]
 			);
 			if ( 0.5 > $percent ) {
@@ -466,8 +486,9 @@ class Analytics {
 			$url         = $this->get_url(
 				[],
 				[
-					'type' => $follow,
-					'id'   => $row[ $group ],
+					'type'   => $follow,
+					'id'     => $row[ $group ],
+					'domain' => $row['id'],
 				]
 			);
 			$name        = $row[ $group ];
@@ -723,7 +744,7 @@ class Analytics {
 		if ( 'summary' === $this->type ) {
 			$home = '';
 		} else {
-			$home = '<a href="' . $this->get_url( [ 'type', 'id' ] ) . '"><img style="width:20px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'home', 'none', '#73879C' ) . '" /></a>&nbsp;<img style="width:16px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'chevron-right', 'none', '#73879C' ) . '" />';
+			$home = '<a href="' . $this->get_url( [ 'type', 'id', 'domain' ] ) . '"><img style="width:20px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'home', 'none', '#73879C' ) . '" /></a>&nbsp;<img style="width:16px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'chevron-right', 'none', '#73879C' ) . '" />';
 		}
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<span class="traffic-home">' . $home . '</span>';
@@ -826,7 +847,7 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_domain_box() {
-		$url     = $this->get_url( [], [ 'type' => 'domains' ] );
+		$url     = $this->get_url( [ 'domain' ], [ 'type' => 'domains' ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
@@ -849,7 +870,7 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_authority_box() {
-		$url     = $this->get_url( [], [ 'type' => 'authorities' ] );
+		$url     = $this->get_url( [], [ 'type' => 'authorities', 'domain' => $this->domain ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
@@ -872,7 +893,7 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_endpoint_box() {
-		$url     = $this->get_url( [], [ 'type' => 'endpoints' ] );
+		$url     = $this->get_url( [], [ 'type' => 'endpoints', 'domain' => $this->domain ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
@@ -1035,7 +1056,9 @@ class Analytics {
 		}
 		$url = admin_url( 'tools.php?page=traffic-viewer' );
 		foreach ( $params as $key => $arg ) {
-			$url .= '&' . $key . '=' . $arg;
+			if ( '' !== $arg ) {
+				$url .= '&' . $key . '=' . $arg;
+			}
 		}
 		return $url;
 	}
@@ -1086,7 +1109,7 @@ class Analytics {
 			$result .= ' ' . $bound . '.disable();';
 		}
 		$result .= ' elem.onchange = function() {';
-		$result .= '  var url="' . $this->get_url( [ 'context' ] ) . '";';
+		$result .= '  var url="' . $this->get_url( [ 'context' ], [ 'domain' => $this->domain ] ) . '";';
 		if ( $other ) {
 			$result .= ' if (!elem.checked) {url = url + "&context=' . $other_t . '";}';
 		} else {
@@ -1133,7 +1156,7 @@ class Analytics {
 		$result .= ' }, changeDate);';
 		$result .= ' changeDate(start, end);';
 		$result .= ' $(".traffic-datepicker").on("apply.daterangepicker", function(ev, picker) {';
-		$result .= '  var url = "' . $this->get_url( [ 'start', 'end' ] ) . '" + "&start=" + picker.startDate.format("YYYY-MM-DD") + "&end=" + picker.endDate.format("YYYY-MM-DD");';
+		$result .= '  var url = "' . $this->get_url( [ 'start', 'end' ], [ 'domain' => $this->domain ] ) . '" + "&start=" + picker.startDate.format("YYYY-MM-DD") + "&end=" + picker.endDate.format("YYYY-MM-DD");';
 		$result .= '  $(location).attr("href", url);';
 		$result .= ' });';
 		$result .= '});';
