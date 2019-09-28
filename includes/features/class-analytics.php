@@ -707,12 +707,12 @@ class Analytics {
 	}
 
 	/**
-	 * Get the title bar.
+	 * Get the title selector.
 	 *
-	 * @return string  The bar ready to print.
+	 * @return string  The selector ready to print.
 	 * @since    1.0.0
 	 */
-	public function get_title_bar() {
+	public function get_title_selector() {
 		switch ( $this->type ) {
 			case 'summary':
 				$title    = esc_html__( 'Summary', 'traffic' );
@@ -741,13 +741,44 @@ class Analytics {
 				$subtitle = L10n::get_country_name( $this->id );
 				break;
 		}
-		if ( 'summary' === $this->type ) {
-			$home = '';
-		} else {
-			$home = '<a href="' . $this->get_url( [ 'type', 'id', 'domain' ] ) . '"><img style="width:20px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'home', 'none', '#73879C' ) . '" /></a>&nbsp;<img style="width:16px;vertical-align:middle;" src="' . Feather\Icons::get_base64( 'chevron-right', 'none', '#73879C' ) . '" />';
+		$result = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '">';
+		$result .= '<option value="https://www.google.com">aaaaaaaaaaaaaaa ~-erfgergf jhegdf uzhsd sjrhdv uerg-~</span></option>';
+		$result .= '<option value="bbb" class="selection">bbb</option>';
+		$result .= '<option value="' . admin_url( 'tools.php?page=traffic-viewer' ) . '">Summary ~-Return to summary page-~</span></option>';
+		$result .= '</select>';
+		$result .= '';
+
+
+
+		return $result;
+	}
+
+	/**
+	 * Get the title bar.
+	 *
+	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_title_bar() {
+		$subtitle = $this->id;
+		switch ( $this->type ) {
+			case 'summary':
+				$title = esc_html__( 'Summary', 'traffic' );
+				break;
+			case 'domain':
+			case 'authority':
+			case 'endpoint':
+			case 'domains':
+			case 'authorities':
+			case 'endpoints':
+				$title = $this->get_title_selector();
+				break;
+			case 'country':
+				$title    = esc_html__( 'Country', 'traffic' );
+				$subtitle = L10n::get_country_name( $this->id );
+				break;
 		}
 		$result  = '<div class="traffic-box traffic-box-full-line">';
-		$result .= '<span class="traffic-home">' . $home . '</span>';
 		$result .= '<span class="traffic-title">' . $title . '</span>';
 		$result .= '<span class="traffic-subtitle">' . $subtitle . '</span>';
 		$result .= '<span class="traffic-datepicker">' . $this->get_date_box() . '</span>';

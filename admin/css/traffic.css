@@ -4,6 +4,8 @@
     --main-box-shadow: 1px 1px 8px #DDDDDD;
     --aux-bg-color: #EEEEEE;
     --aux-font-color: #888888;
+    --pop-box-border: 1px solid rgba(90, 115, 142, 0.2);
+    --pop-box-hover: rgba(90, 115, 142, 0.2);
     --table-bg-color: #F9F9FB;
 
 
@@ -247,7 +249,7 @@
 
 .traffic-bar-graph {
     display: inline-block;
-    width: 90%;
+    width: 87%;
     height: 6px;
     border-radius: 2px;
     background-color: var(--aux-bg-color);
@@ -310,6 +312,17 @@ button.btn {
 }
 
 
+
+
+
+
+
+@media only screen and (max-width: 300px) {
+    .traffic-bar-graph {
+        width: 75%;
+    }
+}
+
 @media only screen and (min-width: 501px) {
     .traffic-table th {
         display: table-cell;
@@ -356,6 +369,9 @@ button.btn {
     .traffic-kpi-large:nth-child(2n+1):before {
         border: none;
     }
+    .traffic-bar-graph {
+        width: 80%;
+    }
 }
 
 @media only screen and (max-width: 300px) {
@@ -363,11 +379,16 @@ button.btn {
         min-width: 100%;
         margin-bottom: 14px;
     }
+
     .traffic-kpi-large:before {
         border: none;
     }
+
     .traffic-kpi-large-middle {
         margin-top: 0px;
+    }
+    .traffic-bar-graph {
+        width: 70%;
     }
 }
 
@@ -432,3 +453,83 @@ button.btn {
     }
 }
 
+.traffic-select-wrapper {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+}
+.traffic-select-wrapper select {
+    display: none;
+}
+.traffic-select {
+    position: relative;
+    display: inline-block;
+}
+.traffic-select-trigger {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+.traffic-options {
+    z-index: 3001;
+    position: absolute;
+    display: block;
+    width: max-content;
+    margin-top: 7px;
+    border: var(--pop-box-border);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: var(--main-bg-color);
+    font-size: var(--header-action-font-size);
+    font-weight: var(--subtitle-font-weight);
+    letter-spacing: 0px;
+    color: #5A738E;
+    box-shadow: var(--main-box-shadow);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.traffic-select.opened .traffic-options {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+.traffic-options:before {
+    position: absolute;
+    display: block;
+    content: '';
+    bottom: 100%;
+    left: 10px;
+    width: 7px;
+    height: 7px;
+    margin-bottom: -3px;
+    border-top: var(--pop-box-border);
+    border-left: var(--pop-box-border);
+    background: var(--main-bg-color);
+    transform: rotate(45deg);
+}
+.option-hover:before {
+    background: #f9f9f9;
+}
+.traffic-option {
+    position: relative;
+    display: block;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin: 8px 0px;
+}
+
+.traffic-option-subtext {
+    color: var(--aux-font-color);
+    margin-top: -2px;
+}
+
+.traffic-option:hover {
+    background-color: var(--pop-box-hover);
+}
+
+.traffic-option.selection {
+    background-color: var(--header-action-font-color);
+    color: var(--main-bg-color);
+}

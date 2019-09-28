@@ -12,6 +12,7 @@
 wp_enqueue_script( 'moment-with-locale' );
 wp_enqueue_script( 'daterangepicker' );
 wp_enqueue_script( 'switchery' );
+wp_enqueue_script( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( 'daterangepicker' );
 wp_enqueue_style( 'switchery' );
