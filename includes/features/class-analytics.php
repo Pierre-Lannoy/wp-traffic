@@ -714,41 +714,70 @@ class Analytics {
 	 */
 	public function get_title_selector() {
 		switch ( $this->type ) {
-			case 'summary':
-				$title    = esc_html__( 'Summary', 'traffic' );
-				$subtitle = '';
-				break;
 			case 'domains':
-				$title    = esc_html__( 'All Domains', 'traffic' );
-				$subtitle = '';
+				$title = esc_html__( 'All Domains', 'traffic' );
 				break;
 			case 'domain':
 			case 'authorities':
-				$title    = esc_html__( 'Domain', 'traffic' );
-				$subtitle = $this->id;
+				$title = esc_html__( 'Domain', 'traffic' );
 				break;
 			case 'authority':
 			case 'endpoints':
-				$title    = esc_html__( 'Subdomain', 'traffic' );
-				$subtitle = $this->id;
+				$title         = esc_html__( 'Subdomain', 'traffic' );
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Domain', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type' => 'domain',
+							'id'   => $this->domain,
+						]
+					),
+				];
 				break;
 			case 'endpoint':
-				$title    = esc_html__( 'Endpoint', 'traffic' );
-				$subtitle = $this->id;
+				$title         = esc_html__( 'Endpoint', 'traffic' );
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Subdomain', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type' => 'domain',
+							'id'   => $this->domain,
+						]
+					),
+				];
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Domain', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type' => 'domain',
+							'id'   => $this->domain,
+						]
+					),
+				];
 				break;
 			case 'country':
 				$title    = esc_html__( 'Country', 'traffic' );
 				$subtitle = L10n::get_country_name( $this->id );
 				break;
+
 		}
-		$result = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '">';
-		$result .= '<option value="https://www.google.com">aaaaaaaaaaaaaaa ~-erfgergf jhegdf uzhsd sjrhdv uerg-~</span></option>';
-		$result .= '<option value="bbb" class="selection">bbb</option>';
-		$result .= '<option value="' . admin_url( 'tools.php?page=traffic-viewer' ) . '">Summary ~-Return to summary page-~</span></option>';
+		$breadcrumbs[] = [
+			'title'    => esc_html__( 'Summary', 'traffic' ),
+			'subtitle' => sprintf( esc_html__( 'Return to summary page.', 'traffic' ) ),
+			'url'      => admin_url( 'tools.php?page=traffic-viewer' ),
+		];
+		$result        = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '">';
+		foreach ( $breadcrumbs as $breadcrumb ) {
+			$result .= '<option value="' . $breadcrumb['url'] . '">' . $breadcrumb['title'] . '~-' . $breadcrumb['subtitle'] . '-~</span></option>';
+		}
 		$result .= '</select>';
 		$result .= '';
-
-
 
 		return $result;
 	}
@@ -901,7 +930,13 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_authority_box() {
-		$url     = $this->get_url( [], [ 'type' => 'authorities', 'domain' => $this->domain ] );
+		$url     = $this->get_url(
+			[],
+			[
+				'type'   => 'authorities',
+				'domain' => $this->domain,
+			]
+		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
@@ -924,7 +959,13 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_top_endpoint_box() {
-		$url     = $this->get_url( [], [ 'type' => 'endpoints', 'domain' => $this->domain ] );
+		$url     = $this->get_url(
+			[],
+			[
+				'type'   => 'endpoints',
+				'domain' => $this->domain,
+			]
+		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
