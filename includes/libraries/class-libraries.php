@@ -197,6 +197,13 @@ class Libraries {
 		$item['license'] = $this->license_name( 'mit' );
 		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
 		$list[]          = $item;
+		$item['name']    = 'Chartist-JS';
+		$item['version'] = '0.11.4';
+		$item['author']  = sprintf( esc_html__( '%s & contributors', 'traffic' ), 'Gion Kunz' );
+		$item['url']     = 'https://github.com/gionkunz/chartist-js';
+		$item['license'] = $this->license_name( 'mit' );
+		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
+		$list[]          = $item;
 		usort( $list, function ( $a, $b ) { return strcmp( strtolower( $a['name'] ), strtolower( $b['name'] ) );} );
 		if ( 'html' === $style ) {
 			$items = [];

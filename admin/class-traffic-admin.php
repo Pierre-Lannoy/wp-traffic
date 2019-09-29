@@ -54,9 +54,11 @@ class Traffic_Admin {
 	 */
 	public function enqueue_styles() {
 		$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'css/traffic.min.css' );
-		$this->assets->register_style( 'daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
-		$this->assets->register_style( 'switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
+		$this->assets->register_style( 'traffic-daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
+		$this->assets->register_style( 'traffic-switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
 		$this->assets->register_style( 'traffic-tooltip', TRAFFIC_ADMIN_URL, 'css/tooltip.min.css' );
+		$this->assets->register_style( 'traffic-chartist', TRAFFIC_ADMIN_URL, 'css/chartist.min.css' );
+		$this->assets->register_style( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'css/chartist-plugin-tooltip.min.css' );
 
 	}
 
@@ -67,9 +69,11 @@ class Traffic_Admin {
 	 */
 	public function enqueue_scripts() {
 		$this->assets->register_script( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'js/traffic.min.js', [ 'jquery' ] );
-		$this->assets->register_script( 'moment-with-locale', TRAFFIC_ADMIN_URL, 'js/moment-with-locales.min.js', [ 'jquery' ] );
-		$this->assets->register_script( 'daterangepicker', TRAFFIC_ADMIN_URL, 'js/daterangepicker.min.js', [ 'jquery' ] );
-		$this->assets->register_script( 'switchery', TRAFFIC_ADMIN_URL, 'js/switchery.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-moment-with-locale', TRAFFIC_ADMIN_URL, 'js/moment-with-locales.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-daterangepicker', TRAFFIC_ADMIN_URL, 'js/daterangepicker.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-switchery', TRAFFIC_ADMIN_URL, 'js/switchery.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-chartist', TRAFFIC_ADMIN_URL, 'css/chartist.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'css/chartist-plugin-tooltip.min.js', [ 'traffic-chartist' ] );
 	}
 
 	/**

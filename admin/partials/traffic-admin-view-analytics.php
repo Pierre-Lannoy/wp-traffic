@@ -9,14 +9,14 @@
  * @since   1.0.0
  */
 
-wp_enqueue_script( 'moment-with-locale' );
-wp_enqueue_script( 'daterangepicker' );
-wp_enqueue_script( 'switchery' );
+wp_enqueue_script( 'traffic-moment-with-locale' );
+wp_enqueue_script( 'traffic-daterangepicker' );
+wp_enqueue_script( 'traffic-switchery' );
 wp_enqueue_script( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
-wp_enqueue_style( 'daterangepicker' );
-wp_enqueue_style( 'switchery' );
-wp_enqueue_style( 'traffic-tooltip' );
+wp_enqueue_style( 'traffic-daterangepicker' );
+wp_enqueue_style( 'traffic-switchery' );
+wp_enqueue_style( 'traffic-traffic-tooltip' );
 
 ?>
 
@@ -28,7 +28,7 @@ wp_enqueue_style( 'traffic-tooltip' );
         <div class="traffic-row">
 	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
-        <?php if ( 'summary' === $analytics->type) { ?>
+        <?php if ( 'summary' === $analytics->type ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
                     <?php echo $analytics->get_top_domain_box() ?>
@@ -36,7 +36,7 @@ wp_enqueue_style( 'traffic-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'domain' === $analytics->type) { ?>
+		<?php if ( 'domain' === $analytics->type ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
 					<?php echo $analytics->get_top_authority_box() ?>
@@ -44,7 +44,7 @@ wp_enqueue_style( 'traffic-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'authority' === $analytics->type) { ?>
+		<?php if ( 'authority' === $analytics->type ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
 					<?php echo $analytics->get_top_endpoint_box() ?>
@@ -52,17 +52,28 @@ wp_enqueue_style( 'traffic-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'domains' === $analytics->type) { ?>
+		<?php if ( 'summary' === $analytics->type || 'domain' === $analytics->type || 'authority' === $analytics->type ) { ?>
+            <div class="traffic-row">
+                <div class="traffic-box traffic-box-33-33-33-line">
+					<?php echo $analytics->get_codes_box() ?>
+					<?php echo $analytics->get_security_box() ?>
+					<?php echo $analytics->get_method_box() ?>
+                </div>
+            </div>
+
+
+		<?php } ?>
+		<?php if ( 'domains' === $analytics->type ) { ?>
             <div class="traffic-row">
 	            <?php echo $analytics->get_domains_list() ?>
             </div>
 		<?php } ?>
-		<?php if ( 'authorities' === $analytics->type) { ?>
+		<?php if ( 'authorities' === $analytics->type ) { ?>
             <div class="traffic-row">
 				<?php echo $analytics->get_authorities_list() ?>
             </div>
 		<?php } ?>
-		<?php if ( 'endpoints' === $analytics->type) { ?>
+		<?php if ( 'endpoints' === $analytics->type ) { ?>
             <div class="traffic-row">
 				<?php echo $analytics->get_endpoints_list() ?>
             </div>

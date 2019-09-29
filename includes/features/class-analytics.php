@@ -292,17 +292,23 @@ class Analytics {
 			case 'kpi':
 				return $this->query_kpi( $queried );
 			case 'top-domains':
-				return $this->query_top_domains( $queried );
+				return $this->query_top( 'domains', (int) $queried );
 			case 'top-authorities':
-				return $this->query_top_authorities( $queried );
+				return $this->query_top( 'authorities', (int) $queried );
 			case 'top-endpoints':
-				return $this->query_top_endpoints( $queried );
+				return $this->query_top( 'endpoints', (int) $queried );
 			case 'domains':
-				return $this->query_domains( $queried );
+				return $this->query_list( 'domains' );
 			case 'authorities':
-				return $this->query_authorities( $queried );
+				return $this->query_list( 'authorities' );
 			case 'endpoints':
-				return $this->query_endpoints( $queried );
+				return $this->query_list( 'endpoints' );
+			case 'code':
+				return $this->query_pie( 'code', (int) $queried );
+			case 'security':
+				return $this->query_pie( 'security', (int) $queried );
+			case 'method':
+				return $this->query_pie( 'method', (int) $queried );
 		}
 		return [];
 	}
@@ -310,34 +316,85 @@ class Analytics {
 	/**
 	 * Query statistics table.
 	 *
-	 * @param   mixed $queried The query params.
+	 * @param   string  $type    The type of pie.
+	 * @param   integer $limit  The number to display.
 	 * @return array  The result of the query, ready to encode.
 	 * @since    1.0.0
 	 */
-	private function query_top_domains( $queried ) {
-		return $this->query_top( 'domains', (int) $queried );
-	}
+	private function query_pie( $type, $limit ) {
+		wp_enqueue_script( 'traffic-chartist' );
+		wp_enqueue_script( 'traffic-chartist-tooltip' );
+		wp_enqueue_style( 'traffic-chartist' );
+		wp_enqueue_style( 'traffic-chartist-tooltip' );
+		switch ( $type ) {
+			case 'code':
+				$group  = 'code';
+				$follow = 'authority';
+				break;
+			case 'security':
+				$group  = 'scheme';
+				$follow = 'endpoint';
+				break;
+			case 'method':
+				$group  = 'verb';
+				$follow = 'domain';
+				break;
 
-	/**
-	 * Query statistics table.
-	 *
-	 * @param   mixed $queried The query params.
-	 * @return array  The result of the query, ready to encode.
-	 * @since    1.0.0
-	 */
-	private function query_top_authorities( $queried ) {
-		return $this->query_top( 'authorities', (int) $queried );
-	}
-
-	/**
-	 * Query statistics table.
-	 *
-	 * @param   mixed $queried The query params.
-	 * @return array  The result of the query, ready to encode.
-	 * @since    1.0.0
-	 */
-	private function query_top_endpoints( $queried ) {
-		return $this->query_top( 'endpoints', (int) $queried );
+		}
+		$data  = Schema::get_grouped_list( $group, [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$total = 0;
+		$other = 0;
+		foreach ( $data as $key => $row ) {
+			$total = $total + $row['sum_hit'];
+			if ( $limit <= $key ) {
+				$other = $other + $row['sum_hit'];
+			}
+		}
+		$result = '';
+		$cpt    = 0;
+		while ( $cpt < $limit && array_key_exists( $cpt, $data ) ) {
+			if ( 0 < $total ) {
+				$percent = round( 100 * $data[ $cpt ]['sum_hit'] / $total, 1 );
+			} else {
+				$percent = 100;
+			}
+			$url = $this->get_url(
+				[],
+				[
+					'type'   => $follow,
+					'id'     => $data[ $cpt ][ $group ],
+					'domain' => $data[ $cpt ]['id'],
+				]
+			);
+			if ( 0.5 > $percent ) {
+				$percent = 0.5;
+			}
+			$result .= '<div class="traffic-top-line">';
+			$result .= '<div class="traffic-top-line-title">';
+			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[ $cpt ][ $group ] . '</a></span>';
+			$result .= '</div>';
+			$result .= '<div class="traffic-top-line-content">';
+			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
+			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[ $cpt ]['sum_hit'], 2 ) . '</div>';
+			$result .= '</div>';
+			$result .= '</div>';
+			++$cpt;
+		}
+		if ( 0 < $total ) {
+			$percent = round( 100 * $other / $total, 1 );
+		} else {
+			$percent = 100;
+		}
+		$result .= '<div class="traffic-top-line traffic-minor-data">';
+		$result .= '<div class="traffic-top-line-title">';
+		$result .= '<span class="traffic-top-line-title-text">' . esc_html__( 'Other', 'traffic' ) . '</span>';
+		$result .= '</div>';
+		$result .= '<div class="traffic-top-line-content">';
+		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
+		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2 ) . '</div>';
+		$result .= '</div>';
+		$result .= '</div>';
+		return [ 'traffic-top-' . $type => $result ];
 	}
 
 	/**
@@ -418,39 +475,6 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '</div>';
 		return [ 'traffic-top-' . $type => $result ];
-	}
-
-	/**
-	 * Query statistics table.
-	 *
-	 * @param   mixed $queried The query params.
-	 * @return array  The result of the query, ready to encode.
-	 * @since    1.0.0
-	 */
-	private function query_domains( $queried ) {
-		return $this->query_list( 'domains' );
-	}
-
-	/**
-	 * Query statistics table.
-	 *
-	 * @param   mixed $queried The query params.
-	 * @return array  The result of the query, ready to encode.
-	 * @since    1.0.0
-	 */
-	private function query_authorities( $queried ) {
-		return $this->query_list( 'authorities' );
-	}
-
-	/**
-	 * Query statistics table.
-	 *
-	 * @param   mixed $queried The query params.
-	 * @return array  The result of the query, ready to encode.
-	 * @since    1.0.0
-	 */
-	private function query_endpoints( $queried ) {
-		return $this->query_list( 'endpoints' );
 	}
 
 	/**
@@ -896,10 +920,9 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_domains_list() {
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Domains', 'traffic' ) . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-domains">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-domains">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -917,10 +940,9 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_authorities_list() {
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Subdomains', 'traffic' ) . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-authorities">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-authorities">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -938,10 +960,9 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_endpoints_list() {
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Endpoints', 'traffic' ) . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-endpoints">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-endpoints">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -961,10 +982,9 @@ class Analytics {
 	public function get_top_domain_box() {
 		$url     = $this->get_url( [ 'domain' ], [ 'type' => 'domains' ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-top-domains">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-domains">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -990,10 +1010,9 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-top-authorities">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-authorities">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -1019,10 +1038,9 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$value   = '<p style="text-align:center;line-height: 200px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
 		$result  = '<div class="traffic-40-module" style="height:290px">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-top-endpoints">' . $value . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-top-endpoints">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -1044,6 +1062,66 @@ class Analytics {
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
 		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
 		$result .= '</div>';
+		return $result;
+	}
+
+	/**
+	 * Get the map box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_codes_box() {
+		$result  = '<div class="traffic-33-module traffic-33-left-module">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-code">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'code',
+				'queried' => 4,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the map box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_security_box() {
+		$result  = '<div class="traffic-33-module traffic-33-center-module">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Schemes', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-security">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'security',
+				'queried' => 4,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the map box.
+	 *
+	 * @return string  The box ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_method_box() {
+		$result  = '<div class="traffic-33-module traffic-33-right-module">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-method">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'method',
+				'queried' => 4,
+			]
+		);
 		return $result;
 	}
 
@@ -1088,11 +1166,10 @@ class Analytics {
 				break;
 		}
 		$top       = '<img style="width:12px;vertical-align:baseline;" src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
-		$value     = '<img style="width:26px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/three-dots.svg" />';
 		$indicator = '&nbsp;';
 		$bottom    = '<span class="traffic-kpi-large-bottom-text">&nbsp;</span>';
 		$result    = '<div class="traffic-kpi-large-top">' . $top . '</div>';
-		$result   .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left" id="kpi-main-' . $kpi . '">' . $value . '</div><div class="traffic-kpi-large-middle-right" id="kpi-index-' . $kpi . '">' . $indicator . '</div></div>';
+		$result   .= '<div class="traffic-kpi-large-middle"><div class="traffic-kpi-large-middle-left" id="kpi-main-' . $kpi . '">' . $this->get_value_placeholder() . '</div><div class="traffic-kpi-large-middle-right" id="kpi-index-' . $kpi . '">' . $indicator . '</div></div>';
 		$result   .= '<div class="traffic-kpi-large-bottom" id="kpi-bottom-' . $kpi . '">' . $bottom . '</div>';
 		$result   .= $this->get_refresh_script(
 			[
@@ -1101,6 +1178,27 @@ class Analytics {
 			]
 		);
 		return $result;
+	}
+
+	/**
+	 * Get a placeholder for graph.
+	 *
+	 * @param   integer $height The height of the placeholder.
+	 * @return string  The placeholder, ready to print.
+	 * @since    1.0.0
+	 */
+	private function get_graph_placeholder( $height ) {
+		return '<p style="text-align:center;line-height:' . $height . 'px;"><img style="width:40px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/bars.svg" /></p>';
+	}
+
+	/**
+	 * Get a placeholder for value.
+	 *
+	 * @return string  The placeholder, ready to print.
+	 * @since    1.0.0
+	 */
+	private function get_value_placeholder() {
+		return '<img style="width:26px;vertical-align:middle;" src="' . TRAFFIC_ADMIN_URL . 'medias/three-dots.svg" />';
 	}
 
 	/**
