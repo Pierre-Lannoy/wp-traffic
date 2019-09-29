@@ -12,11 +12,16 @@
 wp_enqueue_script( 'traffic-moment-with-locale' );
 wp_enqueue_script( 'traffic-daterangepicker' );
 wp_enqueue_script( 'traffic-switchery' );
+wp_enqueue_script( 'traffic-chartist' );
+wp_enqueue_script( 'traffic-chartist-tooltip' );
 wp_enqueue_script( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( 'traffic-daterangepicker' );
 wp_enqueue_style( 'traffic-switchery' );
-wp_enqueue_style( 'traffic-traffic-tooltip' );
+wp_enqueue_style( 'traffic-tooltip' );
+wp_enqueue_style( 'traffic-chartist' );
+wp_enqueue_style( 'traffic-chartist-tooltip' );
+
 
 ?>
 
@@ -63,19 +68,24 @@ wp_enqueue_style( 'traffic-traffic-tooltip' );
 
 
 		<?php } ?>
-		<?php if ( 'domains' === $analytics->type ) { ?>
+		<?php if ( 'domains' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
 	            <?php echo $analytics->get_domains_list() ?>
             </div>
 		<?php } ?>
-		<?php if ( 'authorities' === $analytics->type ) { ?>
+		<?php if ( 'authorities' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
 				<?php echo $analytics->get_authorities_list() ?>
             </div>
 		<?php } ?>
-		<?php if ( 'endpoints' === $analytics->type ) { ?>
+		<?php if ( 'endpoints' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
 				<?php echo $analytics->get_endpoints_list() ?>
+            </div>
+		<?php } ?>
+		<?php if ( '' !== $analytics->extra ) { ?>
+            <div class="traffic-row">
+				<?php echo $analytics->get_extra_list() ?>
             </div>
 		<?php } ?>
 		<div class="traffic-row">

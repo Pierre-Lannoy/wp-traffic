@@ -20,8 +20,10 @@ use Traffic\System\Logger;
 use Traffic\System\L10n;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
-use Feather;
 use Traffic\System\Timezone;
+use Traffic\System\UUID;
+use Feather;
+
 
 /**
  * Define the analytics functionality.
@@ -57,6 +59,14 @@ class Analytics {
 	 * @var    string    $title    The dashboard type.
 	 */
 	public $type = '';
+
+	/**
+	 * The dashboard extra.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $extra    The dashboard extra.
+	 */
+	public $extra = '';
 
 	/**
 	 * The dashboard context.
@@ -171,6 +181,14 @@ class Analytics {
 	private $is_outbound = false;
 
 	/**
+	 * Colors for graphs.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $colors    The colors array.
+	 */
+	private $colors = [ '#27B999', '#3398DB', '#73879C', '#9B59B6', '#BDC3C6',];
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @param   string  $domain  The domain name, if disambiguation is needed.
@@ -179,12 +197,14 @@ class Analytics {
 	 * @param   string  $site    The site to analyze (all or ID).
 	 * @param   string  $start   The start date.
 	 * @param   string  $end     The end date.
-	 * @param   string  $id      Optional. The queried ID.
-	 * @param   boolean $reload  Optional. Is it a reload of an already displayed analytics.
+	 * @param   string  $id      The queried ID.
+	 * @param   boolean $reload  Is it a reload of an already displayed analytics.
+	 * @param   string  $extra   The extra view to render.
 	 * @since    1.0.0
 	 */
-	public function __construct( $domain, $type, $context, $site, $start, $end, $id = '', $reload = false ) {
+	public function __construct( $domain, $type, $context, $site, $start, $end, $id, $reload, $extra ) {
 		$this->id      = $id;
+		$this->extra   = $extra;
 		$this->context = $context;
 		if ( Role::LOCAL_ADMIN === Role::admin_type() ) {
 			$site = get_current_blog_id();
@@ -303,6 +323,14 @@ class Analytics {
 				return $this->query_list( 'authorities' );
 			case 'endpoints':
 				return $this->query_list( 'endpoints' );
+			case 'codes':
+				return $this->query_list( 'codes' );
+			case 'schemes':
+				return $this->query_list( 'schemes' );
+			case 'methods':
+				return $this->query_list( 'methods' );
+			case 'countries':
+				return $this->query_list( 'countries' );
 			case 'code':
 				return $this->query_pie( 'code', (int) $queried );
 			case 'security':
@@ -322,18 +350,24 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_pie( $type, $limit ) {
-		wp_enqueue_script( 'traffic-chartist' );
-		wp_enqueue_script( 'traffic-chartist-tooltip' );
-		wp_enqueue_style( 'traffic-chartist' );
-		wp_enqueue_style( 'traffic-chartist-tooltip' );
+		$extra_field = '';
+		$extra       = [];
+		$not         = false;
+		$uuid        = UUID::generate_unique_id( 5 );
 		switch ( $type ) {
 			case 'code':
-				$group  = 'code';
-				$follow = 'authority';
+				$group       = 'code';
+				$follow      = 'authority';
+				$extra_field = 'code';
+				$extra       = [ 0 ];
+				$not         = true;
 				break;
 			case 'security':
-				$group  = 'scheme';
-				$follow = 'endpoint';
+				$group       = 'scheme';
+				$follow      = 'endpoint';
+				$extra_field = 'scheme';
+				$extra       = [ 'http', 'https' ];
+				$not         = false;
 				break;
 			case 'method':
 				$group  = 'verb';
@@ -341,7 +375,7 @@ class Analytics {
 				break;
 
 		}
-		$data  = Schema::get_grouped_list( $group, [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$data  = Schema::get_grouped_list( $group, [], $this->filter, ! $this->is_today, $extra_field, $extra, $not, 'ORDER BY sum_hit DESC' );
 		$total = 0;
 		$other = 0;
 		foreach ( $data as $key => $row ) {
@@ -352,49 +386,58 @@ class Analytics {
 		}
 		$result = '';
 		$cpt    = 0;
+		$labels = [];
+		$series = [];
 		while ( $cpt < $limit && array_key_exists( $cpt, $data ) ) {
 			if ( 0 < $total ) {
 				$percent = round( 100 * $data[ $cpt ]['sum_hit'] / $total, 1 );
 			} else {
 				$percent = 100;
 			}
-			$url = $this->get_url(
-				[],
-				[
-					'type'   => $follow,
-					'id'     => $data[ $cpt ][ $group ],
-					'domain' => $data[ $cpt ]['id'],
-				]
-			);
-			if ( 0.5 > $percent ) {
-				$percent = 0.5;
+			if ( 0.1 > $percent ) {
+				$percent = 0.1;
 			}
-			$result .= '<div class="traffic-top-line">';
-			$result .= '<div class="traffic-top-line-title">';
-			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[ $cpt ][ $group ] . '</a></span>';
-			$result .= '</div>';
-			$result .= '<div class="traffic-top-line-content">';
-			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
-			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[ $cpt ]['sum_hit'], 2 ) . '</div>';
-			$result .= '</div>';
-			$result .= '</div>';
+			$meta = strtoupper( $data[ $cpt ][ $group ] );
+			if ( 'code' === $type ) {
+				$meta = $data[ $cpt ][ $group ] . ' ' . Http::$http_status_codes[ (int) $data[ $cpt ][ $group ] ];
+			}
+			$labels[] = strtoupper( $data[ $cpt ][ $group ] );
+			$series[] = [ 'meta' => $meta, 'value' => (float) $percent ];
 			++$cpt;
 		}
-		if ( 0 < $total ) {
-			$percent = round( 100 * $other / $total, 1 );
-		} else {
-			$percent = 100;
+		if ( 0 < $other ) {
+			if ( 0 < $total ) {
+				$percent = round( 100 * $other / $total, 1 );
+			} else {
+				$percent = 100;
+			}
+			if ( 0.1 > $percent ) {
+				$percent = 0.1;
+			}
+			$labels[] = esc_html__( 'Other', 'traffic' );
+			$series[] = [ 'meta' => esc_html__( 'Other', 'traffic' ), 'value' => (float) $percent ];
 		}
-		$result .= '<div class="traffic-top-line traffic-minor-data">';
-		$result .= '<div class="traffic-top-line-title">';
-		$result .= '<span class="traffic-top-line-title-text">' . esc_html__( 'Other', 'traffic' ) . '</span>';
+		$result  = '<div class="traffic-pie-box">';
+		$result .= '<div class="traffic-pie-graph">';
+		$result .= '<div class="traffic-pie-graph-handler" id="traffic-pie-' . $group . '"></div>';
 		$result .= '</div>';
-		$result .= '<div class="traffic-top-line-content">';
-		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
-		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2 ) . '</div>';
+		$result .= '<div class="traffic-pie-legend">';
+		foreach ( $labels as $key => $label ) {
+			$icon = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'square', $this->colors[ $key ], $this->colors[ $key ] ) . '" />';
+			$result .= '<div class="traffic-pie-legend-item">' . $icon . '&nbsp;&nbsp;' . $label . '</div>';
+		}
+		$result .= '';
 		$result .= '</div>';
 		$result .= '</div>';
-		return [ 'traffic-top-' . $type => $result ];
+		$result .= '<script>';
+		$result .= 'jQuery(function ($) {';
+		$result .= ' var data' . $uuid . ' = ' . wp_json_encode( [ 'labels' => $labels, 'series' => $series]) . ';';
+		$result .= ' var tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: true, appendToBody: true});';
+		$result .= ' var option' . $uuid . ' = {width: 120, height: 120, showLabel: false, donut: true, donutWidth: "40%", startAngle: 270, plugins: [tooltip' . $uuid . ']};';
+		$result .= ' new Chartist.Pie("#traffic-pie-' . $group . '", data' . $uuid . ', option' . $uuid . ');';
+		$result .= '});';
+		$result .= '</script>';
+		return [ 'traffic-' . $type => $result ];
 	}
 
 	/**
@@ -485,18 +528,34 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_list( $type ) {
+		$follow = '';
+		$has_detail = false;
 		switch ( $type ) {
 			case 'authorities':
-				$group  = 'authority';
-				$follow = 'authority';
+				$group      = 'authority';
+				$follow     = 'authority';
+				$has_detail = true;
 				break;
 			case 'endpoints':
 				$group  = 'endpoint';
 				$follow = 'endpoint';
 				break;
+			case 'codes':
+				$group = 'code';
+				break;
+			case 'schemes':
+				$group = 'scheme';
+				break;
+			case 'methods':
+				$group = 'verb';
+				break;
+			case 'countries':
+				$group = 'country';
+				break;
 			default:
-				$group  = 'id';
-				$follow = 'domain';
+				$group      = 'id';
+				$follow     = 'domain';
+				$has_detail = true;
 				break;
 
 		}
@@ -508,7 +567,7 @@ class Analytics {
 		$result       = '<table class="traffic-table">';
 		$result      .= '<tr>';
 		$result      .= '<th>&nbsp;</th>';
-		if ( 'endpoints' !== $type ) {
+		if ( $has_detail ) {
 			$result .= '<th>' . $detail_name . '</th>';
 		}
 		$result .= '<th>' . $calls_name . '</th>';
@@ -538,7 +597,11 @@ class Analytics {
 					$detail = '';
 
 			}
+
+
 			$domain = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
+
+
 			$calls  = Conversion::number_shorten( $row['sum_hit'], 2 );
 			$in     = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
 			$out    = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
@@ -562,7 +625,7 @@ class Analytics {
 			}
 			$result .= '<tr>';
 			$result .= '<td data-th="">' . $domain . '</td>';
-			if ( 'endpoints' !== $type ) {
+			if ( $has_detail ) {
 				$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
 			}
 			$result .= '<td data-th="' . $calls_name . '">' . $calls . '</td>';
@@ -878,10 +941,6 @@ class Analytics {
 			case 'endpoints':
 				$title = $this->get_title_selector();
 				break;
-			case 'country':
-				$title    = esc_html__( 'Country', 'traffic' );
-				$subtitle = L10n::get_country_name( $this->id );
-				break;
 		}
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<span class="traffic-title">' . $title . '</span>';
@@ -974,6 +1033,43 @@ class Analytics {
 	}
 
 	/**
+	 * Get the extra list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_extra_list() {
+		switch ( $this->extra ) {
+			case 'codes':
+				$title = esc_html__( 'All HTTP Codes', 'traffic' );
+				break;
+			case 'schemes':
+				$title = esc_html__( 'All Schemes', 'traffic' );
+				break;
+			case 'methods':
+				$title = esc_html__( 'All Methods', 'traffic' );
+				break;
+			case 'countries':
+				$title = esc_html__( 'All Countries', 'traffic' );
+				break;
+			default:
+				$title = esc_html__( 'All Endpoints', 'traffic' );
+
+		}
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . $title . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-' . $this->extra . '">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => $this->extra,
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
 	 * Get the top domains box.
 	 *
 	 * @return string  The box ready to print.
@@ -1058,8 +1154,33 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_map_box() {
+		switch ( $this->type ) {
+			case 'authority':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'authorities',
+						'domain' => $this->domain,
+						'extra'  => 'countries',
+					]
+				);
+				break;
+			case 'endpoint':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'endpoints',
+						'domain' => $this->domain,
+						'extra'  => 'countries',
+					]
+				);
+				break;
+			default:
+				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'countries' ] );
+		}
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-60-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
 		$result .= '</div>';
 		return $result;
@@ -1072,9 +1193,34 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_codes_box() {
+		switch ( $this->type ) {
+			case 'authority':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'authorities',
+						'domain' => $this->domain,
+						'extra'  => 'codes',
+					]
+				);
+				break;
+			case 'endpoint':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'endpoints',
+						'domain' => $this->domain,
+						'extra'  => 'codes',
+					]
+				);
+				break;
+			default:
+				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'codes' ] );
+		}
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-left-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-code">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-code">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -1092,9 +1238,34 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_security_box() {
+		switch ( $this->type ) {
+			case 'authority':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'authorities',
+						'domain' => $this->domain,
+						'extra'  => 'schemes',
+					]
+				);
+				break;
+			case 'endpoint':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'endpoints',
+						'domain' => $this->domain,
+						'extra'  => 'schemes',
+					]
+				);
+				break;
+			default:
+				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'schemes' ] );
+		}
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-center-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Schemes', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-security">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Schemes', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-security">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -1112,9 +1283,34 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_method_box() {
+		switch ( $this->type ) {
+			case 'authority':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'authorities',
+						'domain' => $this->domain,
+						'extra'  => 'methods',
+					]
+				);
+				break;
+			case 'endpoint':
+				$url = $this->get_url(
+					[],
+					[
+						'type'   => 'endpoints',
+						'domain' => $this->domain,
+						'extra'  => 'methods',
+					]
+				);
+				break;
+			default:
+				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'methods' ] );
+		}
+		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-right-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more">' . 'a' . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-method">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-method">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
@@ -1259,6 +1455,9 @@ class Analytics {
 		$params['site'] = $this->site;
 		if ( '' !== $this->id ) {
 			$params['id'] = $this->id;
+		}
+		if ( '' !== $this->extra ) {
+			$params['extra'] = $this->extra;
 		}
 		$params['start'] = $this->start;
 		$params['end']   = $this->end;

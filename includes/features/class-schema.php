@@ -271,7 +271,7 @@ class Schema {
 		$result = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $result ) && 0 < count( $result ) ) {
 			$authority = $result[0]['authority'];
-			//Cache::set_global( $id, $authority, 'infinite' );
+			Cache::set_global( $id, $authority, 'infinite' );
 			return $authority;
 		}
 		return '';

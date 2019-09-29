@@ -87,7 +87,7 @@
 }
 
 .traffic-33-left-module {
-    flex-grow: 0.95;
+    flex-grow: 1;
     margin-left: -8px;
     margin-right: 10px;
 }
@@ -337,6 +337,39 @@
 .traffic-table small {
     font-size: xx-small;
 }
+
+.traffic-pie-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.traffic-pie-graph {
+    flex-grow: 1;
+    margin-right: 10%;
+}
+
+.traffic-pie-legend {
+    flex-grow: 1;
+    float: left;
+    margin-left: 10%;
+}
+
+.traffic-pie-graph-handler {
+    width: 120px;
+    height: 120px;
+    float:right;
+}
+
+
+.traffic-pie-legend-item {
+    display: flex;
+    color: var(--aux-font-color);
+}
+
+
 
 
 button.btn {

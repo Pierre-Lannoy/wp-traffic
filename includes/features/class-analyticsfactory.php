@@ -33,7 +33,7 @@ class AnalyticsFactory {
 	 * @since  1.0.0
 	 * @var    array    $allowed_types    Maintain the allowed types.
 	 */
-	private static $allowed_types = [ 'domain', 'domains', 'authority', 'authorities', 'endpoint', 'endpoints', 'country' ];
+	private static $allowed_types = [ 'domain', 'domains', 'authority', 'authorities', 'endpoint', 'endpoints' ];
 
 	/**
 	 * Ajax callback.
@@ -69,6 +69,13 @@ class AnalyticsFactory {
 		}
 		if ( empty( $domain ) ) {
 			$domain = '';
+		}
+		// Extra>.
+		if ( ! ( $extra = filter_input( INPUT_GET, 'extra' ) ) ) {
+			$extra = filter_input( INPUT_POST, 'extra' );
+		}
+		if ( empty( $extra ) ) {
+			$extra = '';
 		}
 		// Analytics type.
 		if ( ! ( $type = filter_input( INPUT_GET, 'type' ) ) ) {
@@ -113,7 +120,7 @@ class AnalyticsFactory {
 			$end   = $sdatetime->format( 'Y-m-d' );
 		}
 
-		return new Analytics( $domain, $type, $context, $site, $start, $end, $id, $reload );
+		return new Analytics( $domain, $type, $context, $site, $start, $end, $id, $reload, $extra );
 	}
 
 }

@@ -12,7 +12,7 @@
     currencyFormatCallback: undefined,
     tooltipOffset: {
       x: 0,
-      y: -20
+      y: -2
     },
     anchorToPoint: false,
     appendToBody: false,
