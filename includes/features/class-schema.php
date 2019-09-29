@@ -252,9 +252,36 @@ class Schema {
 	}
 
 	/**
-	 * Get the distinct contexts.
+	 * Get the authority.
 	 *
 	 * @param   array $filter   The filter of the query.
+	 * @return  string   The authority.
+	 * @since    1.0.0
+	 */
+	public static function get_authority( $filter ) {
+		// phpcs:ignore
+		$id = md5( __FUNCTION__ . serialize( $filter ) );
+		$result = Cache::get_global( $id );
+		if ( $result ) {
+			return $result;
+		}
+		global $wpdb;
+		$sql = 'SELECT authority FROM ' . $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ') LIMIT 1';
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		if ( is_array( $result ) && 0 < count( $result ) ) {
+			$authority = $result[0]['authority'];
+			//Cache::set_global( $id, $authority, 'infinite' );
+			return $authority;
+		}
+		return '';
+	}
+
+	/**
+	 * Get the distinct contexts.
+	 *
+	 * @param   array   $filter The filter of the query.
+	 * @param   boolean $cache  Optional. Has this query to be cached.
 	 * @return  array   The distinct contexts.
 	 * @since    1.0.0
 	 */

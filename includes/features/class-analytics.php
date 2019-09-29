@@ -43,6 +43,14 @@ class Analytics {
 	public $domain = '';
 
 	/**
+	 * The subdomain name.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $subdomain    The subdomain name.
+	 */
+	public $subdomain = '';
+
+	/**
 	 * The dashboard type.
 	 *
 	 * @since  1.0.0
@@ -210,11 +218,11 @@ class Analytics {
 				case 'endpoints':
 					$this->filter[]   = "authority='" . $id . "'";
 					$this->previous[] = "authority='" . $id . "'";
-
 					break;
 				case 'endpoint':
 					$this->filter[]   = "endpoint='" . $id . "'";
 					$this->previous[] = "endpoint='" . $id . "'";
+					$this->subdomain  = Schema::get_authority( $this->filter );
 					break;
 				case 'country':
 					$this->filter[]   = "country='" . strtoupper( $id ) . "'";
@@ -718,45 +726,88 @@ class Analytics {
 				$title = esc_html__( 'All Domains', 'traffic' );
 				break;
 			case 'domain':
-			case 'authorities':
-				$title = esc_html__( 'Domain', 'traffic' );
+				$title = esc_html__( 'Domain Summary', 'traffic' );
 				break;
-			case 'authority':
-			case 'endpoints':
-				$title         = esc_html__( 'Subdomain', 'traffic' );
+			case 'authorities':
+				$title         = esc_html__( 'Domain Details', 'traffic' );
 				$breadcrumbs[] = [
-					'title'    => esc_html__( 'Domain', 'traffic' ),
+					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
 						[],
 						[
-							'type' => 'domain',
-							'id'   => $this->domain,
+							'type'   => 'domain',
+							'domain' => $this->domain,
+							'id'     => $this->domain,
+						]
+					),
+				];
+				break;
+			case 'authority':
+				$title         = esc_html__( 'Subdomain Summary', 'traffic' );
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type'   => 'domain',
+							'domain' => $this->domain,
+							'id'     => $this->domain,
+						]
+					),
+				];
+				break;
+			case 'endpoints':
+				$title         = esc_html__( 'Subdomain Details', 'traffic' );
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Subdomain Summary', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->subdomain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type'   => 'authority',
+							'domain' => $this->domain,
+							'id'     => $this->subdomain,
+						]
+					),
+				];
+				$breadcrumbs[] = [
+					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'url'      => $this->get_url(
+						[],
+						[
+							'type'   => 'domain',
+							'domain' => $this->domain,
+							'id'     => $this->domain,
 						]
 					),
 				];
 				break;
 			case 'endpoint':
-				$title         = esc_html__( 'Endpoint', 'traffic' );
+				$title         = esc_html__( 'Endpoint Summary', 'traffic' );
 				$breadcrumbs[] = [
-					'title'    => esc_html__( 'Subdomain', 'traffic' ),
-					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
+					'title'    => esc_html__( 'Subdomain Summary', 'traffic' ),
+					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->subdomain ),
 					'url'      => $this->get_url(
 						[],
 						[
-							'type' => 'domain',
-							'id'   => $this->domain,
+							'type'   => 'authority',
+							'domain' => $this->domain,
+							'id'     => $this->subdomain,
 						]
 					),
 				];
 				$breadcrumbs[] = [
-					'title'    => esc_html__( 'Domain', 'traffic' ),
+					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
 						[],
 						[
-							'type' => 'domain',
-							'id'   => $this->domain,
+							'type'   => 'domain',
+							'domain' => $this->domain,
+							'id'     => $this->domain,
 						]
 					),
 				];
@@ -768,11 +819,11 @@ class Analytics {
 
 		}
 		$breadcrumbs[] = [
-			'title'    => esc_html__( 'Summary', 'traffic' ),
-			'subtitle' => sprintf( esc_html__( 'Return to summary page.', 'traffic' ) ),
+			'title'    => esc_html__( 'Main Summary', 'traffic' ),
+			'subtitle' => sprintf( esc_html__( 'Return to main summary.', 'traffic' ) ),
 			'url'      => admin_url( 'tools.php?page=traffic-viewer' ),
 		];
-		$result        = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '">';
+		$result        = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '" style="display:none;">';
 		foreach ( $breadcrumbs as $breadcrumb ) {
 			$result .= '<option value="' . $breadcrumb['url'] . '">' . $breadcrumb['title'] . '~-' . $breadcrumb['subtitle'] . '-~</span></option>';
 		}
@@ -792,7 +843,7 @@ class Analytics {
 		$subtitle = $this->id;
 		switch ( $this->type ) {
 			case 'summary':
-				$title = esc_html__( 'Summary', 'traffic' );
+				$title = esc_html__( 'Main Summary', 'traffic' );
 				break;
 			case 'domain':
 			case 'authority':

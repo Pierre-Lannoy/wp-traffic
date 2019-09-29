@@ -16,7 +16,6 @@ jQuery(document).ready( function($) {
 			template += '</div></div>';
 
 			$( this ).wrap( '<div class="traffic-select-wrapper"></div>' );
-			$( this ).hide();
 			$( this ).after( template );
 		}
 	);
