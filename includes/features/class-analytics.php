@@ -218,6 +218,7 @@ class Analytics {
 				case 'endpoints':
 					$this->filter[]   = "authority='" . $id . "'";
 					$this->previous[] = "authority='" . $id . "'";
+					$this->subdomain  = Schema::get_authority( $this->filter );
 					break;
 				case 'endpoint':
 					$this->filter[]   = "endpoint='" . $id . "'";
@@ -723,7 +724,7 @@ class Analytics {
 	public function get_title_selector() {
 		switch ( $this->type ) {
 			case 'domains':
-				$title = esc_html__( 'All Domains', 'traffic' );
+				$title = esc_html__( 'Domains Details', 'traffic' );
 				break;
 			case 'domain':
 				$title = esc_html__( 'Domain Summary', 'traffic' );
@@ -820,7 +821,7 @@ class Analytics {
 		}
 		$breadcrumbs[] = [
 			'title'    => esc_html__( 'Main Summary', 'traffic' ),
-			'subtitle' => sprintf( esc_html__( 'Return to main summary.', 'traffic' ) ),
+			'subtitle' => sprintf( esc_html__( 'Return to Traffic main page.', 'traffic' ) ),
 			'url'      => admin_url( 'tools.php?page=traffic-viewer' ),
 		];
 		$result        = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '" style="display:none;">';
