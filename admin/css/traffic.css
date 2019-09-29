@@ -614,3 +614,35 @@ button.btn {
     background-color: var(--header-action-font-color);
     color: var(--main-bg-color);
 }
+
+.traffic-http {
+    border-radius: 4px;
+    font-size: 10px;
+    padding: 2px 5px 3px 6px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.traffic-http-0xx {
+    background-color: #000000;
+}
+
+.traffic-http-1xx {
+    background-color: #00008B;
+}
+
+.traffic-http-2xx {
+    background-color: #0000DD;
+}
+
+.traffic-http-3xx {
+    background-color: #AA22AA;
+}
+
+.traffic-http-4xx {
+    background-color: #FF7A00;
+}
+
+.traffic-http-5xx {
+    background-color: #FF3300;
+}

@@ -528,9 +528,15 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_list( $type ) {
-		$follow = '';
+		$follow     = '';
 		$has_detail = false;
+		$detail     = '';
 		switch ( $type ) {
+			case 'domains':
+				$group      = 'id';
+				$follow     = 'domain';
+				$has_detail = true;
+				break;
 			case 'authorities':
 				$group      = 'authority';
 				$follow     = 'authority';
@@ -552,12 +558,6 @@ class Analytics {
 			case 'countries':
 				$group = 'country';
 				break;
-			default:
-				$group      = 'id';
-				$follow     = 'domain';
-				$has_detail = true;
-				break;
-
 		}
 		$data         = Schema::get_grouped_list( $group, [ 'authority', 'endpoint' ], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
 		$detail_name  = esc_html__( 'Details', 'traffic' );
@@ -589,23 +589,58 @@ class Analytics {
 			switch ( $type ) {
 				case 'domains':
 					$detail = $authorities . ' - ' . $endpoints;
+					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
 					break;
 				case 'authorities':
 					$detail = $endpoints;
+					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
 					break;
-				default:
-					$detail = '';
-
+				case 'endpoints':
+					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
+					break;
+				case 'codes':
+					if ( '0' === $name ) {
+						$name = '000';
+					}
+					$code = (int) $name;
+					if ( 100 > $code ) {
+						$http = '0xx';
+					} elseif ( 200 > $code ) {
+						$http = '1xx';
+					} elseif ( 300 > $code ) {
+						$http = '2xx';
+					} elseif ( 400 > $code ) {
+						$http = '3xx';
+					} elseif ( 500 > $code ) {
+						$http = '4xx';
+					} elseif ( 600 > $code ) {
+						$http = '5xx';
+					} else {
+						$http = 'nxx';
+					}
+					$name  = '<span class="traffic-http traffic-http-' . $http . '">' . $name . '</span>&nbsp;&nbsp;<span class="traffic-table-text">' . Http::$http_status_codes[ $code ] . '</span>';
+					$group = 'code';
+					break;
+				case 'schemes':
+					$icon = Feather\Icons::get_base64( 'unlock', 'none', '#E74C3C' );
+					if ( 'HTTPS' === strtoupper( $name ) ) {
+						$icon = Feather\Icons::get_base64( 'lock', 'none', '#18BB9C' );
+					}
+					$name  = '<img style="width:14px;vertical-align:text-top;" src="' . $icon . '" />&nbsp;&nbsp;<span class="traffic-table-text">' . strtoupper( $name ) . '</span>';
+					$group = 'scheme';
+					break;
+				case 'methods':
+					$name  = '<img style="width:14px;vertical-align:text-bottom;" src="' . Feather\Icons::get_base64( 'code', 'none', '#73879C' ) . '" />&nbsp;&nbsp;<span class="traffic-table-text">' . strtoupper( $name ) . '</span>';
+					$group = 'verb';
+					break;
+				case 'countries':
+					$group = 'country';
+					break;
 			}
-
-
-			$domain = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
-
-
-			$calls  = Conversion::number_shorten( $row['sum_hit'], 2 );
-			$in     = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
-			$out    = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
-			$data   = $in . ' &nbsp;&nbsp; ' . $out;
+			$calls = Conversion::number_shorten( $row['sum_hit'], 2 );
+			$in    = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
+			$out   = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$data  = $in . ' &nbsp;&nbsp; ' . $out;
 			if ( 1 < $row['sum_hit'] ) {
 				$min = Conversion::number_shorten( $row['min_latency'], 0 );
 				if ( false !== strpos( $min, 'K' ) ) {
@@ -623,8 +658,11 @@ class Analytics {
 			} else {
 				$latency = (int) $row['avg_latency'] . 'ms';
 			}
+			if ( 'codes' === $type && '0' === $row[ $group ] ) {
+				$latency = '-';
+			}
 			$result .= '<tr>';
-			$result .= '<td data-th="">' . $domain . '</td>';
+			$result .= '<td data-th="">' . $name . '</td>';
 			if ( $has_detail ) {
 				$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
 			}
@@ -822,7 +860,7 @@ class Analytics {
 					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'domain',
 							'domain' => $this->domain,
@@ -837,7 +875,7 @@ class Analytics {
 					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'domain',
 							'domain' => $this->domain,
@@ -852,7 +890,7 @@ class Analytics {
 					'title'    => esc_html__( 'Subdomain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->subdomain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'authority',
 							'domain' => $this->domain,
@@ -864,7 +902,7 @@ class Analytics {
 					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'domain',
 							'domain' => $this->domain,
@@ -879,7 +917,7 @@ class Analytics {
 					'title'    => esc_html__( 'Subdomain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->subdomain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'authority',
 							'domain' => $this->domain,
@@ -891,7 +929,7 @@ class Analytics {
 					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
 					'url'      => $this->get_url(
-						[],
+						[ 'extra' ],
 						[
 							'type'   => 'domain',
 							'domain' => $this->domain,
@@ -909,7 +947,7 @@ class Analytics {
 		$breadcrumbs[] = [
 			'title'    => esc_html__( 'Main Summary', 'traffic' ),
 			'subtitle' => sprintf( esc_html__( 'Return to Traffic main page.', 'traffic' ) ),
-			'url'      => admin_url( 'tools.php?page=traffic-viewer' ),
+			'url'      => $this->get_url( [ 'domain', 'id', 'extra', 'type' ] ),
 		];
 		$result        = '<select name="sources" id="sources" class="traffic-select sources" placeholder="' . $title . '" style="display:none;">';
 		foreach ( $breadcrumbs as $breadcrumb ) {
@@ -1155,7 +1193,7 @@ class Analytics {
 	 */
 	public function get_map_box() {
 		switch ( $this->type ) {
-			case 'authority':
+			case 'domain':
 				$url = $this->get_url(
 					[],
 					[
@@ -1165,7 +1203,7 @@ class Analytics {
 					]
 				);
 				break;
-			case 'endpoint':
+			case 'authority':
 				$url = $this->get_url(
 					[],
 					[
@@ -1194,7 +1232,7 @@ class Analytics {
 	 */
 	public function get_codes_box() {
 		switch ( $this->type ) {
-			case 'authority':
+			case 'domain':
 				$url = $this->get_url(
 					[],
 					[
@@ -1204,7 +1242,7 @@ class Analytics {
 					]
 				);
 				break;
-			case 'endpoint':
+			case 'authority':
 				$url = $this->get_url(
 					[],
 					[
@@ -1239,7 +1277,7 @@ class Analytics {
 	 */
 	public function get_security_box() {
 		switch ( $this->type ) {
-			case 'authority':
+			case 'domain':
 				$url = $this->get_url(
 					[],
 					[
@@ -1249,7 +1287,7 @@ class Analytics {
 					]
 				);
 				break;
-			case 'endpoint':
+			case 'authority':
 				$url = $this->get_url(
 					[],
 					[
@@ -1284,7 +1322,7 @@ class Analytics {
 	 */
 	public function get_method_box() {
 		switch ( $this->type ) {
-			case 'authority':
+			case 'domain':
 				$url = $this->get_url(
 					[],
 					[
@@ -1294,7 +1332,7 @@ class Analytics {
 					]
 				);
 				break;
-			case 'endpoint':
+			case 'authority':
 				$url = $this->get_url(
 					[],
 					[

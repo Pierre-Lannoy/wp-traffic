@@ -33,7 +33,7 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
         <div class="traffic-row">
 	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
-        <?php if ( 'summary' === $analytics->type ) { ?>
+        <?php if ( 'summary' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
                     <?php echo $analytics->get_top_domain_box() ?>
@@ -41,7 +41,7 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'domain' === $analytics->type ) { ?>
+		<?php if ( 'domain' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
 					<?php echo $analytics->get_top_authority_box() ?>
@@ -49,7 +49,7 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'authority' === $analytics->type ) { ?>
+		<?php if ( 'authority' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-40-60-line">
 					<?php echo $analytics->get_top_endpoint_box() ?>
@@ -57,7 +57,7 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
                 </div>
             </div>
 		<?php } ?>
-		<?php if ( 'summary' === $analytics->type || 'domain' === $analytics->type || 'authority' === $analytics->type ) { ?>
+		<?php if ( ( 'summary' === $analytics->type || 'domain' === $analytics->type || 'authority' === $analytics->type || 'endpoint' === $analytics->type ) && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-33-33-33-line">
 					<?php echo $analytics->get_codes_box() ?>
