@@ -1011,6 +1011,26 @@ class Analytics {
 	}
 
 	/**
+	 * Get the main chart.
+	 *
+	 * @return string  The main chart ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_main_chart() {
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		/*$result .= $this->get_refresh_script(
+			[
+				'query'   => 'domains',
+				'queried' => 0,
+			]
+		);*/
+		return $result;
+	}
+
+	/**
 	 * Get the domains list.
 	 *
 	 * @return string  The table ready to print.

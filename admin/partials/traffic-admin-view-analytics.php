@@ -58,6 +58,7 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
             </div>
 		<?php } ?>
 		<?php if ( ( 'summary' === $analytics->type || 'domain' === $analytics->type || 'authority' === $analytics->type || 'endpoint' === $analytics->type ) && '' === $analytics->extra ) { ?>
+			<?php echo $analytics->get_main_chart() ?>
             <div class="traffic-row">
                 <div class="traffic-box traffic-box-33-33-33-line">
 					<?php echo $analytics->get_codes_box() ?>
@@ -65,8 +66,6 @@ wp_enqueue_style( 'traffic-chartist-tooltip' );
 					<?php echo $analytics->get_method_box() ?>
                 </div>
             </div>
-
-
 		<?php } ?>
 		<?php if ( 'domains' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
