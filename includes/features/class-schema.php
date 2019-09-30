@@ -88,8 +88,8 @@ class Schema {
 	 */
 	private static function write_statistics_records_to_database( $record ) {
 		global $wpdb;
-		Favicon::get_raw( $record['id'] );
 		$record['id'] = Http::top_domain( $record['id'] );
+		Favicon::get_raw( $record['id'] );
 		$field_insert = [];
 		$value_insert = [];
 		$value_update = [];
