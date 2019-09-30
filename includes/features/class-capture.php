@@ -173,7 +173,7 @@ class Capture {
 			$record['context']   = $bound;
 			if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
 				if ( 'outbound' === $bound ) {
-					$record['id'] = Http::top_domain( $url_parts['host'] );
+					$record['id'] = Http::top_domain( $url_parts['host'], false );
 				}
 				if ( 'inbound' === $bound ) {
 					$record['id'] = $args['remote_ip'];
@@ -224,7 +224,6 @@ class Capture {
 			$record['latency_avg'] = $record['latency_min'];
 			$record['latency_max'] = $record['latency_min'];
 			Schema::store_statistics( $record );
-			Favicon::get_raw( $record['id'] );
 		} catch ( \Throwable $t ) {
 			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
 		}
