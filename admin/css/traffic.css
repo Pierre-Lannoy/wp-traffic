@@ -58,6 +58,7 @@
     margin-top: -8px;
     margin-right: 10px;
     padding: 8px;
+    height:290px
 }
 
 .traffic-60-module {
@@ -492,6 +493,7 @@ button.btn {
         margin-right: -8px;
         margin-bottom: 10px;
         width: 100%;
+        height: auto;
     }
 
     .traffic-33-module {

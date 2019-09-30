@@ -16,6 +16,7 @@ use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Option;
 use Traffic\System\Timezone;
 use Traffic\System\Http;
+use Traffic\System\Favicon;
 
 /**
  * Define the captures functionality.
@@ -223,6 +224,7 @@ class Capture {
 			$record['latency_avg'] = $record['latency_min'];
 			$record['latency_max'] = $record['latency_min'];
 			Schema::store_statistics( $record );
+			Favicon::get_raw( $record['id'] );
 		} catch ( \Throwable $t ) {
 			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
 		}

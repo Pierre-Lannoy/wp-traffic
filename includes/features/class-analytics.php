@@ -186,7 +186,7 @@ class Analytics {
 	 * @since  1.0.0
 	 * @var    array    $colors    The colors array.
 	 */
-	private $colors = [ '#27B999', '#3398DB', '#73879C', '#9B59B6', '#BDC3C6',];
+	private $colors = [ '#73879C', '#3398DB', '#9B59B6',  '#b2c326','#BDC3C6',];
 
 	/**
 	 * Initialize the class and set its properties.
@@ -684,18 +684,58 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_chart() {
-		$uuid          = UUID::generate_unique_id( 5 );
-		$data_total    = Schema::get_time_series( $this->filter, ! $this->is_today, '', [], false );
-		$data_uptime   = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', [ 0 ], true );
-		$series_uptime = [];
-		$kbin          = [];
-		$kbout         = [];
-		$series_kbin   = [];
-		$series_kbout  = [];
-		$data_max      = 0;
-
+		$uuid           = UUID::generate_unique_id( 5 );
+		$data_total     = Schema::get_time_series( $this->filter, ! $this->is_today, '', [], false );
+		$data_uptime    = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', Http::$http_failure_codes, true );
+		$data_error     = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', array_diff( Http::$http_error_codes, Http::$http_quota_codes ), false );
+		$data_success   = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', Http::$http_success_codes, false );
+		$data_quota     = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', Http::$http_quota_codes, false );
+		$series_uptime  = [];
+		$suc            = [];
+		$err            = [];
+		$quo            = [];
+		$series_success = [];
+		$series_error   = [];
+		$series_quota   = [];
+		$call_max       = 0;
+		$kbin           = [];
+		$kbout          = [];
+		$series_kbin    = [];
+		$series_kbout   = [];
+		$data_max       = 0;
 		foreach ( $data_total as $timestamp => $total ) {
 			$ts = 'new Date(' . (string) strtotime( $timestamp ) . '000)';
+			// Calls.
+			if ( array_key_exists( $timestamp, $data_success ) ) {
+				$val = $data_success[ $timestamp ]['sum_hit'];
+				if ( $val > $call_max ) {
+					$call_max = $val;
+				}
+				$suc[] = [
+					'x' => $ts,
+					'y' => $val,
+				];
+			}
+			if ( array_key_exists( $timestamp, $data_error ) ) {
+				$val = $data_error[ $timestamp ]['sum_hit'];
+				if ( $val > $call_max ) {
+					$call_max = $val;
+				}
+				$err[] = [
+					'x' => $ts,
+					'y' => $val,
+				];
+			}
+			if ( array_key_exists( $timestamp, $data_quota ) ) {
+				$val = $data_quota[ $timestamp ]['sum_hit'];
+				if ( $val > $call_max ) {
+					$call_max = $val;
+				}
+				$quo[] = [
+					'x' => $ts,
+					'y' => $val,
+				];
+			}
 			// Data.
 			$val = $total['sum_kb_in'] * 1024;
 			if ( $val > $data_max ) {
@@ -724,6 +764,25 @@ class Analytics {
 				}
 			}
 		}
+		// Calls.
+		$short     = Conversion::number_shorten( $call_max, 2, true );
+		$call_max  = (int) ceil( $call_max / $short['divisor'] );
+		$call_abbr = $short['abbreviation'];
+		foreach ( $suc as $item ) {
+			$item['y']        = $item['y'] / $short['divisor'];
+			$series_success[] = $item;
+		}
+		foreach ( $err as $item ) {
+			$item['y']      = $item['y'] / $short['divisor'];
+			$series_error[] = $item;
+		}
+		foreach ( $quo as $item ) {
+			$item['y']      = $item['y'] / $short['divisor'];
+			$series_quota[] = $item;
+		}
+		$json_call = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Success', 'traffic' ), 'data' => $series_success ], [ 'name' => esc_html__( 'Error', 'traffic' ), 'data' => $series_error ], [ 'name' => esc_html__( 'Quota Error', 'traffic' ), 'data' => $series_quota ] ] ] );
+		$json_call = str_replace('"x":"new', '"x":new', $json_call);
+		$json_call = str_replace(')","y"', '),"y"', $json_call);
 		// Data.
 		$short     = Conversion::data_shorten( $data_max, 2, true );
 		$data_max  = (int) ceil( $data_max / $short['divisor'] );
@@ -743,34 +802,28 @@ class Analytics {
 		$json_uptime = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Perceived Uptime', 'traffic' ), 'data' => $series_uptime ] ] ] );
 		$json_uptime = str_replace('"x":"new', '"x":new', $json_uptime);
 		$json_uptime = str_replace(')","y"', '),"y"', $json_uptime);
-
-
-/*
-		$not = false;
-		if ( 'server' === $queried ) {
-			$codes = Http::$http_error_codes;
-		} elseif ( 'quota' === $queried ) {
-			$codes = Http::$http_quota_codes;
-		} elseif ( 'pass' === $queried ) {
-			$codes = Http::$http_effective_pass_codes;
-		} elseif ( 'uptime' === $queried ) {
-			$codes = Http::$http_failure_codes;
-			$not   = true;
-		}
-		$base = Schema::get_std_kpi( $this->filter, ! $this->is_today );
-		$pbase       = Schema::get_std_kpi( $this->previous );
-		$data        = Schema::get_std_kpi( $this->filter, ! $this->is_today, 'code', $codes, $not );
-		$pdata       = Schema::get_std_kpi( $this->previous, true, 'code', $codes, $not );
-		$data = Schema::get_std_kpi( $this->filter, ! $this->is_today );
-
-*/
-
-
-
+		// Rendering.
 		$result  = '<div class="traffic-multichart-handler">';
 		$result .= '<div class="traffic-multichart-item active" id="traffic-chart-calls">';
-		$result .= 'AAAAA';
 		$result .= '</div>';
+		$result .= '<script>';
+		$result .= 'jQuery(function ($) {';
+		$result .= ' var call_data' . $uuid . ' = ' . $json_call . ';';
+		$result .= ' var call_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
+		$result .= ' var call_option' . $uuid . ' = {';
+		$result .= '  height: 300,';
+		$result .= '  low: 0,';
+		$result .= '  high: ' . $call_max . ',';
+		$result .= '  showArea: true,';
+		$result .= '  showLine: true,';
+		$result .= '  showPoint: false,';
+		$result .= '  plugins: [call_tooltip' . $uuid . '],';
+		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "' . $call_abbr . '";}},';
+		$result .= ' };';
+		$result .= ' new Chartist.Line("#traffic-chart-calls", call_data' . $uuid . ', call_option' . $uuid . ');';
+		$result .= '});';
+		$result .= '</script>';
 		$result .= '<div class="traffic-multichart-item" id="traffic-chart-data">';
 		$result .= '</div>';
 		$result .= '<script>';
@@ -782,7 +835,7 @@ class Analytics {
 		$result .= '  low: 0,';
 		$result .= '  high: ' . $data_max . ',';
 		$result .= '  showArea: true,';
-		$result .= '  showLine: false,';
+		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [data_tooltip' . $uuid . '],';
 		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
@@ -796,13 +849,15 @@ class Analytics {
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
 		$result .= ' var uptime_data' . $uuid . ' = ' . $json_uptime . ';';
+		$result .= ' var uptime_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
 		$result .= ' var uptime_option' . $uuid . ' = {';
 		$result .= '  height: 300,';
 		$result .= '  low: 0,';
 		$result .= '  high: 100,';
-		$result .= '  showArea: false,';
+		$result .= '  showArea: true,';
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
+		$result .= '  plugins: [uptime_tooltip' . $uuid . '],';
 		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
 		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "%";}},';
 		$result .= ' };';
@@ -1155,22 +1210,27 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_main_chart() {
-		$detail  = '<span class="traffic-chart-button" id="traffic-chart-button-calls"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
-		$detail .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button" id="traffic-chart-button-data"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
-		$detail .= '<span class="traffic-chart-button" id="traffic-chart-button-uptime"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
-		$result  = '<div class="traffic-row">';
-		$result .= '<div class="traffic-box traffic-box-full-line">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
-		$result .= '</div>';
-		$result .= '</div>';
-		$result .= $this->get_refresh_script(
-			[
-				'query'   => 'main-chart',
-				'queried' => 0,
-			]
-		);
-		return $result;
+		if ( 1 < $this->duration ) {
+			$detail  = '<span class="traffic-chart-button" id="traffic-chart-button-calls"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
+			$detail .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button" id="traffic-chart-button-data"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
+			$detail .= '<span class="traffic-chart-button" id="traffic-chart-button-uptime"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
+			$result  = '<div class="traffic-row">';
+			$result .= '<div class="traffic-box traffic-box-full-line">';
+			$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
+			$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
+			$result .= '</div>';
+			$result .= '</div>';
+			$result .= $this->get_refresh_script(
+				[
+					'query'   => 'main-chart',
+					'queried' => 0,
+				]
+			);
+			return $result;
+		} else {
+			return '';
+		}
+
 	}
 
 	/**
@@ -1279,7 +1339,7 @@ class Analytics {
 	public function get_top_domain_box() {
 		$url     = $this->get_url( [ 'domain' ], [ 'type' => 'domains' ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$result  = '<div class="traffic-40-module" style="height:290px">';
+		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-domains">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
@@ -1307,7 +1367,7 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$result  = '<div class="traffic-40-module" style="height:290px">';
+		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-authorities">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
@@ -1335,7 +1395,7 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
-		$result  = '<div class="traffic-40-module" style="height:290px">';
+		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-endpoints">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
