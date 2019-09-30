@@ -355,6 +355,27 @@ class Schema {
 	}
 
 	/**
+	 * Get a time series.
+	 *
+	 * @param   array   $filter      The filter of the query.
+	 * @param   boolean $cache       Has the query to be cached.
+	 * @param   string  $extra_field Optional. The extra field to filter.
+	 * @param   array   $extras      Optional. The extra values to match.
+	 * @param   boolean $not         Optional. Exclude extra filter.
+	 * @param   integer $limit       Optional. The number of results to return.
+	 * @return  array   The time series.
+	 * @since    1.0.0
+	 */
+	public static function get_time_series( $filter, $cache = true, $extra_field = '', $extras = [], $not = false, $limit = 0 ) {
+		$data   = self::get_grouped_list( 'timestamp', [], $filter, $cache, $extra_field, $extras, $not, 'ORDER BY timestamp ASC', $limit );
+		$result = [];
+		foreach ( $data as $datum ) {
+			$result[ $datum['timestamp'] ] = $datum;
+		}
+		return $result;
+	}
+
+	/**
 	 * Get the standard KPIs.
 	 *
 	 * @param   string  $group       The group of the query.
