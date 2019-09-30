@@ -36,6 +36,3 @@
     opacity: 1;
     transform: translateY(-10px);
 }
-
-.ct-area, .ct-line {
-  pointer-events: none; }

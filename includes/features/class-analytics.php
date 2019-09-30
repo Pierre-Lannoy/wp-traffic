@@ -309,6 +309,8 @@ class Analytics {
 	 */
 	public function query( $query, $queried ) {
 		switch ( $query ) {
+			case 'main-chart':
+				return $this->query_chart();
 			case 'kpi':
 				return $this->query_kpi( $queried );
 			case 'top-domains':
@@ -678,6 +680,142 @@ class Analytics {
 	/**
 	 * Query statistics table.
 	 *
+	 * @return array The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_chart() {
+		$uuid          = UUID::generate_unique_id( 5 );
+		$data_total    = Schema::get_time_series( $this->filter, ! $this->is_today, '', [], false );
+		$data_uptime   = Schema::get_time_series( $this->filter, ! $this->is_today, 'code', [ 0 ], true );
+		$series_uptime = [];
+		$kbin          = [];
+		$kbout         = [];
+		$series_kbin   = [];
+		$series_kbout  = [];
+		$data_max      = 0;
+
+		foreach ( $data_total as $timestamp => $total ) {
+			$ts = 'new Date(' . (string) strtotime( $timestamp ) . '000)';
+			// Data.
+			$val = $total['sum_kb_in'] * 1024;
+			if ( $val > $data_max ) {
+				$data_max = $val;
+			}
+			$kbin[] = [
+				'x' => $ts,
+				'y' => $val,
+			];
+			$val    = $total['sum_kb_out'] * 1024;
+			if ( $val > $data_max ) {
+				$data_max = $val;
+			}
+			$kbout[] = [
+				'x' => $ts,
+				'y' => $val,
+			];
+			// Uptime.
+			if ( array_key_exists( $timestamp, $data_uptime ) ) {
+				if ( 0 !== $total['sum_hit'] ) {
+					$val             = round( $data_uptime[ $timestamp ]['sum_hit'] * 100 / $total['sum_hit'], 2 );
+					$series_uptime[] = [
+						'x' => $ts,
+						'y' => $val,
+					];
+				}
+			}
+		}
+		// Data.
+		$short     = Conversion::data_shorten( $data_max, 2, true );
+		$data_max  = (int) ceil( $data_max / $short['divisor'] );
+		$data_abbr = $short['abbreviation'];
+		foreach ( $kbin as $kb ) {
+			$kb['y']       = $kb['y'] / $short['divisor'];
+			$series_kbin[] = $kb;
+		}
+		foreach ( $kbout as $kb ) {
+			$kb['y']        = $kb['y'] / $short['divisor'];
+			$series_kbout[] = $kb;
+		}
+		$json_data = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Incoming Data', 'traffic' ), 'data' => $series_kbin ], [ 'name' => esc_html__( 'Outcoming Data', 'traffic' ), 'data' => $series_kbout ] ] ] );
+		$json_data = str_replace('"x":"new', '"x":new', $json_data);
+		$json_data = str_replace(')","y"', '),"y"', $json_data);
+		// Uptime.
+		$json_uptime = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Perceived Uptime', 'traffic' ), 'data' => $series_uptime ] ] ] );
+		$json_uptime = str_replace('"x":"new', '"x":new', $json_uptime);
+		$json_uptime = str_replace(')","y"', '),"y"', $json_uptime);
+
+
+/*
+		$not = false;
+		if ( 'server' === $queried ) {
+			$codes = Http::$http_error_codes;
+		} elseif ( 'quota' === $queried ) {
+			$codes = Http::$http_quota_codes;
+		} elseif ( 'pass' === $queried ) {
+			$codes = Http::$http_effective_pass_codes;
+		} elseif ( 'uptime' === $queried ) {
+			$codes = Http::$http_failure_codes;
+			$not   = true;
+		}
+		$base = Schema::get_std_kpi( $this->filter, ! $this->is_today );
+		$pbase       = Schema::get_std_kpi( $this->previous );
+		$data        = Schema::get_std_kpi( $this->filter, ! $this->is_today, 'code', $codes, $not );
+		$pdata       = Schema::get_std_kpi( $this->previous, true, 'code', $codes, $not );
+		$data = Schema::get_std_kpi( $this->filter, ! $this->is_today );
+
+*/
+
+
+
+		$result  = '<div class="traffic-multichart-handler">';
+		$result .= '<div class="traffic-multichart-item active" id="traffic-chart-calls">';
+		$result .= 'AAAAA';
+		$result .= '</div>';
+		$result .= '<div class="traffic-multichart-item" id="traffic-chart-data">';
+		$result .= '</div>';
+		$result .= '<script>';
+		$result .= 'jQuery(function ($) {';
+		$result .= ' var data_data' . $uuid . ' = ' . $json_data . ';';
+		$result .= ' var data_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
+		$result .= ' var data_option' . $uuid . ' = {';
+		$result .= '  height: 300,';
+		$result .= '  low: 0,';
+		$result .= '  high: ' . $data_max . ',';
+		$result .= '  showArea: true,';
+		$result .= '  showLine: false,';
+		$result .= '  showPoint: false,';
+		$result .= '  plugins: [data_tooltip' . $uuid . '],';
+		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "' . $data_abbr . '";}},';
+		$result .= ' };';
+		$result .= ' new Chartist.Line("#traffic-chart-data", data_data' . $uuid . ', data_option' . $uuid . ');';
+		$result .= '});';
+		$result .= '</script>';
+		$result .= '<div class="traffic-multichart-item" id="traffic-chart-uptime">';
+		$result .= '</div>';
+		$result .= '<script>';
+		$result .= 'jQuery(function ($) {';
+		$result .= ' var uptime_data' . $uuid . ' = ' . $json_uptime . ';';
+		$result .= ' var uptime_option' . $uuid . ' = {';
+		$result .= '  height: 300,';
+		$result .= '  low: 0,';
+		$result .= '  high: 100,';
+		$result .= '  showArea: false,';
+		$result .= '  showLine: true,';
+		$result .= '  showPoint: false,';
+		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "%";}},';
+		$result .= ' };';
+		$result .= ' new Chartist.Line("#traffic-chart-uptime", uptime_data' . $uuid . ', uptime_option' . $uuid . ');';
+		$result .= '});';
+		$result .= '</script>';
+		$result .= '</div>';
+		return [ 'traffic-main-chart' => $result ];
+	}
+
+	/**
+	 * Query statistics table.
+	 *
 	 * @param   mixed $queried The query params.
 	 * @return array  The result of the query, ready to encode.
 	 * @since    1.0.0
@@ -1017,18 +1155,21 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_main_chart() {
+		$detail  = '<span class="traffic-chart-button" id="traffic-chart-button-calls"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
+		$detail .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button" id="traffic-chart-button-data"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
+		$detail .= '<span class="traffic-chart-button" id="traffic-chart-button-uptime"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
 		$result  = '<div class="traffic-row">';
 		$result .= '<div class="traffic-box traffic-box-full-line">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '</span></div>';
-		$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
 		$result .= '</div>';
 		$result .= '</div>';
-		/*$result .= $this->get_refresh_script(
+		$result .= $this->get_refresh_script(
 			[
-				'query'   => 'domains',
+				'query'   => 'main-chart',
 				'queried' => 0,
 			]
-		);*/
+		);
 		return $result;
 	}
 

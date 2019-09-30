@@ -46,4 +46,28 @@ jQuery(document).ready( function($) {
 			$(location).attr("href", $( this ).data( "value" ));
 		}
 	);
+	$( "#traffic-chart-button-calls" ).on(
+		"click",
+		function() {
+			$( "#traffic-chart-calls" ).addClass( "active" );
+			$( "#traffic-chart-data" ).removeClass( "active" );
+			$( "#traffic-chart-uptime" ).removeClass( "active" );
+		}
+	);
+	$( "#traffic-chart-button-data" ).on(
+		"click",
+		function() {
+			$( "#traffic-chart-calls" ).removeClass( "active" );
+			$( "#traffic-chart-data" ).addClass( "active" );
+			$( "#traffic-chart-uptime" ).removeClass( "active" );
+		}
+	);
+	$( "#traffic-chart-button-uptime" ).on(
+		"click",
+		function() {
+			$( "#traffic-chart-calls" ).removeClass( "active" );
+			$( "#traffic-chart-data" ).removeClass( "active" );
+			$( "#traffic-chart-uptime" ).addClass( "active" );
+		}
+	);
 } );
