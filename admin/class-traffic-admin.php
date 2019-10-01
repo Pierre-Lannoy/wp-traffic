@@ -59,6 +59,7 @@ class Traffic_Admin {
 		$this->assets->register_style( 'traffic-tooltip', TRAFFIC_ADMIN_URL, 'css/tooltip.min.css' );
 		$this->assets->register_style( 'traffic-chartist', TRAFFIC_ADMIN_URL, 'css/chartist.min.css' );
 		$this->assets->register_style( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'css/chartist-plugin-tooltip.min.css' );
+		$this->assets->register_style( 'traffic-jvectormap', TRAFFIC_ADMIN_URL, 'css/jquery-jvectormap-2.0.3.min.css' );
 
 	}
 
@@ -74,6 +75,7 @@ class Traffic_Admin {
 		$this->assets->register_script( 'traffic-switchery', TRAFFIC_ADMIN_URL, 'js/switchery.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-chartist', TRAFFIC_ADMIN_URL, 'js/chartist.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'js/chartist-plugin-tooltip.min.js', [ 'traffic-chartist' ] );
+		$this->assets->register_script( 'traffic-jvectormap', TRAFFIC_ADMIN_URL, 'js/jquery-jvectormap-2.0.3.min.js', [ 'jquery' ] );
 	}
 
 	/**

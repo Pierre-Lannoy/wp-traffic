@@ -14,6 +14,7 @@ wp_enqueue_script( 'traffic-daterangepicker' );
 wp_enqueue_script( 'traffic-switchery' );
 wp_enqueue_script( 'traffic-chartist' );
 wp_enqueue_script( 'traffic-chartist-tooltip' );
+wp_enqueue_script( 'traffic-jvectormap' );
 wp_enqueue_script( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( 'traffic-daterangepicker' );
@@ -21,6 +22,7 @@ wp_enqueue_style( 'traffic-switchery' );
 wp_enqueue_style( 'traffic-tooltip' );
 wp_enqueue_style( 'traffic-chartist' );
 wp_enqueue_style( 'traffic-chartist-tooltip' );
+wp_enqueue_style( 'traffic-jvectormap' );
 
 
 ?>

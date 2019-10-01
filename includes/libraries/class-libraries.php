@@ -204,6 +204,13 @@ class Libraries {
 		$item['license'] = $this->license_name( 'mit' );
 		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
 		$list[]          = $item;
+		$item['name']    = 'jVectorMap';
+		$item['version'] = '2.0.3';
+		$item['author']  = sprintf( esc_html__( '%s & contributors', 'traffic' ), 'Kirill Lebedev' );
+		$item['url']     = 'https://github.com/bjornd/jvectormap';
+		$item['license'] = $this->license_name( 'gpl3' );
+		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
+		$list[]          = $item;
 		usort( $list, function ( $a, $b ) { return strcmp( strtolower( $a['name'] ), strtolower( $b['name'] ) );} );
 		if ( 'html' === $style ) {
 			$items = [];
