@@ -69,6 +69,17 @@ class Libraries {
 			'license' => 'mit',
 			'langs'   => 'en',
 		];
+		self::$psr4_libraries['flagiconcss'] = [
+			'name'    => 'Flag-Icon-CSS',
+			'prefix'  => 'Flagiconcss',
+			'base'    => TRAFFIC_VENDOR_DIR . 'flagiconcss/',
+			'version' => '3.4.2',
+			// phpcs:ignore
+			'author'  => sprintf( esc_html__( '%s & contributors', 'traffic' ), 'Panayiotis Lipiridis' ),
+			'url'     => 'https://github.com/lipis/flag-icon-css',
+			'license' => 'mit',
+			'langs'   => 'en',
+		];
 		self::$mono_libraries              = [];
 		self::$mono_libraries['parsedown'] = [
 			'name'    => 'Parsedown',
