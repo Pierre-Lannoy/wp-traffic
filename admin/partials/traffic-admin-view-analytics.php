@@ -15,6 +15,7 @@ wp_enqueue_script( 'traffic-switchery' );
 wp_enqueue_script( 'traffic-chartist' );
 wp_enqueue_script( 'traffic-chartist-tooltip' );
 wp_enqueue_script( 'traffic-jvectormap' );
+wp_enqueue_script( 'traffic-jvectormap-world' );
 wp_enqueue_script( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( TRAFFIC_ASSETS_ID );
 wp_enqueue_style( 'traffic-daterangepicker' );

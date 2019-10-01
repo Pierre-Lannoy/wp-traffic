@@ -76,6 +76,7 @@ class Traffic_Admin {
 		$this->assets->register_script( 'traffic-chartist', TRAFFIC_ADMIN_URL, 'js/chartist.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'js/chartist-plugin-tooltip.min.js', [ 'traffic-chartist' ] );
 		$this->assets->register_script( 'traffic-jvectormap', TRAFFIC_ADMIN_URL, 'js/jquery-jvectormap-2.0.3.min.js', [ 'jquery' ] );
+		$this->assets->register_script( 'traffic-jvectormap-world', TRAFFIC_ADMIN_URL, 'js/jquery-jvectormap-world-mill.min.js', [ 'jquery' ] );
 	}
 
 	/**

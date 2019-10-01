@@ -311,6 +311,8 @@ class Analytics {
 		switch ( $query ) {
 			case 'main-chart':
 				return $this->query_chart();
+			case 'map':
+				return $this->query_map();
 			case 'kpi':
 				return $this->query_kpi( $queried );
 			case 'top-domains':
@@ -675,6 +677,33 @@ class Analytics {
 		}
 		$result .= '</table>';
 		return [ 'traffic-' . $type => $result ];
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @return array The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_map() {
+
+
+		$result  = '<div class="traffic-map-handler" style="height: 200px;width: 100%;">';
+		$result .= '</div>';
+		$result .= '<script>';
+		$result .= 'jQuery(function ($) {';
+		$result .= ' $(".traffic-map-handler").vectorMap({map: "world_mill"});';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= '});';
+		$result .= '</script>';
+		return [ 'traffic-map' => $result ];
 	}
 
 	/**
@@ -1442,8 +1471,14 @@ class Analytics {
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-60-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
-		$result .= '<div class="traffic-module-content">' . 'content' . '</div>';
+		$result .= '<div class="traffic-module-content" id="traffic-map">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'map',
+				'queried' => 0,
+			]
+		);
 		return $result;
 	}
 
