@@ -87,7 +87,6 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	private static function write_statistics_records_to_database( $record ) {
-		global $wpdb;
 		$record['id'] = Http::top_domain( $record['id'] );
 		Favicon::get_raw( $record['id'] );
 		$field_insert = [];
