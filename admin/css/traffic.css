@@ -51,6 +51,7 @@
 
 .traffic-40-module {
     flex-grow: 2;
+    flex-shrink: 2;
     background-color: var(--main-bg-color);
     border-radius: 2px;
     box-shadow: var(--main-box-shadow);
@@ -58,17 +59,20 @@
     margin-top: -8px;
     margin-right: 10px;
     padding: 8px;
-    height:290px
+    height:290px;
+    width: 38%;
 }
 
 .traffic-60-module {
     flex-grow: 3;
+    flex-shrink: 3;
     background-color: var(--main-bg-color);
     border-radius: 2px;
     box-shadow: var(--main-box-shadow);
     margin-right: -8px;
     margin-top: -8px;
     padding: 8px;
+    width: 58%;
 }
 
 .traffic-box-33-33-33-line {
@@ -393,10 +397,17 @@
     float:right;
 }
 
-
 .traffic-pie-legend-item {
     display: flex;
     color: var(--aux-font-color);
+}
+
+.traffic-map-handler {
+    vertical-align: middle;
+    text-align: center;
+    height: 244px;
+    width: 100%;
+    display: inline-block;
 }
 
 
@@ -511,6 +522,8 @@ button.btn {
     .traffic-60-module {
         margin-left: -8px;
         margin-top: 0px;
+        width: 100%;
+        height: auto;
     }
 }
 

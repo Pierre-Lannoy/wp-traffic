@@ -686,13 +686,35 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_map() {
+		$uuid = UUID::generate_unique_id( 5 );
 
 
-		$result  = '<div class="traffic-map-handler" style="height: 200px;width: 100%;">';
+
+		$plus = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'plus-square', 'none', '#73879C' ) . '"/>';
+		$minus = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'minus-square', 'none', '#73879C' ) . '"/>';
+
+		$result  = '<div class="traffic-map-handler">';
 		$result .= '</div>';
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
-		$result .= ' $(".traffic-map-handler").vectorMap({map: "world_mill"});';
+		$result .= ' $(".traffic-map-handler").vectorMap({';
+		$result .= ' map: "world_mill",';
+		$result .= ' backgroundColor: "#FFFFFF",';
+		$result .= ' ';
+		$result .= ' ';
+		/*$result .= ' series: {';
+		$result .= '  regions: [{';
+		$result .= '   values: gdpData,';
+		$result .= '   scale: ["#C8EEFF", "#73879C"],';
+		$result .= '   normalizeFunction: "polynomial"';
+		$result .= '  }]';
+		$result .= ' },';*/
+		$result .= '  regionStyle: {';
+		$result .= '   initial: {fill: "#E9E9E9", "fill-opacity": 0.7,stroke: "#73879C","stroke-width": 0,"stroke-opacity": 1},';
+		$result .= '   hover: {"fill-opacity": 1,cursor: "default"},';
+		$result .= '   selected: {},';
+		$result .= '   selectedHover: {},';
+		$result .= ' },';
 		$result .= ' ';
 		$result .= ' ';
 		$result .= ' ';
@@ -701,6 +723,12 @@ class Analytics {
 		$result .= ' ';
 		$result .= ' ';
 		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' ';
+		$result .= ' });';
+		$result .= ' $(".jvectormap-zoomin").html(\'' . $plus . '\');';
+		$result .= ' $(".jvectormap-zoomout").html(\'' . $minus . '\');';
 		$result .= '});';
 		$result .= '</script>';
 		return [ 'traffic-map' => $result ];
