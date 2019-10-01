@@ -199,7 +199,11 @@ class Http {
 	public static function top_domain( $host, $resolve = true ) {
 		if ( filter_var( $host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 | FILTER_FLAG_IPV4 ) ) {
 			if ( $resolve ) {
-				return self::top_domain( gethostbyaddr( $host ) );
+				if ( filter_var( $host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE | FILTER_FLAG_NO_PRIV_RANGE ) ) {
+					return self::top_domain( gethostbyaddr( $host ), false );
+				} else {
+					return $host;
+				}
 			} else {
 				return $host;
 			}
