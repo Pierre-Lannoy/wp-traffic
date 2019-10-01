@@ -15,6 +15,7 @@ use Traffic\System\Http;
 use Traffic\System\Favicon;
 use Traffic\System\Logger;
 use Traffic\System\Cache;
+use Traffic\System\GeoIP;
 
 /**
  * Define the schema functionality.
@@ -44,6 +45,14 @@ class Schema {
 	private static $statistics_buffer = [];
 
 	/**
+	 * GeoIP instance.
+	 *
+	 * @since  1.0.0
+	 * @var    GeoIP    $geo_ip    Maintain the GeoIP instance..
+	 */
+	private static $geo_ip = null;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -58,6 +67,7 @@ class Schema {
 	 */
 	public static function init() {
 		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Schema', 'write' ], 90, 0 );
+		self::$geo_ip = new GeoIP();
 	}
 
 	/**
@@ -87,6 +97,19 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	private static function write_statistics_records_to_database( $record ) {
+		$host = '';
+		if ( array_key_exists( 'authority', $record ) ) {
+			$host = $record['authority'];
+		}
+		if ( array_key_exists( 'context', $record ) && 'inbound' === $record['context'] ) {
+			$host = $record['id'];
+		}
+		if ( '' !== $host ) {
+			$country = self::$geo_ip->get_iso3166_alpha2( $host );
+			if ( ! empty( $country ) ) {
+				$record['country'] = $country;
+			}
+		}
 		$record['id'] = Http::top_domain( $record['id'] );
 		Favicon::get_raw( $record['id'] );
 		$field_insert = [];
@@ -95,6 +118,9 @@ class Schema {
 		foreach ( $record as $k => $v ) {
 			$field_insert[] = '`' . $k . '`';
 			$value_insert[] = "'" . $v . "'";
+			if ( 'country' === $k ) {
+				$value_update[] = '`country`="' . $v . '"';
+			}
 			if ( 'hit' === $k ) {
 				$value_update[] = '`hit`=hit + 1';
 			}
