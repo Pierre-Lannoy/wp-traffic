@@ -1,13 +1,12 @@
 :root {
     --main-bg-color: #FFFFFF;
     --main-font-color: #73879C;
-    --main-box-shadow: 1px 1px 8px #DDDDDD;
+    --main-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
     --aux-bg-color: #EEEEEE;
     --aux-font-color: #888888;
     --pop-box-border: 1px solid rgba(90, 115, 142, 0.2);
     --pop-box-hover: rgba(90, 115, 142, 0.2);
     --table-bg-color: #F9F9FB;
-
 
     --title-font-size: 22px;
     --title-font-weight: 500;
@@ -24,6 +23,10 @@
     --kpi-small-font-size: 10px;
     --kpi-small-font-weight: 100;
     --kpi-small-letter-spacing: 0.1px;
+
+    --tooltip-font-color: #FFFFFF;
+    --tooltip-background-color: #73879C;
+    --tooltip-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
 }
 
 .traffic-row {
@@ -339,6 +342,14 @@
     margin-top: -8px;
 }
 
+.ct-labels foreignObject:first-child {
+    display: none;
+}
+
+.ct-labels {
+    transform: translateX(-18px);
+}
+
 .traffic-minor-data {
     opacity: 0.4;
 }
@@ -410,19 +421,12 @@
     display: inline-block;
 }
 
-
-
-
 button.btn {
     color: var(--main-bg-color);
     background-color: var(--header-action-font-color);
     border: none;
     border-radius: 2px;
 }
-
-
-
-
 
 @media only screen and (max-width: 300px) {
     .traffic-bar-graph {

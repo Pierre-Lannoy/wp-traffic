@@ -23,6 +23,7 @@ use Traffic\System\Favicon;
 use Traffic\System\Timezone;
 use Traffic\System\UUID;
 use Feather;
+use Flagiconcss;
 
 
 /**
@@ -435,7 +436,7 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
-		$result .= ' var data' . $uuid . ' = ' . wp_json_encode( [ 'labels' => $labels, 'series' => $series]) . ';';
+		$result .= ' var data' . $uuid . ' = ' . wp_json_encode( [ 'labels' => $labels, 'series' => $series ] ) . ';';
 		$result .= ' var tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: true, appendToBody: true});';
 		$result .= ' var option' . $uuid . ' = {width: 120, height: 120, showLabel: false, donut: true, donutWidth: "40%", startAngle: 270, plugins: [tooltip' . $uuid . ']};';
 		$result .= ' new Chartist.Pie("#traffic-pie-' . $group . '", data' . $uuid . ', option' . $uuid . ');';
@@ -574,11 +575,13 @@ class Analytics {
 		if ( $has_detail ) {
 			$result .= '<th>' . $detail_name . '</th>';
 		}
-		$result .= '<th>' . $calls_name . '</th>';
-		$result .= '<th>' . $data_name . '</th>';
-		$result .= '<th>' . $latency_name . '</th>';
-		$result .= '</tr>';
-		foreach ( $data as $row ) {
+		$result   .= '<th>' . $calls_name . '</th>';
+		$result   .= '<th>' . $data_name . '</th>';
+		$result   .= '<th>' . $latency_name . '</th>';
+		$result   .= '</tr>';
+		$other     = false;
+		$other_str = '';
+		foreach ( $data as $key => $row ) {
 			$url         = $this->get_url(
 				[],
 				[
@@ -588,6 +591,7 @@ class Analytics {
 				]
 			);
 			$name        = $row[ $group ];
+			$other       = ( 'countries' === $type && ( empty( $name ) || 2 !== strlen( $name ) ) );
 			$authorities = sprintf( esc_html( _n( '%d subdomain', '%d subdomains', $row['cnt_authority'], 'traffic' ) ), $row['cnt_authority'] );
 			$endpoints   = sprintf( esc_html( _n( '%d endpoint', '%d endpoints', $row['cnt_endpoint'], 'traffic' ) ), $row['cnt_endpoint'] );
 			switch ( $type ) {
@@ -638,6 +642,15 @@ class Analytics {
 					$group = 'verb';
 					break;
 				case 'countries':
+					if ( $other ) {
+						$name = esc_html__( 'Other', 'traffic' );
+					} else {
+						$country_name = L10n::get_country_name( $name );
+						if ( $country_name === $name ) {
+							$country_name = '';
+						}
+						$name = '<img style="width:16px;vertical-align:baseline;" src="' . Flagiconcss\Flags::get_base64( strtolower( $name ) ) . '" />&nbsp;&nbsp;<span class="traffic-table-text" style="vertical-align: text-bottom;">' . $country_name . '</span>';
+					}
 					$group = 'country';
 					break;
 			}
@@ -665,17 +678,22 @@ class Analytics {
 			if ( 'codes' === $type && '0' === $row[ $group ] ) {
 				$latency = '-';
 			}
-			$result .= '<tr>';
-			$result .= '<td data-th="">' . $name . '</td>';
+			$row_str  = '<tr>';
+			$row_str .= '<td data-th="">' . $name . '</td>';
 			if ( $has_detail ) {
-				$result .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
+				$row_str .= '<td data-th="' . $detail_name . '">' . $detail . '</td>';
 			}
-			$result .= '<td data-th="' . $calls_name . '">' . $calls . '</td>';
-			$result .= '<td data-th="' . $data_name . '">' . $data . '</td>';
-			$result .= '<td data-th="' . $latency_name . '">' . $latency . '</td>';
-			$result .= '</tr>';
+			$row_str .= '<td data-th="' . $calls_name . '">' . $calls . '</td>';
+			$row_str .= '<td data-th="' . $data_name . '">' . $data . '</td>';
+			$row_str .= '<td data-th="' . $latency_name . '">' . $latency . '</td>';
+			$row_str .= '</tr>';
+			if ( $other ) {
+				$other_str = $row_str;
+			} else {
+				$result .= $row_str;
+			}
 		}
-		$result .= '</table>';
+		$result .= $other_str . '</table>';
 		return [ 'traffic-' . $type => $result ];
 	}
 
@@ -686,46 +704,37 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_map() {
-		$uuid = UUID::generate_unique_id( 5 );
-
-
-
-		$plus = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'plus-square', 'none', '#73879C' ) . '"/>';
-		$minus = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'minus-square', 'none', '#73879C' ) . '"/>';
-
+		$uuid   = UUID::generate_unique_id( 5 );
+		$data   = Schema::get_grouped_list( 'country', [], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
+		$series = [];
+		foreach ( $data as $datum ) {
+			if ( array_key_exists( 'country', $datum ) && ! empty( $datum['country'] ) ) {
+				$series[ strtoupper( $datum['country'] ) ] = $datum['sum_hit'];
+			}
+		}
+		$plus    = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'plus-square', 'none', '#73879C' ) . '"/>';
+		$minus   = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'minus-square', 'none', '#73879C' ) . '"/>';
 		$result  = '<div class="traffic-map-handler">';
 		$result .= '</div>';
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
+		$result .= ' var mapdata' . $uuid . ' = ' . wp_json_encode( $series ) . ';';
 		$result .= ' $(".traffic-map-handler").vectorMap({';
 		$result .= ' map: "world_mill",';
 		$result .= ' backgroundColor: "#FFFFFF",';
-		$result .= ' ';
-		$result .= ' ';
-		/*$result .= ' series: {';
+		$result .= ' series: {';
 		$result .= '  regions: [{';
-		$result .= '   values: gdpData,';
-		$result .= '   scale: ["#C8EEFF", "#73879C"],';
+		$result .= '   values: mapdata' . $uuid . ',';
+		$result .= '   scale: ["#BDC7D1", "#73879C"],';
 		$result .= '   normalizeFunction: "polynomial"';
 		$result .= '  }]';
-		$result .= ' },';*/
+		$result .= ' },';
 		$result .= '  regionStyle: {';
-		$result .= '   initial: {fill: "#E9E9E9", "fill-opacity": 0.7,stroke: "#73879C","stroke-width": 0,"stroke-opacity": 1},';
+		$result .= '   initial: {fill: "#EEEEEE", "fill-opacity": 0.7},';
 		$result .= '   hover: {"fill-opacity": 1,cursor: "default"},';
 		$result .= '   selected: {},';
 		$result .= '   selectedHover: {},';
 		$result .= ' },';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
-		$result .= ' ';
 		$result .= ' });';
 		$result .= ' $(".jvectormap-zoomin").html(\'' . $plus . '\');';
 		$result .= ' $(".jvectormap-zoomout").html(\'' . $minus . '\');';
@@ -760,7 +769,11 @@ class Analytics {
 		$series_kbin    = [];
 		$series_kbout   = [];
 		$data_max       = 0;
+		$start          = '';
 		foreach ( $data_total as $timestamp => $total ) {
+			if ( '' === $start ) {
+				$start = $timestamp;
+			}
 			$ts = 'new Date(' . (string) strtotime( $timestamp ) . '000)';
 			// Calls.
 			if ( array_key_exists( $timestamp, $data_success ) ) {
@@ -772,6 +785,11 @@ class Analytics {
 					'x' => $ts,
 					'y' => $val,
 				];
+			} else {
+				$suc[] = [
+					'x' => $ts,
+					'y' => 0,
+				];
 			}
 			if ( array_key_exists( $timestamp, $data_error ) ) {
 				$val = $data_error[ $timestamp ]['sum_hit'];
@@ -782,6 +800,11 @@ class Analytics {
 					'x' => $ts,
 					'y' => $val,
 				];
+			} else {
+				$err[] = [
+					'x' => $ts,
+					'y' => 0,
+				];
 			}
 			if ( array_key_exists( $timestamp, $data_quota ) ) {
 				$val = $data_quota[ $timestamp ]['sum_hit'];
@@ -791,6 +814,11 @@ class Analytics {
 				$quo[] = [
 					'x' => $ts,
 					'y' => $val,
+				];
+			} else {
+				$quo[] = [
+					'x' => $ts,
+					'y' => 0,
 				];
 			}
 			// Data.
@@ -818,12 +846,30 @@ class Analytics {
 						'x' => $ts,
 						'y' => $val,
 					];
+				} else {
+					$series_uptime[] = [
+						'x' => $ts,
+						'y' => 100,
+					];
 				}
+			} else {
+				$series_uptime[] = [
+					'x' => $ts,
+					'y' => 100,
+				];
 			}
 		}
+		$before = [
+			'x' => 'new Date(' . (string) ( strtotime( $start ) - 86400 ) . '000)',
+			'y' => 'null',
+		];
+		$after  = [
+			'x' => 'new Date(' . (string) ( strtotime( $timestamp ) + 86400 ) . '000)',
+			'y' => 'null',
+		];
 		// Calls.
 		$short     = Conversion::number_shorten( $call_max, 2, true );
-		$call_max  = (int) ceil( $call_max / $short['divisor'] );
+		$call_max  = 0.5 + floor( $call_max / $short['divisor'] );
 		$call_abbr = $short['abbreviation'];
 		foreach ( $suc as $item ) {
 			$item['y']        = $item['y'] / $short['divisor'];
@@ -837,9 +883,16 @@ class Analytics {
 			$item['y']      = $item['y'] / $short['divisor'];
 			$series_quota[] = $item;
 		}
+		array_unshift($series_success, $before);
+		array_unshift($series_error, $before);
+		array_unshift($series_quota, $before);
+		$series_success[] = $after;
+		$series_error[]   = $after;
+		$series_quota[]   = $after;
 		$json_call = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Success', 'traffic' ), 'data' => $series_success ], [ 'name' => esc_html__( 'Error', 'traffic' ), 'data' => $series_error ], [ 'name' => esc_html__( 'Quota Error', 'traffic' ), 'data' => $series_quota ] ] ] );
 		$json_call = str_replace('"x":"new', '"x":new', $json_call);
 		$json_call = str_replace(')","y"', '),"y"', $json_call);
+		$json_call = str_replace('"null"', 'null', $json_call);
 		// Data.
 		$short     = Conversion::data_shorten( $data_max, 2, true );
 		$data_max  = (int) ceil( $data_max / $short['divisor'] );
@@ -852,14 +905,31 @@ class Analytics {
 			$kb['y']        = $kb['y'] / $short['divisor'];
 			$series_kbout[] = $kb;
 		}
-		$json_data = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Incoming Data', 'traffic' ), 'data' => $series_kbin ], [ 'name' => esc_html__( 'Outcoming Data', 'traffic' ), 'data' => $series_kbout ] ] ] );
-		$json_data = str_replace('"x":"new', '"x":new', $json_data);
-		$json_data = str_replace(')","y"', '),"y"', $json_data);
+		array_unshift($series_kbin, $before);
+		array_unshift($series_kbout, $before);
+		$series_kbin[]  = $after;
+		$series_kbout[] = $after;
+		$json_data      = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Incoming Data', 'traffic' ), 'data' => $series_kbin ], [ 'name' => esc_html__( 'Outcoming Data', 'traffic' ), 'data' => $series_kbout ] ] ] );
+		$json_data      = str_replace('"x":"new', '"x":new', $json_data);
+		$json_data      = str_replace(')","y"', '),"y"', $json_data);
+		$json_data      = str_replace('"null"', 'null', $json_data);
 		// Uptime.
-		$json_uptime = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Perceived Uptime', 'traffic' ), 'data' => $series_uptime ] ] ] );
-		$json_uptime = str_replace('"x":"new', '"x":new', $json_uptime);
-		$json_uptime = str_replace(')","y"', '),"y"', $json_uptime);
+		array_unshift($series_uptime, $before);
+		$series_uptime[] = $after;
+		$json_uptime     = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Perceived Uptime', 'traffic' ), 'data' => $series_uptime ] ] ] );
+		$json_uptime     = str_replace('"x":"new', '"x":new', $json_uptime);
+		$json_uptime     = str_replace(')","y"', '),"y"', $json_uptime);
+		$json_uptime     = str_replace('"null"', 'null', $json_uptime);
 		// Rendering.
+		if ( 4 < $this->duration ) {
+			if ( 1 === $this->duration % 2 ) {
+				$divisor = 6;
+			} else {
+				$divisor = 5;
+			}
+		} else {
+			$divisor = $this->duration + 1 ;
+		}
 		$result  = '<div class="traffic-multichart-handler">';
 		$result .= '<div class="traffic-multichart-item active" id="traffic-chart-calls">';
 		$result .= '</div>';
@@ -869,14 +939,13 @@ class Analytics {
 		$result .= ' var call_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
 		$result .= ' var call_option' . $uuid . ' = {';
 		$result .= '  height: 300,';
-		$result .= '  low: 0,';
-		$result .= '  high: ' . $call_max . ',';
+		$result .= '  fullWidth: true,';
 		$result .= '  showArea: true,';
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [call_tooltip' . $uuid . '],';
-		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
-		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "' . $call_abbr . '";}},';
+		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $call_max . ', labelInterpolationFnc: function (value) {return value.toString() + "' . $call_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-calls", call_data' . $uuid . ', call_option' . $uuid . ');';
 		$result .= '});';
@@ -889,14 +958,13 @@ class Analytics {
 		$result .= ' var data_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
 		$result .= ' var data_option' . $uuid . ' = {';
 		$result .= '  height: 300,';
-		$result .= '  low: 0,';
-		$result .= '  high: ' . $data_max . ',';
+		$result .= '  fullWidth: true,';
 		$result .= '  showArea: true,';
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [data_tooltip' . $uuid . '],';
-		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
-		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "' . $data_abbr . '";}},';
+		$result .= '  axisX: {type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $data_max . ', labelInterpolationFnc: function (value) {return value.toString() + "' . $data_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-data", data_data' . $uuid . ', data_option' . $uuid . ');';
 		$result .= '});';
@@ -909,13 +977,12 @@ class Analytics {
 		$result .= ' var uptime_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
 		$result .= ' var uptime_option' . $uuid . ' = {';
 		$result .= '  height: 300,';
-		$result .= '  low: 0,';
-		$result .= '  high: 100,';
+		$result .= '  fullWidth: true,';
 		$result .= '  showArea: true,';
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [uptime_tooltip' . $uuid . '],';
-		$result .= '  axisX: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return moment(value).format("MMM");}},';
+		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
 		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "%";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-uptime", uptime_data' . $uuid . ', uptime_option' . $uuid . ');';
@@ -1273,7 +1340,7 @@ class Analytics {
 			$detail .= '<span class="traffic-chart-button" id="traffic-chart-button-uptime"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
 			$result  = '<div class="traffic-row">';
 			$result .= '<div class="traffic-box traffic-box-full-line">';
-			$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Volumetry', 'traffic' ) . ' - ' . esc_html__( 'Calls', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
+			$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Metrics Variations', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
 			$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
 			$result .= '</div>';
 			$result .= '</div>';
@@ -1287,7 +1354,6 @@ class Analytics {
 		} else {
 			return '';
 		}
-
 	}
 
 	/**
@@ -1758,7 +1824,7 @@ class Analytics {
 		$result .= ' };';
 		$result .= ' $.post(ajaxurl, data, function(response) {';
 		$result .= ' var val = JSON.parse(response);';
-		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);console.log(index+" "+value)})';
+		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);})';
 		$result .= ' })';
 		$result .= '});';
 		$result .= '</script>';
