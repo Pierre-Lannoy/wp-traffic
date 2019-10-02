@@ -56,7 +56,7 @@ class Flags {
 			return ( 'fr' === $name ? '' : self::get_raw() );
 		}
 		self::$flags[ $fname ] = file_get_contents( $filename );
-		return ( self::get_raw( $fname ) );
+		return ( self::get_raw( $name ) );
 	}
 
 	/**
