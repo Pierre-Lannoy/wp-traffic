@@ -8,8 +8,8 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Traffic
- * Plugin URI:        --
- * Description:       --
+ * Plugin URI:        https://github.com/Pierre-Lannoy/wp-traffic
+ * Description:       Full featured analytics for WordPress APIs.
  * Version:           1.0.0
  * Author:            Pierre Lannoy
  * Author URI:        https://pierre.lannoy.fr
