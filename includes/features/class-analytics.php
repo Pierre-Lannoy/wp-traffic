@@ -187,7 +187,7 @@ class Analytics {
 	 * @since  1.0.0
 	 * @var    array    $colors    The colors array.
 	 */
-	private $colors = [ '#73879C', '#3398DB', '#9B59B6',  '#b2c326','#BDC3C6',];
+	private $colors = [ '#73879C', '#3398DB', '#9B59B6', '#b2c326', '#BDC3C6' ];
 
 	/**
 	 * Initialize the class and set its properties.
@@ -407,7 +407,10 @@ class Analytics {
 				$meta = $data[ $cpt ][ $group ] . ' ' . Http::$http_status_codes[ (int) $data[ $cpt ][ $group ] ];
 			}
 			$labels[] = strtoupper( $data[ $cpt ][ $group ] );
-			$series[] = [ 'meta' => $meta, 'value' => (float) $percent ];
+			$series[] = [
+				'meta'  => $meta,
+				'value' => (float) $percent,
+			];
 			++$cpt;
 		}
 		if ( 0 < $other ) {
@@ -420,7 +423,10 @@ class Analytics {
 				$percent = 0.1;
 			}
 			$labels[] = esc_html__( 'Other', 'traffic' );
-			$series[] = [ 'meta' => esc_html__( 'Other', 'traffic' ), 'value' => (float) $percent ];
+			$series[] = [
+				'meta'  => esc_html__( 'Other', 'traffic' ),
+				'value' => (float) $percent,
+			];
 		}
 		$result  = '<div class="traffic-pie-box">';
 		$result .= '<div class="traffic-pie-graph">';
@@ -428,7 +434,7 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '<div class="traffic-pie-legend">';
 		foreach ( $labels as $key => $label ) {
-			$icon = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'square', $this->colors[ $key ], $this->colors[ $key ] ) . '" />';
+			$icon    = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'square', $this->colors[ $key ], $this->colors[ $key ] ) . '" />';
 			$result .= '<div class="traffic-pie-legend-item">' . $icon . '&nbsp;&nbsp;' . $label . '</div>';
 		}
 		$result .= '';
@@ -436,7 +442,12 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '<script>';
 		$result .= 'jQuery(function ($) {';
-		$result .= ' var data' . $uuid . ' = ' . wp_json_encode( [ 'labels' => $labels, 'series' => $series ] ) . ';';
+		$result .= ' var data' . $uuid . ' = ' . wp_json_encode(
+			[
+				'labels' => $labels,
+				'series' => $series,
+			]
+		) . ';';
 		$result .= ' var tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: true, appendToBody: true});';
 		$result .= ' var option' . $uuid . ' = {width: 120, height: 120, showLabel: false, donut: true, donutWidth: "40%", startAngle: 270, plugins: [tooltip' . $uuid . ']};';
 		$result .= ' new Chartist.Pie("#traffic-pie-' . $group . '", data' . $uuid . ', option' . $uuid . ');';
@@ -735,6 +746,7 @@ class Analytics {
 		$result .= '   selected: {},';
 		$result .= '   selectedHover: {},';
 		$result .= ' },';
+		$result .= ' onRegionTipShow: function(e, el, code){if (mapdata' . $uuid . '[code]){el.html(el.html() + " (" + mapdata' . $uuid . '[code] + " ' . esc_html__( 'calls', 'traffic' ) . ')")};},';
 		$result .= ' });';
 		$result .= ' $(".jvectormap-zoomin").html(\'' . $plus . '\');';
 		$result .= ' $(".jvectormap-zoomout").html(\'' . $minus . '\');';
@@ -883,16 +895,33 @@ class Analytics {
 			$item['y']      = $item['y'] / $short['divisor'];
 			$series_quota[] = $item;
 		}
-		array_unshift($series_success, $before);
-		array_unshift($series_error, $before);
-		array_unshift($series_quota, $before);
+		array_unshift( $series_success, $before );
+		array_unshift( $series_error, $before );
+		array_unshift( $series_quota, $before );
 		$series_success[] = $after;
 		$series_error[]   = $after;
 		$series_quota[]   = $after;
-		$json_call = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Success', 'traffic' ), 'data' => $series_success ], [ 'name' => esc_html__( 'Error', 'traffic' ), 'data' => $series_error ], [ 'name' => esc_html__( 'Quota Error', 'traffic' ), 'data' => $series_quota ] ] ] );
-		$json_call = str_replace('"x":"new', '"x":new', $json_call);
-		$json_call = str_replace(')","y"', '),"y"', $json_call);
-		$json_call = str_replace('"null"', 'null', $json_call);
+		$json_call        = wp_json_encode(
+			[
+				'series' => [
+					[
+						'name' => esc_html__( 'Success', 'traffic' ),
+						'data' => $series_success,
+					],
+					[
+						'name' => esc_html__( 'Error', 'traffic' ),
+						'data' => $series_error,
+					],
+					[
+						'name' => esc_html__( 'Quota Error', 'traffic' ),
+						'data' => $series_quota,
+					],
+				],
+			]
+		);
+		$json_call        = str_replace( '"x":"new', '"x":new', $json_call );
+		$json_call        = str_replace( ')","y"', '),"y"', $json_call );
+		$json_call        = str_replace( '"null"', 'null', $json_call );
 		// Data.
 		$short     = Conversion::data_shorten( $data_max, 2, true );
 		$data_max  = (int) ceil( $data_max / $short['divisor'] );
@@ -905,21 +934,43 @@ class Analytics {
 			$kb['y']        = $kb['y'] / $short['divisor'];
 			$series_kbout[] = $kb;
 		}
-		array_unshift($series_kbin, $before);
-		array_unshift($series_kbout, $before);
+		array_unshift( $series_kbin, $before );
+		array_unshift( $series_kbout, $before );
 		$series_kbin[]  = $after;
 		$series_kbout[] = $after;
-		$json_data      = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Incoming Data', 'traffic' ), 'data' => $series_kbin ], [ 'name' => esc_html__( 'Outcoming Data', 'traffic' ), 'data' => $series_kbout ] ] ] );
-		$json_data      = str_replace('"x":"new', '"x":new', $json_data);
-		$json_data      = str_replace(')","y"', '),"y"', $json_data);
-		$json_data      = str_replace('"null"', 'null', $json_data);
+		$json_data      = wp_json_encode(
+			[
+				'series' => [
+					[
+						'name' => esc_html__( 'Incoming Data', 'traffic' ),
+						'data' => $series_kbin,
+					],
+					[
+						'name' => esc_html__( 'Outcoming Data', 'traffic' ),
+						'data' => $series_kbout,
+					],
+				],
+			]
+		);
+		$json_data      = str_replace( '"x":"new', '"x":new', $json_data );
+		$json_data      = str_replace( ')","y"', '),"y"', $json_data );
+		$json_data      = str_replace( '"null"', 'null', $json_data );
 		// Uptime.
-		array_unshift($series_uptime, $before);
+		array_unshift( $series_uptime, $before );
 		$series_uptime[] = $after;
-		$json_uptime     = wp_json_encode( ['series' => [ [ 'name' => esc_html__( 'Perceived Uptime', 'traffic' ), 'data' => $series_uptime ] ] ] );
-		$json_uptime     = str_replace('"x":"new', '"x":new', $json_uptime);
-		$json_uptime     = str_replace(')","y"', '),"y"', $json_uptime);
-		$json_uptime     = str_replace('"null"', 'null', $json_uptime);
+		$json_uptime     = wp_json_encode(
+			[
+				'series' => [
+					[
+						'name' => esc_html__( 'Perceived Uptime', 'traffic' ),
+						'data' => $series_uptime,
+					],
+				],
+			]
+		);
+		$json_uptime     = str_replace( '"x":"new', '"x":new', $json_uptime );
+		$json_uptime     = str_replace( ')","y"', '),"y"', $json_uptime );
+		$json_uptime     = str_replace( '"null"', 'null', $json_uptime );
 		// Rendering.
 		if ( 4 < $this->duration ) {
 			if ( 1 === $this->duration % 2 ) {
@@ -928,7 +979,7 @@ class Analytics {
 				$divisor = 5;
 			}
 		} else {
-			$divisor = $this->duration + 1 ;
+			$divisor = $this->duration + 1;
 		}
 		$result  = '<div class="traffic-multichart-handler">';
 		$result .= '<div class="traffic-multichart-item active" id="traffic-chart-calls">';
@@ -1560,7 +1611,13 @@ class Analytics {
 				);
 				break;
 			default:
-				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'countries' ] );
+				$url = $this->get_url(
+					[ 'domain' ],
+					[
+						'type'  => 'domains',
+						'extra' => 'countries',
+					]
+				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-60-module">';
@@ -1605,7 +1662,13 @@ class Analytics {
 				);
 				break;
 			default:
-				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'codes' ] );
+				$url = $this->get_url(
+					[ 'domain' ],
+					[
+						'type'  => 'domains',
+						'extra' => 'codes',
+					]
+				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-left-module">';
@@ -1650,7 +1713,13 @@ class Analytics {
 				);
 				break;
 			default:
-				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'schemes' ] );
+				$url = $this->get_url(
+					[ 'domain' ],
+					[
+						'type'  => 'domains',
+						'extra' => 'schemes',
+					]
+				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-center-module">';
@@ -1695,7 +1764,13 @@ class Analytics {
 				);
 				break;
 			default:
-				$url = $this->get_url( [ 'domain' ], [ 'type' => 'domains', 'extra'  => 'methods' ] );
+				$url = $this->get_url(
+					[ 'domain' ],
+					[
+						'type'  => 'domains',
+						'extra' => 'methods',
+					]
+				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-right-module">';
