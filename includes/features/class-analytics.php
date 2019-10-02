@@ -1479,7 +1479,7 @@ class Analytics {
 				$title = esc_html__( 'All HTTP Codes', 'traffic' );
 				break;
 			case 'schemes':
-				$title = esc_html__( 'All Schemes', 'traffic' );
+				$title = esc_html__( 'All Protocols', 'traffic' );
 				break;
 			case 'methods':
 				$title = esc_html__( 'All Methods', 'traffic' );
@@ -1723,7 +1723,7 @@ class Analytics {
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$result  = '<div class="traffic-33-module traffic-33-center-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Schemes', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Protocols', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-security">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
