@@ -83,3 +83,10 @@ Please, see [full changelog](https://github.com/Pierre-Lannoy/wp-traffic/blob/ma
 == Upgrade Notice ==
 
 == Screenshots ==
+
+1. Main Page
+2. Domains List
+3. Countries List
+4. HTTP Codes List
+5. Subdomain Details - Endpoints List
+6. Endpoint Summary
