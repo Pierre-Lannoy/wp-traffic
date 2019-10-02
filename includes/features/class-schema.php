@@ -101,7 +101,7 @@ class Schema {
 		if ( array_key_exists( 'authority', $record ) ) {
 			$host = $record['authority'];
 		}
-		if ( array_key_exists( 'context', $record ) && 'inbound' === $record['context'] ) {
+		if ( array_key_exists( 'context', $record ) && array_key_exists( 'id', $record ) && 'inbound' === $record['context'] ) {
 			$host = $record['id'];
 		}
 		if ( '' !== $host ) {
