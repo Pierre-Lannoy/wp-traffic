@@ -257,9 +257,13 @@ class Capture {
 				$header .= 'User-Agent: ' . $args['user-agent'] . PHP_EOL;
 			}
 			$url_parts = wp_parse_url( $url );
-			$header   .= 'XXXX ' . $url_parts['path'] . ' HTTP/1.1' . PHP_EOL;
-			$header   .= 'Host: ' . $url_parts['host'] . PHP_EOL;
-			$cookie    = '';
+			if ( array_key_exists( 'path', $url_parts ) ) {
+				$header .= 'XXXX ' . $url_parts['path'] . ' HTTP/1.1' . PHP_EOL;
+			}
+			if ( array_key_exists( 'host', $url_parts ) ) {
+				$header .= 'Host: ' . $url_parts['host'] . PHP_EOL;
+			}
+			$cookie = '';
 			if ( array_key_exists( 'cookies', $args ) ) {
 				$c = [];
 				foreach ( $args['cookies'] as $key => $value ) {
