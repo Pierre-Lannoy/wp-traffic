@@ -4,6 +4,8 @@
 [![wordpress](https://badgen.net/badge/wordpress/5.2+/green)](https://wordpress.org/plugins/traffic/)
 [![license](https://badgen.net/github/license/Pierre-Lannoy/wp-traffic/)](/license.txt)
 
+> ⚠️ This plugin is currently in submission process for wordpress.org directory. Use it at your own risk ;)
+
 __Traffic__ is a full featured analytics reporting tool that analyzes all inbound and outbound API calls made to/from your WordPress site.
 
 See [WordPress directory page](https://wordpress.org/plugins/traffic/). 
