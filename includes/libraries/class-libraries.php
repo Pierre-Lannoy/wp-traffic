@@ -57,8 +57,8 @@ class Libraries {
 	 * @since 1.0.0
 	 */
 	public static function init() {
-		self::$psr4_libraries              = [];
-		self::$psr4_libraries['feather']   = [
+		self::$psr4_libraries                = [];
+		self::$psr4_libraries['feather']     = [
 			'name'    => 'Feather',
 			'prefix'  => 'Feather',
 			'base'    => TRAFFIC_VENDOR_DIR . 'feather/',
@@ -80,8 +80,8 @@ class Libraries {
 			'license' => 'mit',
 			'langs'   => 'en',
 		];
-		self::$mono_libraries              = [];
-		self::$mono_libraries['parsedown'] = [
+		self::$mono_libraries                = [];
+		self::$mono_libraries['parsedown']   = [
 			'name'    => 'Parsedown',
 			'detect'  => 'Parsedown',
 			'base'    => TRAFFIC_VENDOR_DIR . 'parsedown/',
