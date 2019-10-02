@@ -275,7 +275,7 @@ class Form {
 	 * @since   1.0.0
 	 */
 	public function echo_field_simple_text( $args ) {
-		echo $this->field_checkbox( $args['text'] );
+		echo $this->field_simple_text( $args['text'] );
 	}
 
 }
