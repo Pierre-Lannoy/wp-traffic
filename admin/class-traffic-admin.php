@@ -19,6 +19,7 @@ use Traffic\System\Form;
 use Traffic\System\Blog;
 use Traffic\System\Date;
 use Traffic\System\Timezone;
+use Traffic\System\GeoIP;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -110,6 +111,7 @@ class Traffic_Admin {
 	public function init_settings_sections() {
 		add_settings_section( 'traffic_inbound_options_section', esc_html__( 'Inbound APIs', 'traffic' ), [ $this, 'inbound_options_section_callback' ], 'traffic_inbound_options_section' );
 		add_settings_section( 'traffic_outbound_options_section', esc_html__( 'Outbound APIs', 'traffic' ), [ $this, 'outbound_options_section_callback' ], 'traffic_outbound_options_section' );
+		add_settings_section( 'traffic_geoip_options_section', esc_html__( 'IP geographic information', 'traffic' ), [ $this, 'geoip_options_section_callback' ], 'traffic_geoip_options_section' );
 		add_settings_section( 'traffic_plugin_options_section', esc_html__( 'Plugin options', 'traffic' ), [ $this, 'plugin_options_section_callback' ], 'traffic_plugin_options_section' );
 	}
 
@@ -363,6 +365,32 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_cut_path' );
+	}
+
+	/**
+	 * Callback for outbound APIs section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function geoip_options_section_callback() {
+		$geo_ip = new GeoIP();
+		if ( $geo_ip->is_installed() ) {
+			$help = 'aaa';
+		} else {
+			$help = sprintf( esc_html__('', 'traffic' ), '<a href="https://wordpress.org/plugins/geoip-detect/">GeoIP Detection</a>' );
+		}
+		$form = new Form();
+		add_settings_field(
+			'traffic_geoip_options_help',
+			'TITLE',
+			[ $form, 'echo_field_simple_text' ],
+			'traffic_geoip_options_section',
+			'traffic_geoip_options_section',
+			[
+				'text' => $help
+			]
+		);
+		register_setting( 'traffic_geoip_options_section', 'traffic_geoip_options_help' );
 	}
 
 }
