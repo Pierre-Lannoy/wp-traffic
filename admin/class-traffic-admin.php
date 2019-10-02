@@ -20,6 +20,7 @@ use Traffic\System\Blog;
 use Traffic\System\Date;
 use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
+use Feather\Icons;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -111,7 +112,6 @@ class Traffic_Admin {
 	public function init_settings_sections() {
 		add_settings_section( 'traffic_inbound_options_section', esc_html__( 'Inbound APIs', 'traffic' ), [ $this, 'inbound_options_section_callback' ], 'traffic_inbound_options_section' );
 		add_settings_section( 'traffic_outbound_options_section', esc_html__( 'Outbound APIs', 'traffic' ), [ $this, 'outbound_options_section_callback' ], 'traffic_outbound_options_section' );
-		add_settings_section( 'traffic_geoip_options_section', esc_html__( 'IP geographic information', 'traffic' ), [ $this, 'geoip_options_section_callback' ], 'traffic_geoip_options_section' );
 		add_settings_section( 'traffic_plugin_options_section', esc_html__( 'Plugin options', 'traffic' ), [ $this, 'plugin_options_section_callback' ], 'traffic_plugin_options_section' );
 	}
 
@@ -247,6 +247,25 @@ class Traffic_Admin {
 	 */
 	public function plugin_options_section_callback() {
 		$form = new Form();
+		$geo_ip = new GeoIP();
+		if ( $geo_ip->is_installed() ) {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__('Your site currently use %s. That\'s great: you will take advantage of the geographical distribution of calls in Traffic.', 'traffic' ), '<em>' . $geo_ip->get_full_name() .'</em>' );
+		} else {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__('Your site does not use any IP geographic information plugin. To take advantage of the geographical distribution of calls in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'traffic' ), '<a href="https://wordpress.org/plugins/geoip-detect/">GeoIP Detection</a>' );
+		}
+		add_settings_field(
+			'traffic_plugin_options_geoip',
+			__( 'IP information', 'traffic' ),
+			[ $form, 'echo_field_simple_text' ],
+			'traffic_plugin_options_section',
+			'traffic_plugin_options_section',
+			[
+				'text' => $help
+			]
+		);
+		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_geoip' );
 		add_settings_field(
 			'traffic_plugin_options_autoupdate',
 			__( 'Plugin updates', 'traffic' ),
@@ -365,32 +384,6 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_cut_path' );
-	}
-
-	/**
-	 * Callback for outbound APIs section.
-	 *
-	 * @since 1.0.0
-	 */
-	public function geoip_options_section_callback() {
-		$geo_ip = new GeoIP();
-		if ( $geo_ip->is_installed() ) {
-			$help = 'aaa';
-		} else {
-			$help = sprintf( esc_html__('', 'traffic' ), '<a href="https://wordpress.org/plugins/geoip-detect/">GeoIP Detection</a>' );
-		}
-		$form = new Form();
-		add_settings_field(
-			'traffic_geoip_options_help',
-			'TITLE',
-			[ $form, 'echo_field_simple_text' ],
-			'traffic_geoip_options_section',
-			'traffic_geoip_options_section',
-			[
-				'text' => $help
-			]
-		);
-		register_setting( 'traffic_geoip_options_section', 'traffic_geoip_options_help' );
 	}
 
 }

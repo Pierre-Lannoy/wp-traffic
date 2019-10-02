@@ -118,7 +118,7 @@ class GeoIP {
 		if ( ! $this->is_installed() ) {
 			return '';
 		}
-		return $this->provider_name;
+		return $this->provider_name . ' v' . $this->provider_version;
 	}
 
 	/**

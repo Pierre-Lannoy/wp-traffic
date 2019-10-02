@@ -264,7 +264,7 @@ class Form {
 	 * @since   1.0.0
 	 */
 	public function field_simple_text( $text ) {
-		$html = '<p><label>' . $text . '</label></p>';
+		$html = $text;
 		return $html;
 	}
 
