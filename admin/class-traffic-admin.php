@@ -20,7 +20,6 @@ use Traffic\System\Blog;
 use Traffic\System\Date;
 use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
-use Feather\Icons;
 
 /**
  * The admin-specific functionality of the plugin.
