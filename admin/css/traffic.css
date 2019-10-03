@@ -29,6 +29,20 @@
     --tooltip-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
 }
 
+.traffic-about-logo {
+    width: 128px;
+    float: right;
+    margin: -20px 8px 8px 20px;
+    transition: opacity 1.4s ease-in;
+}
+
+@media only screen and (max-width: 500px) {
+    .traffic-about-logo {
+        width: 92px;
+        margin: -16px 6px 6px 16px;
+    }
+}
+
 .traffic-row {
     margin-bottom: 10px;
     width: 100%;
