@@ -198,10 +198,10 @@ class Traffic_Admin {
 	private function save_options() {
 		if ( ! empty( $_POST ) ) {
 			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
-				Option::network_set( 'auto_update', array_key_exists( 'traffic_plugin_options_autoupdate', $_POST ) );
-				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) );
-				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) );
-				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) );
+				Option::network_set( 'auto_update', array_key_exists( 'traffic_plugin_options_autoupdate', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_autoupdate' ) : false );
+				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
+				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
+				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_outbound_options_capture' ) : false );
 				Option::network_set( 'inbound_cut_path', array_key_exists( 'traffic_inbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_inbound_options_cut_path' ) : Option::network_get( 'traffic_inbound_options_cut_path' ) );
 				Option::network_set( 'outbound_cut_path', array_key_exists( 'traffic_outbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_outbound_options_cut_path' ) : Option::network_get( 'traffic_outbound_options_cut_path' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'traffic' );

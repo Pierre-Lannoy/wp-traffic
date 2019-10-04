@@ -146,7 +146,7 @@ class Core {
 	 * Returns a base64 svg resource for the plugin logo.
 	 *
 	 * @return string The svg resource as a base64.
-	 * @since 1.5.0
+	 * @since 1.0.0
 	 */
 	public static function get_base64_logo() {
 		$source  = '<svg width="100%" height="100%" viewBox="0 0 1001 1001" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">';

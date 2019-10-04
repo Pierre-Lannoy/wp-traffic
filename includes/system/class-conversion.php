@@ -82,8 +82,8 @@ class Conversion {
 			pow( 1024, 2 ) => esc_html_x( 'MB', 'Abbreviation - Stands for "megabytes".', 'traffic' ),
 			pow( 1024, 3 ) => esc_html_x( 'GB', 'Abbreviation - Stands for "gigabytes".', 'traffic' ),
 			pow( 1024, 4 ) => esc_html_x( 'TB', 'Abbreviation - Stands for "terabytes".', 'traffic' ),
-			pow( 1024, 5 ) => esc_html_x( 'PB', 'Abbreviation - Stands for "betabytes".', 'traffic' ),
-			pow( 1024, 6 ) => esc_html_x( 'EB', 'Abbreviation - Stands for "Exabytes".', 'traffic' ),
+			pow( 1024, 5 ) => esc_html_x( 'PB', 'Abbreviation - Stands for "petabytes".', 'traffic' ),
+			pow( 1024, 6 ) => esc_html_x( 'EB', 'Abbreviation - Stands for "exabytes".', 'traffic' ),
 		];
 		foreach ( $divisors as $divisor => $shorthand ) {
 			if ( abs( $number ) < ( $divisor * 1024 ) ) {
