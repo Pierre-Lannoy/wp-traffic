@@ -19,7 +19,7 @@ $url        = esc_url(
 		admin_url( 'tools.php' )
 	)
 );
-$note       = sprintf(__('Note: analytics are available via the <a href="%s">tools menu</a>.', 'traffic' ), $url );
+$note       = sprintf(__('Note: analytics reports are available via the <a href="%s">tools menu</a>.', 'traffic' ), $url );
 
 ?>
 
