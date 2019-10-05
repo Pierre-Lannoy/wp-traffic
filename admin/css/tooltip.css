@@ -34,6 +34,9 @@ span[data-tooltip].left:hover:after, span[data-tooltip].left:hover:before {
 
 span[data-tooltip] {
     position: relative;
+    z-index: unset !important;
+    display: inline-block;
+    width: auto !important;
 }
 span[data-tooltip]:after, span[data-tooltip]:before {
     position: absolute;
@@ -42,6 +45,8 @@ span[data-tooltip]:after, span[data-tooltip]:before {
     transition: transform 400ms ease, opacity 400ms;
     box-shadow: var(--tooltip-box-shadow);
     z-index: 99;
+    bottom: unset !important;
+    margin-left: unset !important;
 }
 span[data-tooltip]:before {
     content: attr(data-tooltip);

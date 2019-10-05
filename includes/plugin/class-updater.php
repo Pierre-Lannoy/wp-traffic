@@ -10,6 +10,7 @@
 namespace Traffic\Plugin;
 
 use Parsedown;
+use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Nag;
 use Traffic\System\Option;
 use Exception;
@@ -41,7 +42,9 @@ class Updater {
 			} else {
 				$this->update( $old );
 				// phpcs:ignore
-				$message = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
+				$message  = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
+				// phpcs:ignore
+				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), admin_url( 'options-general.php?page=traffic-settings&tab=about' ) );
 			}
 			Nag::add( 'update', 'info', $message );
 			Option::network_set( 'version', TRAFFIC_VERSION );
@@ -64,7 +67,8 @@ class Updater {
 	 * @since 1.0.0
 	 */
 	private function update( $from ) {
-
+		$schema = new Schema();
+		$schema->update();
 	}
 
 	/**

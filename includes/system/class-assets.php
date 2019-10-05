@@ -59,15 +59,25 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_style( $handle, $src, $file, $deps = [], $media = 'all' ) {
-		if ( Environment::is_plugin_in_production_mode() ) {
-			$version = TRAFFIC_VERSION;
+		if ( Option::network_get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
+			if ( TRAFFIC_ADMIN_URL === $src ) {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
+			} else {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
+			}
+			// phpcs:ignore
+			return wp_register_style( $handle, $file, $deps, null, $media );
 		} else {
-			$version = UUID::generate_unique_id( 20 );
+			if ( Environment::is_plugin_in_production_mode() ) {
+				$version = TRAFFIC_VERSION;
+			} else {
+				$version = UUID::generate_unique_id( 20 );
+			}
+			if ( Environment::is_plugin_in_dev_mode() ) {
+				$file = str_replace( '.min', '', $file );
+			}
+			return wp_register_style( $handle, $src . $file, $deps, $version, $media );
 		}
-		if ( Environment::is_plugin_in_dev_mode() ) {
-			$file = str_replace( '.min', '', $file );
-		}
-		return wp_register_style( $handle, $src . $file, $deps, $version, $media );
 	}
 
 	/**
@@ -84,15 +94,25 @@ class Assets {
 	 * @since  1.0.0
 	 */
 	public function register_script( $handle, $src, $file, $deps = [] ) {
-		if ( Environment::is_plugin_in_production_mode() ) {
-			$version = TRAFFIC_VERSION;
+		if ( Option::network_get( 'use_cdn' ) && TRAFFIC_CDN_AVAILABLE ) {
+			if ( TRAFFIC_ADMIN_URL === $src ) {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/admin/' . $file;
+			} else {
+				$file = 'https://cdn.jsdelivr.net/wp/' . TRAFFIC_SLUG . '/tags/' . TRAFFIC_VERSION . '/public/' . $file;
+			}
+			// phpcs:ignore
+			return wp_register_script( $handle, $file, $deps, null, Option::site_get( 'script_in_footer' ) );
 		} else {
-			$version = UUID::generate_unique_id( 20 );
+			if ( Environment::is_plugin_in_production_mode() ) {
+				$version = TRAFFIC_VERSION;
+			} else {
+				$version = UUID::generate_unique_id( 20 );
+			}
+			if ( Environment::is_plugin_in_dev_mode() ) {
+				$file = str_replace( '.min', '', $file );
+			}
+			return wp_register_script( $handle, $src . $file, $deps, $version, Option::site_get( 'script_in_footer' ) );
 		}
-		if ( Environment::is_plugin_in_dev_mode() ) {
-			$file = str_replace( '.min', '', $file );
-		}
-		return wp_register_script( $handle, $src . $file, $deps, $version, Option::network_get( 'script_in_footer' ) );
 	}
 
 }

@@ -1070,9 +1070,9 @@ class Analytics {
 					$percent = 0;
 				}
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
-			} elseif ( 0.0 === $previous ) {
+			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
-			} elseif ( 0.0 === $current ) {
+			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
 			if ( is_array( $data ) && array_key_exists( 'avg_latency', $data ) && ! empty( $data['avg_latency'] ) ) {
@@ -1107,9 +1107,9 @@ class Analytics {
 					$percent = 0;
 				}
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
-			} elseif ( 0.0 === $previous ) {
+			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
-			} elseif ( 0.0 === $current ) {
+			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
 			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_in, 2 ) . '</span>';
@@ -1156,9 +1156,10 @@ class Analytics {
 			} else {
 				if ( 0.0 !== $data_value ) {
 					$result[ 'kpi-main-' . $queried ] = '100%';
-				}
-				if ( 0.0 !== $base_value ) {
+				} elseif ( 0.0 !== $base_value ) {
 					$result[ 'kpi-main-' . $queried ] = '0%';
+				} else {
+					$result[ 'kpi-main-' . $queried ] = '-';
 				}
 			}
 			if ( 0.0 !== $pbase_value && 0.0 !== $pdata_value ) {
@@ -1177,9 +1178,9 @@ class Analytics {
 					$percent = 0;
 				}
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
-			} elseif ( 0.0 === $previous ) {
+			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
-			} elseif ( 0.0 === $current ) {
+			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
 			switch ( $queried ) {
@@ -1798,12 +1799,12 @@ class Analytics {
 			case 'call':
 				$icon  = Feather\Icons::get_base64( 'hash', 'none', '#73879C' );
 				$title = esc_html_x( 'Number of Calls', 'Noun - Number API calls.', 'traffic' );
-				$help  = esc_html__( 'Number of API calls', 'traffic' );
+				$help  = esc_html__( 'Number of API calls.', 'traffic' );
 				break;
 			case 'data':
 				$icon  = Feather\Icons::get_base64( 'link-2', 'none', '#73879C' );
 				$title = esc_html_x( 'Data Volume', 'Noun - Volume of transferred data.', 'traffic' );
-				$help  = esc_html__( 'Volume of transferred data', 'traffic' );
+				$help  = esc_html__( 'Volume of transferred data.', 'traffic' );
 				break;
 			case 'server':
 				$icon  = Feather\Icons::get_base64( 'x-octagon', 'none', '#73879C' );

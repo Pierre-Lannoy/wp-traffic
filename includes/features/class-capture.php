@@ -11,6 +11,7 @@
 
 namespace Traffic\Plugin\Feature;
 
+use Traffic\System\Environment;
 use Traffic\System\Logger;
 use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Option;
@@ -349,6 +350,9 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
+		if ( 2 === Environment::exec_mode() ) {
+			return $result;
+		}
 		try {
 			$b_in                 = 0;
 			$b_out                = 0;

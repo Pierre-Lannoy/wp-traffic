@@ -164,11 +164,44 @@ class Schema {
 	/**
 	 * Initialize the schema.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 */
 	public function initialize() {
 		global $wpdb;
-		$charset_collate = $wpdb->get_charset_collate();
+		try {
+			$this->create_table();
+			Logger::debug( sprintf( 'Table "%s" created.', $wpdb->base_prefix . self::$statistics ) );
+			Logger::info( 'Schema installed.' );
+		} catch ( \Throwable $e ) {
+			Logger::alert( sprintf( 'Unable to create "%s" table: %s', $wpdb->base_prefix . self::$statistics, $e->getMessage() ), $e->getCode() );
+			Logger::alert( 'Schema not installed.', $e->getCode() );
+		}
+	}
+
+	/**
+	 * Update the schema.
+	 *
+	 * @since    1.1.0
+	 */
+	public function update() {
+		global $wpdb;
+		try {
+			$this->create_table();
+			Logger::debug( sprintf( 'Table "%s" updated.', $wpdb->base_prefix . self::$statistics ) );
+			Logger::info( 'Schema updated.' );
+		} catch ( \Throwable $e ) {
+			Logger::alert( sprintf( 'Unable to update "%s" table: %s', $wpdb->base_prefix . self::$statistics, $e->getMessage() ), $e->getCode() );
+		}
+	}
+
+	/**
+	 * Create the table.
+	 *
+	 * @since    1.0.0
+	 */
+	private function create_table() {
+		global $wpdb;
+		$charset_collate = 'DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci';
 		$sql             = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->base_prefix . self::$statistics;
 		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
 		$sql            .= " `site` bigint(20) NOT NULL DEFAULT '0',";
@@ -190,8 +223,6 @@ class Schema {
 		$sql            .= ") $charset_collate;";
 		// phpcs:ignore
 		$wpdb->query( $sql );
-		Logger::debug( sprintf( 'Table "%s" created.', $wpdb->base_prefix . self::$statistics ) );
-		Logger::debug( 'Schema installed.' );
 	}
 
 	/**
@@ -273,7 +304,7 @@ class Schema {
 		$sql = 'SELECT * FROM ' . $wpdb->base_prefix . self::$statistics . ' ORDER BY `timestamp` ASC LIMIT 1';
 		// phpcs:ignore
 		$result = $wpdb->get_results( $sql, ARRAY_A );
-		if ( is_array( $result ) && array_key_exists( 'timestamp', $result[0] ) ) {
+		if ( is_array( $result ) && 0 < count( $result ) && array_key_exists( 'timestamp', $result[0] ) ) {
 			Cache::set_global( 'get_oldest_date', $result[0]['timestamp'], 'infinite' );
 			return $result[0]['timestamp'];
 		}
