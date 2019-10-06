@@ -1166,10 +1166,7 @@ class Analytics {
 				$previous = 100 * $pdata_value / $pbase_value;
 			} else {
 				if ( 0.0 !== $pdata_value ) {
-					$previous = 100;
-				}
-				if ( 0.0 !== $pbase_value ) {
-					$previous = 0;
+					$previous = 100.0;
 				}
 			}
 			if ( 0.0 !== $current && 0.0 !== $previous ) {
