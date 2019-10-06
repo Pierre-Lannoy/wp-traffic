@@ -3,6 +3,12 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Better selector layouts on mobile devices.
+### Fixed
+- PHP warning when computing percentages.
+
 ## [1.1.0] - 2019-10-05
 ### Added
 - It's now possible to use public CDN to serve Traffic scripts and stylesheets (see _Settings | Traffic | Options_).

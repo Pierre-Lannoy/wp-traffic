@@ -36,13 +36,6 @@
     transition: opacity 1.4s ease-in;
 }
 
-@media only screen and (max-width: 500px) {
-    .traffic-about-logo {
-        width: 92px;
-        margin: -16px 6px 6px 16px;
-    }
-}
-
 .traffic-row {
     margin-bottom: 10px;
     width: 100%;
@@ -464,6 +457,21 @@ button.btn {
     .traffic-table td {
         display: block;
         padding: .25em .5em;
+    }
+    .traffic-about-logo {
+        width: 92px;
+        margin: -16px 6px 6px 16px;
+    }
+    .traffic-title,
+    .traffic-subtitle,
+    .traffic-switch {
+        float: unset;
+        display: block;
+        padding: 2px 8px;
+    }
+    .traffic-switch,
+    .traffic-datepicker {
+        padding: 2px 8px;
     }
 }
 
