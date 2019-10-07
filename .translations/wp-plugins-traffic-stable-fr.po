@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Traffic - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-10-07 15:53+0200\n"
+"PO-Revision-Date: 2019-10-07 16:53+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -481,7 +481,7 @@ msgstr "Domaines principaux"
 
 #: includes/features/class-analytics.php:1489
 msgid "All Countries"
-msgstr "Tout les pays"
+msgstr "Tous les pays"
 
 #: includes/features/class-analytics.php:1486
 msgid "All Methods"
