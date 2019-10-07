@@ -1326,6 +1326,21 @@ class Analytics {
 	}
 
 	/**
+	 * Get the site selection bar.
+	 *
+	 * @return string  The bar ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_site_bar() {
+		// todo:TEST HERE
+
+		$result  = 'aaa';
+
+
+		return $result;
+	}
+
+	/**
 	 * Get the title bar.
 	 *
 	 * @return string  The bar ready to print.
@@ -1346,7 +1361,10 @@ class Analytics {
 				$title = $this->get_title_selector();
 				break;
 		}
-		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result = '<div class="traffic-box traffic-box-full-line">';
+		if ( 1 === 1) {
+			$result .= '<span class="traffic-site">' . $this->get_site_bar() . '</span>';
+		}
 		$result .= '<span class="traffic-title">' . $title . '</span>';
 		$result .= '<span class="traffic-subtitle">' . $subtitle . '</span>';
 		$result .= '<span class="traffic-datepicker">' . $this->get_date_box() . '</span>';
