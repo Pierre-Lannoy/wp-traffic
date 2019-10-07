@@ -2048,7 +2048,7 @@ class Analytics {
 		$result .= '  maxDate: moment(),';
 		$result .= '  showCustomRangeLabel: true,';
 		$result .= '  alwaysShowCalendars: true,';
-		$result .= '  locale: {cancelLabel: "' . esc_html__( 'Cancel', 'traffic' ) . '", applyLabel: "' . esc_html__( 'Apply', 'traffic' ) . '"},';
+		$result .= '  locale: {customRangeLabel: "' . esc_html__( 'Custom Range', 'traffic' ) . '",cancelLabel: "' . esc_html__( 'Cancel', 'traffic' ) . '", applyLabel: "' . esc_html__( 'Apply', 'traffic' ) . '"},';
 		$result .= '  ranges: {';
 		$result .= '    "' . esc_html__( 'Today', 'traffic' ) . '": [moment(), moment()],';
 		$result .= '    "' . esc_html__( 'Yesterday', 'traffic' ) . '": [moment().subtract(1, "days"), moment().subtract(1, "days")],';

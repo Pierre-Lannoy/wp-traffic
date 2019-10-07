@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Better selector layouts on mobile devices.
 ### Fixed
 - PHP warning when computing percentages.
+- In the date-picker, the string "Custom Range" is not internationalized (it's always in English).
 
 ## [1.1.0] - 2019-10-05
 ### Added
