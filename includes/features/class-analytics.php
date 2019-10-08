@@ -1529,8 +1529,9 @@ class Analytics {
 	public function get_top_domain_box() {
 		$url     = $this->get_url( [ 'domain' ], [ 'type' => 'domains' ] );
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all domains.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-domains">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1540,6 +1541,10 @@ class Analytics {
 			]
 		);
 		return $result;
+
+
+
+		//'&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
 	}
 
 	/**
@@ -1557,8 +1562,9 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all subdomains.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-authorities">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1585,8 +1591,9 @@ class Analytics {
 			]
 		);
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all endpoints.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-top-endpoints">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1636,8 +1643,9 @@ class Analytics {
 				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all countries.', 'traffic' );
 		$result  = '<div class="traffic-60-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-map">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1687,8 +1695,9 @@ class Analytics {
 				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all codes.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-left-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-code">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1738,8 +1747,9 @@ class Analytics {
 				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of protocols breakdown.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-center-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Protocols', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Protocols', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-security">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -1789,8 +1799,9 @@ class Analytics {
 				);
 		}
 		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$help    = esc_html__( 'View the details of all methods.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-right-module">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more">' . $detail . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-method">' . $this->get_graph_placeholder( 90 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
