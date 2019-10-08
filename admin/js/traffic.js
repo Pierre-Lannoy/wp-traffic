@@ -53,6 +53,9 @@ jQuery(document).ready( function($) {
 			$( "#traffic-chart-calls" ).addClass( "active" );
 			$( "#traffic-chart-data" ).removeClass( "active" );
 			$( "#traffic-chart-uptime" ).removeClass( "active" );
+			$( "#traffic-chart-button-calls" ).addClass( "active" );
+			$( "#traffic-chart-button-data" ).removeClass( "active" );
+			$( "#traffic-chart-button-uptime" ).removeClass( "active" );
 		}
 	);
 	$( "#traffic-chart-button-data" ).on(
@@ -61,6 +64,9 @@ jQuery(document).ready( function($) {
 			$( "#traffic-chart-calls" ).removeClass( "active" );
 			$( "#traffic-chart-data" ).addClass( "active" );
 			$( "#traffic-chart-uptime" ).removeClass( "active" );
+			$( "#traffic-chart-button-calls" ).removeClass( "active" );
+			$( "#traffic-chart-button-data" ).addClass( "active" );
+			$( "#traffic-chart-button-uptime" ).removeClass( "active" );
 		}
 	);
 	$( "#traffic-chart-button-uptime" ).on(
@@ -69,6 +75,9 @@ jQuery(document).ready( function($) {
 			$( "#traffic-chart-calls" ).removeClass( "active" );
 			$( "#traffic-chart-data" ).removeClass( "active" );
 			$( "#traffic-chart-uptime" ).addClass( "active" );
+			$( "#traffic-chart-button-calls" ).removeClass( "active" );
+			$( "#traffic-chart-button-data" ).removeClass( "active" );
+			$( "#traffic-chart-button-uptime" ).addClass( "active" );
 		}
 	);
 } );

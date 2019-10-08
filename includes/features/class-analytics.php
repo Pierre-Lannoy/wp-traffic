@@ -1402,16 +1402,19 @@ class Analytics {
 	 */
 	public function get_main_chart() {
 		if ( 1 < $this->duration ) {
-			$detail  = '<span class="traffic-chart-button" id="traffic-chart-button-calls"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
-			$detail .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button" id="traffic-chart-button-data"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
-			$detail .= '<span class="traffic-chart-button" id="traffic-chart-button-uptime"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
-			$result  = '<div class="traffic-row">';
-			$result .= '<div class="traffic-box traffic-box-full-line">';
-			$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Metrics Variations', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
-			$result .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
-			$result .= '</div>';
-			$result .= '</div>';
-			$result .= $this->get_refresh_script(
+			$help_calls  = esc_html__( 'Responses types distribution.', 'traffic' );
+			$help_data   = esc_html__( 'Data volume distribution.', 'traffic' );
+			$help_uptime = esc_html__( 'Uptime distribution.', 'traffic' );
+			$detail      = '<span class="traffic-chart-button not-ready left" id="traffic-chart-button-calls" data-position="left" data-tooltip="' . $help_calls . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
+			$detail     .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button not-ready left" id="traffic-chart-button-data" data-position="left" data-tooltip="' . $help_data . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
+			$detail     .= '<span class="traffic-chart-button not-ready left" id="traffic-chart-button-uptime" data-position="left" data-tooltip="' . $help_uptime . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
+			$result      = '<div class="traffic-row">';
+			$result     .= '<div class="traffic-box traffic-box-full-line">';
+			$result     .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Metrics Variations', 'traffic' ) . '<span class="traffic-module-more">' . $detail . '</span></span></div>';
+			$result     .= '<div class="traffic-module-content" id="traffic-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
+			$result     .= '</div>';
+			$result     .= '</div>';
+			$result     .= $this->get_refresh_script(
 				[
 					'query'   => 'main-chart',
 					'queried' => 0,
@@ -1926,8 +1929,12 @@ class Analytics {
 		$result .= ' };';
 		$result .= ' $.post(ajaxurl, data, function(response) {';
 		$result .= ' var val = JSON.parse(response);';
-		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);})';
-		$result .= ' })';
+		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);});';
+		if ( array_key_exists( 'query', $args ) && 'main-chart' === $args['query'] ) {
+			$result .= '$(".traffic-chart-button").removeClass("not-ready");';
+			$result .= '$("#traffic-chart-button-calls").addClass("active");';
+		}
+		$result .= ' });';
 		$result .= '});';
 		$result .= '</script>';
 		return $result;

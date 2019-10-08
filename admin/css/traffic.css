@@ -163,8 +163,37 @@
     float: right;
 }
 
+.traffic-module-more a:focus{
+    color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
 .traffic-chart-button {
     cursor: pointer;
+}
+
+.traffic-chart-button.not-ready {
+    filter: opacity(30%);
+    pointer-events: none;
+}
+
+.traffic-chart-button img {
+    padding: 3px;
+    background-color: transparent;
+    top: -2px;
+    border-radius: 2px;
+}
+
+.traffic-chart-button.active {
+    cursor: default;
+
+}
+
+.traffic-chart-button.active img{
+    background-color: #CCCCCC;
+    filter: opacity(50%) grayscale(100%);
+    transition: all 0.6s linear ;
 }
 
 .traffic-module-content {

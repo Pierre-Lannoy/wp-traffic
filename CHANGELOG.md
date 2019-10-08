@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 ### Added
 - Zoom-in tooltip for all lists.
+- "Metrics Variations" selectors tooltip.
 ### Changed
 - Better selector layouts on mobile devices.
+- The active "Metrics Variations" selector has now a different color.
 ### Fixed
 - PHP warning when computing percentages.
+- Clicking on "Metrics Variations" selectors may lead to an unexpected result.
 - In the date-picker, the string "Custom Range" is not internationalized (it's always in English).
 
 ## [1.1.0] - 2019-10-05
