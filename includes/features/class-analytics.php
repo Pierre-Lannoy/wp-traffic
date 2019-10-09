@@ -1332,12 +1332,20 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	public function get_site_bar() {
-		// todo:TEST HERE
+		if ( Role::SINGLE_ADMIN === Role::admin_type() ) {
+			//return '';
+			// todo:activate
+		}
+		if ( 'all' === $this->site ) {
+			$result = '<span class="traffic-site-text">' . esc_html__( 'All Sites', 'traffic' ) . '</span>';
+		} else {
+			if ( Role::SUPER_ADMIN === Role::admin_type() ) {
 
-		$result  = 'aaa';
-
-
-		return $result;
+			} else {
+				$result = '<span class="traffic-site-text">' . esc_html__( 'Site ', 'traffic' ) . '</span>';
+			}
+		}
+		return '<span class="traffic-site">' . $result . '</span>';
 	}
 
 	/**
@@ -1362,9 +1370,7 @@ class Analytics {
 				break;
 		}
 		$result = '<div class="traffic-box traffic-box-full-line">';
-		if ( 1 === 1) {
-			$result .= '<span class="traffic-site">' . $this->get_site_bar() . '</span>';
-		}
+		$result .= $this->get_site_bar();
 		$result .= '<span class="traffic-title">' . $title . '</span>';
 		$result .= '<span class="traffic-subtitle">' . $subtitle . '</span>';
 		$result .= '<span class="traffic-datepicker">' . $this->get_date_box() . '</span>';

@@ -219,7 +219,7 @@
     letter-spacing: var(--title-letter-spacing);
     color: var(--main-font-color);
     padding: 2px 8px;
-    vertical-align: baseline;
+    vertical-align: text-bottom;
 }
 
 .traffic-subtitle {
@@ -227,6 +227,19 @@
     font-weight: var(--subtitle-font-weight);
     color: var(--aux-font-color);
     vertical-align: text-bottom;
+}
+
+.traffic-site {
+    font-size: var(--subtitle-font-size);
+    font-weight: var(--subtitle-font-weight);
+    vertical-align: baseline;
+}
+
+.traffic-site-text {
+    background-color: var(--main-font-color);
+    color: var(--main-bg-color);
+    border-radius: 2px;
+    padding: 3px 14px;
 }
 
 .traffic-datepicker {
