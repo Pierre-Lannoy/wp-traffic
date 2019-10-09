@@ -1333,16 +1333,16 @@ class Analytics {
 	 */
 	public function get_site_bar() {
 		if ( Role::SINGLE_ADMIN === Role::admin_type() ) {
-			//return '';
-			// todo:activate
+			return '';
 		}
 		if ( 'all' === $this->site ) {
 			$result = '<span class="traffic-site-text">' . esc_html__( 'All Sites', 'traffic' ) . '</span>';
 		} else {
 			if ( Role::SUPER_ADMIN === Role::admin_type() ) {
-
+				$quit   = '<a href="' . $this->get_url( [ 'site' ] ) . '"><img style="width:12px;vertical-align:text-top;" src="' . Feather\Icons::get_base64( 'x-circle', 'none', '#FFFFFF' ) . '" /></a>';
+				$result = '<span class="traffic-site-button">' . sprintf( esc_html__( 'Site ID %s', 'traffic' ), $this->site ) . $quit . '</span>';
 			} else {
-				$result = '<span class="traffic-site-text">' . esc_html__( 'Site ', 'traffic' ) . '</span>';
+				$result = '<span class="traffic-site-text">' . sprintf( esc_html__( 'Site ID %s', 'traffic' ), $this->site ) . '</span>';
 			}
 		}
 		return '<span class="traffic-site">' . $result . '</span>';
