@@ -510,7 +510,7 @@ class Analytics {
 			}
 			$result .= '<div class="traffic-top-line">';
 			$result .= '<div class="traffic-top-line-title">';
-			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . $url . '">' . $data[ $cpt ][ $group ] . '</a></span>';
+			$result .= '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $data[ $cpt ]['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-top-line-title-text"><a href="' . esc_url( $url ) . '">' . $data[ $cpt ][ $group ] . '</a></span>';
 			$result .= '</div>';
 			$result .= '<div class="traffic-top-line-content">';
 			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
@@ -608,14 +608,14 @@ class Analytics {
 			switch ( $type ) {
 				case 'domains':
 					$detail = $authorities . ' - ' . $endpoints;
-					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
+					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $name . '</a></span>';
 					break;
 				case 'authorities':
 					$detail = $endpoints;
-					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
+					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $name . '</a></span>';
 					break;
 				case 'endpoints':
-					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . $url . '">' . $name . '</a></span>';
+					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $name . '</a></span>';
 					break;
 				case 'codes':
 					if ( '0' === $name ) {
@@ -1339,7 +1339,7 @@ class Analytics {
 			$result = '<span class="traffic-site-text">' . esc_html__( 'All Sites', 'traffic' ) . '</span>';
 		} else {
 			if ( Role::SUPER_ADMIN === Role::admin_type() ) {
-				$quit   = '<a href="' . $this->get_url( [ 'site' ] ) . '"><img style="width:12px;vertical-align:text-top;" src="' . Feather\Icons::get_base64( 'x-circle', 'none', '#FFFFFF' ) . '" /></a>';
+				$quit   = '<a href="' . esc_url( $this->get_url( [ 'site' ] ) ) . '"><img style="width:12px;vertical-align:text-top;" src="' . Feather\Icons::get_base64( 'x-circle', 'none', '#FFFFFF' ) . '" /></a>';
 				$result = '<span class="traffic-site-button">' . sprintf( esc_html__( 'Site ID %s', 'traffic' ), $this->site ) . $quit . '</span>';
 			} else {
 				$result = '<span class="traffic-site-text">' . sprintf( esc_html__( 'Site ID %s', 'traffic' ), $this->site ) . '</span>';
@@ -1537,7 +1537,7 @@ class Analytics {
 	 */
 	public function get_top_domain_box() {
 		$url     = $this->get_url( [ 'domain' ], [ 'type' => 'domains' ] );
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all domains.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Domains', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1570,7 +1570,7 @@ class Analytics {
 				'domain' => $this->domain,
 			]
 		);
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all subdomains.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Subdomains', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1599,7 +1599,7 @@ class Analytics {
 				'domain' => $this->domain,
 			]
 		);
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all endpoints.', 'traffic' );
 		$result  = '<div class="traffic-40-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Top Endpoints', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1651,7 +1651,7 @@ class Analytics {
 					]
 				);
 		}
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all countries.', 'traffic' );
 		$result  = '<div class="traffic-60-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Countries', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1703,7 +1703,7 @@ class Analytics {
 					]
 				);
 		}
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all codes.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-left-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'HTTP codes', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1755,7 +1755,7 @@ class Analytics {
 					]
 				);
 		}
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of protocols breakdown.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-center-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Protocols', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
@@ -1807,7 +1807,7 @@ class Analytics {
 					]
 				);
 		}
-		$detail  = '<a href="' . $url . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
+		$detail  = '<a href="' . esc_url( $url ) . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'zoom-in', 'none', '#73879C' ) . '" /></a>';
 		$help    = esc_html__( 'View the details of all methods.', 'traffic' );
 		$result  = '<div class="traffic-33-module traffic-33-right-module">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Methods', 'traffic' ) . '</span><span class="traffic-module-more left" data-position="left" data-tooltip="' . $help . '">' . $detail . '</span></div>';
