@@ -104,6 +104,38 @@ class Traffic_Admin {
 	}
 
 	/**
+	 * Get actions links for myblogs_blog_actions hook.
+	 *
+	 * @param string $actions   The HTML site link markup.
+	 * @param object $user_blog An object containing the site data.
+	 * @return string   The action string.
+	 * @since 1.2.0
+	 */
+	public function blog_action( $actions, $user_blog ) {
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
+			$actions .= " | <a href='" . esc_url( admin_url( 'tools.php?page=traffic-viewer&site=' . $user_blog->userblog_id ) ) . "'>" . __( 'API usage', 'traffic' ) . '</a>';
+		}
+		return $actions;
+	}
+
+	/**
+	 * Get actions for manage_sites_action_links hook.
+	 *
+	 * @param string[] $actions  An array of action links to be displayed.
+	 * @param int      $blog_id  The site ID.
+	 * @param string   $blogname Site path, formatted depending on whether it is a sub-domain
+	 *                           or subdirectory multisite installation.
+	 * @return array   The actions.
+	 * @since 1.2.0
+	 */
+	public function site_action( $actions, $blog_id, $blogname ) {
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
+			$actions['api_usage'] = "<a href='" . esc_url( admin_url( 'tools.php?page=traffic-viewer&site=' . $blog_id ) ) . "' rel='bookmark'>" . __( 'API usage', 'traffic' ) . '</a>';
+		}
+		return $actions;
+	}
+
+	/**
 	 * Initializes settings sections.
 	 *
 	 * @since 1.0.0
@@ -127,8 +159,8 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function add_actions_links( $actions, $plugin_file, $plugin_data, $context ) {
-		$actions[] = sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=traffic-settings' ), esc_html__( 'Settings', 'traffic' ) );
-		$actions[] = sprintf( '<a href="%s">%s</a>', admin_url( 'tools.php?page=traffic-viewer' ), esc_html__( 'Statistics', 'traffic' ) );
+		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=traffic-settings' ) ), esc_html__( 'Settings', 'traffic' ) );
+		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'tools.php?page=traffic-viewer' ) ), esc_html__( 'Statistics', 'traffic' ) );
 		return $actions;
 	}
 

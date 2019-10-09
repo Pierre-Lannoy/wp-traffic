@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
+- [MultiSite] Action link in sites list for network admins.
+- [MultiSite] Action link in "my sites" for local admins.
 - Zoom-in tooltip for all lists.
 - "Metrics Variations" selectors tooltip.
 ### Changed
