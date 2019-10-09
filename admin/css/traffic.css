@@ -529,6 +529,10 @@ button.btn {
     .traffic-datepicker {
         padding: 2px 8px;
     }
+    .traffic-site {
+        float: right;
+        margin-top: 3px;
+    }
 }
 
 @media only screen and (min-width: 1101px) {

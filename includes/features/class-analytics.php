@@ -1369,7 +1369,7 @@ class Analytics {
 				$title = $this->get_title_selector();
 				break;
 		}
-		$result = '<div class="traffic-box traffic-box-full-line">';
+		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= $this->get_site_bar();
 		$result .= '<span class="traffic-title">' . $title . '</span>';
 		$result .= '<span class="traffic-subtitle">' . $subtitle . '</span>';
