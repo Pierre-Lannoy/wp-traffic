@@ -3,15 +3,16 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2019-10-10
 ### Added
+- [MultiSite] New box in summary displaying all sites to network admins.
 - A new option to allow or disallow favicons downloading and displaying.
 - [MultiSite] Action link in sites list for network admins.
 - [MultiSite] Action link in "my sites" for local admins.
 - Zoom-in tooltip for all lists.
 - "Metrics Variations" selectors tooltip.
 ### Changed
-- [MultiSite] The site ID (currently viewed) is now displayed in the control bar.
+- [MultiSite] The site ID (currently viewed) is now displayed in the controls bar.
 - A default icon is now shown in case there's no favicons for a website.
 - Better selector layouts on mobile devices.
 - The active "Metrics Variations" selector has now a different color.

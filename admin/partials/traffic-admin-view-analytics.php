@@ -9,6 +9,8 @@
  * @since   1.0.0
  */
 
+use Traffic\System\Role;
+
 wp_enqueue_script( 'traffic-moment-with-locale' );
 wp_enqueue_script( 'traffic-daterangepicker' );
 wp_enqueue_script( 'traffic-switchery' );
@@ -70,6 +72,11 @@ wp_enqueue_style( 'traffic-jvectormap' );
                 </div>
             </div>
 		<?php } ?>
+		<?php if ( 'summary' === $analytics->type && '' === $analytics->extra && Role::SUPER_ADMIN === Role::admin_type() && 'all' === $analytics->site) { ?>
+            <div class="traffic-row last-row">
+	            <?php echo $analytics->get_sites_list() ?>
+            </div>
+		<?php } ?>
 		<?php if ( 'domains' === $analytics->type && '' === $analytics->extra ) { ?>
             <div class="traffic-row">
 	            <?php echo $analytics->get_domains_list() ?>
@@ -90,11 +97,5 @@ wp_enqueue_style( 'traffic-jvectormap' );
 				<?php echo $analytics->get_extra_list() ?>
             </div>
 		<?php } ?>
-		<div class="traffic-row">
-
-		</div>
-
 	</div>
-
-
 </div>

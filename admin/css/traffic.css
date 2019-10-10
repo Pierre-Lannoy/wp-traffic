@@ -41,6 +41,10 @@
     width: 100%;
 }
 
+.last-row {
+    margin-top: -8px;
+}
+
 .traffic-box-full-line {
     display: inline-block;
     padding: 8px;
@@ -592,24 +596,24 @@ button.btn {
         width: 100%;
         height: auto;
     }
-
     .traffic-33-module {
         margin-right: -8px;
         margin-bottom: 18px;
         margin-top: -8px;
         width: 100%;
     }
-
     .traffic-33-center-module,
     .traffic-33-right-module {
         margin-left: -8px;
     }
-
     .traffic-60-module {
         margin-left: -8px;
         margin-top: 0px;
         width: 100%;
         height: auto;
+    }
+    .last-row {
+        margin-top: -26px;
     }
 }
 

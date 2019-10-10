@@ -12,6 +12,7 @@
 namespace Traffic\Plugin\Feature;
 
 use Traffic\Plugin\Feature\Schema;
+use Traffic\System\Blog;
 use Traffic\System\Cache;
 use Traffic\System\Date;
 use Traffic\System\Conversion;
@@ -91,7 +92,7 @@ class Analytics {
 	 * @since  1.0.0
 	 * @var    string    $site    The queried site.
 	 */
-	private $site = 'all';
+	public $site = 'all';
 
 	/**
 	 * The start date.
@@ -322,6 +323,8 @@ class Analytics {
 				return $this->query_top( 'authorities', (int) $queried );
 			case 'top-endpoints':
 				return $this->query_top( 'endpoints', (int) $queried );
+			case 'sites':
+				return $this->query_list( 'sites' );
 			case 'domains':
 				return $this->query_list( 'domains' );
 			case 'authorities':
@@ -574,6 +577,10 @@ class Analytics {
 			case 'countries':
 				$group = 'country';
 				break;
+			case 'sites':
+				$group  = 'site';
+				$follow = 'summary';
+				break;
 		}
 		$data         = Schema::get_grouped_list( $group, [ 'authority', 'endpoint' ], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
 		$detail_name  = esc_html__( 'Details', 'traffic' );
@@ -606,6 +613,20 @@ class Analytics {
 			$authorities = sprintf( esc_html( _n( '%d subdomain', '%d subdomains', $row['cnt_authority'], 'traffic' ) ), $row['cnt_authority'] );
 			$endpoints   = sprintf( esc_html( _n( '%d endpoint', '%d endpoints', $row['cnt_endpoint'], 'traffic' ) ), $row['cnt_endpoint'] );
 			switch ( $type ) {
+				case 'sites':
+					if ( 0 === (int) $row['sum_hit'] ) {
+						break;
+					}
+					$url  = $this->get_url(
+						[],
+						[
+							'type' => $follow,
+							'site' => $row['site'],
+						]
+					);
+					$site = Blog::get_blog_url( $row['site'] );
+					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $site ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $site . '</a></span>';
+					break;
 				case 'domains':
 					$detail = $authorities . ' - ' . $endpoints;
 					$name   = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $row['id'] ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $name . '</a></span>';
@@ -1438,6 +1459,26 @@ class Analytics {
 	 * @return string  The table ready to print.
 	 * @since    1.0.0
 	 */
+	public function get_sites_list() {
+		$result  = '<div class="traffic-box traffic-box-full-line">';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Sites', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-content" id="traffic-sites">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'sites',
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the domains list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
 	public function get_domains_list() {
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Domains', 'traffic' ) . '</span></div>';
@@ -1550,10 +1591,6 @@ class Analytics {
 			]
 		);
 		return $result;
-
-
-
-		//'&nbsp;&nbsp;<span style="cursor:help;" class="traffic-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';
 	}
 
 	/**
