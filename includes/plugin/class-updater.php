@@ -69,6 +69,9 @@ class Updater {
 	private function update( $from ) {
 		$schema = new Schema();
 		$schema->update();
+		if ( ! Option::network_exists( 'download_favicons' ) ) {
+			Option::network_set( 'download_favicons', true );
+		}
 	}
 
 	/**

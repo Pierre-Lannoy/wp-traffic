@@ -5,12 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
+- A new option to allow or disallow favicons downloading and displaying.
 - [MultiSite] Action link in sites list for network admins.
 - [MultiSite] Action link in "my sites" for local admins.
 - Zoom-in tooltip for all lists.
 - "Metrics Variations" selectors tooltip.
 ### Changed
 - [MultiSite] The site ID (currently viewed) is now displayed in the control bar.
+- A default icon is now shown in case there's no favicons for a website.
 - Better selector layouts on mobile devices.
 - The active "Metrics Variations" selector has now a different color.
 ### Fixed

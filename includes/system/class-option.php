@@ -38,6 +38,7 @@ class Option {
 	 */
 	public static function init() {
 		self::$defaults['use_cdn']           = false;
+		self::$defaults['download_favicons'] = false;
 		self::$defaults['script_in_footer']  = false;
 		self::$defaults['auto_update']       = true;
 		self::$defaults['display_nag']       = true;
@@ -81,6 +82,28 @@ class Option {
 			$default = self::$defaults[ $option ];
 		}
 		return get_site_option( TRAFFIC_PRODUCT_ABBREVIATION . '_' . $option, $default );
+	}
+
+	/**
+	 * Verify if an option exists.
+	 *
+	 * @param   string $option Option name. Expected to not be SQL-escaped.
+	 * @return  boolean   True if the option exists, false otherwise.
+	 * @since 1.0.0
+	 */
+	public static function site_exists( $option ) {
+		return 'non_existent_option' !== get_option( TRAFFIC_PRODUCT_ABBREVIATION . '_' . $option, 'non_existent_option' );
+	}
+
+	/**
+	 * Verify if an option exists.
+	 *
+	 * @param   string $option Option name. Expected to not be SQL-escaped.
+	 * @return  boolean   True if the option exists, false otherwise.
+	 * @since 1.0.0
+	 */
+	public static function network_exists( $option ) {
+		return 'non_existent_option' !== get_site_option( TRAFFIC_PRODUCT_ABBREVIATION . '_' . $option, 'non_existent_option' );
 	}
 
 	/**
@@ -137,6 +160,7 @@ class Option {
 	 */
 	public static function reset_to_defaults() {
 		self::network_set( 'use_cdn', self::$defaults['use_cdn'] );
+		self::network_set( 'download_favicons', self::$defaults['download_favicons'] );
 		self::network_set( 'script_in_footer', self::$defaults['script_in_footer'] );
 		self::network_set( 'auto_update', self::$defaults['auto_update'] );
 		self::network_set( 'display_nag', self::$defaults['display_nag'] );

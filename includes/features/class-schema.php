@@ -111,7 +111,12 @@ class Schema {
 			}
 		}
 		$record['id'] = Http::top_domain( $record['id'] );
-		Favicon::get_raw( $record['id'] );
+		Favicon::get_raw( $record['id'], true );
+		$url_parts = wp_parse_url( get_blog_option( $record['site'], 'siteurl', 'https://wordpress.org' ) );
+		if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) && array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
+			//Favicon::get_raw( $url_parts['host'] . $url_parts['path'], true );
+		}
+
 		$field_insert = [];
 		$value_insert = [];
 		$value_update = [];

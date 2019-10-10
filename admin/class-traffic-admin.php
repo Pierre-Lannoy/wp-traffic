@@ -231,6 +231,7 @@ class Traffic_Admin {
 		if ( ! empty( $_POST ) ) {
 			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
 				Option::network_set( 'use_cdn', array_key_exists( 'traffic_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_usecdn' ) : false );
+				Option::network_set( 'download_favicons', array_key_exists( 'traffic_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_favicons' ) : false );
 				Option::network_set( 'auto_update', array_key_exists( 'traffic_plugin_options_autoupdate', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_autoupdate' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
 				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
@@ -278,7 +279,23 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function plugin_options_section_callback() {
-		$form   = new Form();
+		$form = new Form();
+		add_settings_field(
+			'traffic_plugin_options_favicons',
+			__( 'Favicons', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_plugin_options_section',
+			'traffic_plugin_options_section',
+			[
+				'text'        => esc_html__( 'Download and display', 'traffic' ),
+				'id'          => 'traffic_plugin_options_favicons',
+				'checked'     => Option::network_get( 'download_favicons' ),
+				'description' => esc_html__( 'If checked, Traffic will download favicons of websites to display them in reports.', 'traffic' ) . '<br/>' . esc_html__( 'Note: This feature uses the (free) Google Favicon Service.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_favicons' );
 		$geo_ip = new GeoIP();
 		if ( $geo_ip->is_installed() ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
@@ -298,6 +315,7 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_geoip' );
+		
 		if ( defined( 'DECALOG_VERSION' ) ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__('Your site is currently using %s.', 'traffic' ), '<em>DecaLog v' . DECALOG_VERSION .'</em>' );
@@ -326,7 +344,7 @@ class Traffic_Admin {
 				'text'        => esc_html__( 'Use public CDN', 'traffic' ),
 				'id'          => 'traffic_plugin_options_usecdn',
 				'checked'     => Option::network_get( 'use_cdn' ),
-				'description' => esc_html__( 'Use CDN (jsDelivr) to serve Traffic scripts and stylesheets.', 'traffic' ),
+				'description' => esc_html__( 'If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and stylesheets.', 'traffic' ),
 				'full_width'  => true,
 				'enabled'     => true,
 			]
