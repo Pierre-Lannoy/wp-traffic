@@ -112,6 +112,14 @@ class Capture {
 		if ( '/' !== substr( $endpoint, 0, 1 ) ) {
 			$endpoint = '/' . $endpoint;
 		}
+
+
+		// Clean "////"
+
+
+
+
+
 		$cpt = 0;
 		$ep  = '';
 		while ( $cpt < $cut ) {
