@@ -11,6 +11,7 @@
 
 namespace Traffic\Plugin\Feature;
 
+use Traffic\System\Blog;
 use Traffic\System\Environment;
 use Traffic\System\Logger;
 use Traffic\Plugin\Feature\Schema;
@@ -205,6 +206,9 @@ class Capture {
 			if ( array_key_exists( 'path', $url_parts ) && isset( $url_parts['path'] ) ) {
 				$record['endpoint'] = self::clean_endpoint( $host, $url_parts['path'], $bound, Option::network_get( $bound . '_cut_path', 3 ) );
 			}
+			if ( '/wp-cron.php' === $record['endpoint'] && false !== strpos( Blog::get_blog_url( get_current_blog_id() ), $record['id'] ) ) {
+				return;
+			}
 			$code = 0;
 			if ( isset( $response ) && is_array( $response ) && array_key_exists( 'response', $response ) && array_key_exists( 'code', $response['response'] ) ) {
 				$code = (int) $response['response']['code'];
@@ -232,7 +236,9 @@ class Capture {
 			}
 			$record['latency_avg'] = $record['latency_min'];
 			$record['latency_max'] = $record['latency_min'];
-			Schema::store_statistics( $record );
+			if ( '-' !== $record['id'] && '-' !== $record['authority'] ) {
+				Schema::store_statistics( $record );
+			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
 		}
