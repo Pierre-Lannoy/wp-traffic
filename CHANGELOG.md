@@ -3,7 +3,13 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.1] - 2019-10-17
+### Changed
+- Improvements to endpoint cleaning.
+- Self cron jobs spawning are now excluded from analytics.
+### Fixed
+- Some outbounds calls made during 'shutdown' hook are not recorded.
+- Some hits are false positive and must not be recorded.
 
 ## [1.2.0] - 2019-10-10
 ### Added

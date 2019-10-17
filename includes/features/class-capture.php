@@ -113,14 +113,10 @@ class Capture {
 		if ( '/' !== substr( $endpoint, 0, 1 ) ) {
 			$endpoint = '/' . $endpoint;
 		}
-
-
-		// Clean "////"
-
-
-
-
-
+		$endpoint = str_replace( '/://', '/', $endpoint );
+		while ( 0 !== substr_count( $endpoint, '//' ) ) {
+			$endpoint = str_replace( '//', '/', $endpoint );
+		}
 		$cpt = 0;
 		$ep  = '';
 		while ( $cpt < $cut ) {

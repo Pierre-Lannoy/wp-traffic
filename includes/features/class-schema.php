@@ -84,11 +84,17 @@ class Schema {
 	/**
 	 * Write statistics.
 	 *
+	 * @param boolean $final Optional. If false, allows recursive calls. This is to allow to write
+	 *                                 records generated while executing 'shutdown' hook.
 	 * @since    1.0.0
 	 */
-	private static function write_statistics() {
-		foreach ( self::$statistics_buffer as $record ) {
+	private static function write_statistics( $final = false ) {
+		foreach ( self::$statistics_buffer as $key => $record ) {
 			self::write_statistics_records_to_database( $record );
+			unset( self::$statistics_buffer[ $key ] );
+		}
+		if ( 0 < count( self::$statistics_buffer ) && ! $final ) {
+			self::write_statistics( true );
 		}
 	}
 
