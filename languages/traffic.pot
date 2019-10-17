@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Traffic\n"
-"POT-Creation-Date: 2019-10-04 18:31+0200\n"
+"POT-Creation-Date: 2019-10-17 18:05+0200\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
@@ -34,58 +34,78 @@ msgstr ""
 msgid "%s Viewer"
 msgstr ""
 
-#: admin/class-traffic-admin.php:112
+#: admin/class-traffic-admin.php:116 admin/class-traffic-admin.php:133
+msgid "API usage"
+msgstr ""
+
+#: admin/class-traffic-admin.php:144
 msgid "Inbound APIs"
 msgstr ""
 
-#: admin/class-traffic-admin.php:113
+#: admin/class-traffic-admin.php:145
 msgid "Outbound APIs"
 msgstr ""
 
-#: admin/class-traffic-admin.php:114
+#: admin/class-traffic-admin.php:146
 msgid "Plugin options"
 msgstr ""
 
-#: admin/class-traffic-admin.php:130
+#: admin/class-traffic-admin.php:162
 msgid "Settings"
 msgstr ""
 
-#: admin/class-traffic-admin.php:131
+#: admin/class-traffic-admin.php:163
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-traffic-admin.php:145
+#: admin/class-traffic-admin.php:177
 msgid "Support"
 msgstr ""
 
-#: admin/class-traffic-admin.php:146
+#: admin/class-traffic-admin.php:178
 msgid "GitHub repository"
 msgstr ""
 
-#: admin/class-traffic-admin.php:207
+#: admin/class-traffic-admin.php:241
 msgid "Plugin settings have been saved."
 msgstr ""
 
-#: admin/class-traffic-admin.php:212
+#: admin/class-traffic-admin.php:246
 msgid "Plugin settings have not been saved. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:229
+#: admin/class-traffic-admin.php:263
 msgid "Plugin settings have been reset to defaults."
 msgstr ""
 
-#: admin/class-traffic-admin.php:234
+#: admin/class-traffic-admin.php:268
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:252
-#, php-format
-msgid ""
-"Your site currently use %s. That's great: you will take advantage of the "
-"geographical distribution of calls in Traffic."
+#: admin/class-traffic-admin.php:285
+msgid "Favicons"
 msgstr ""
 
-#: admin/class-traffic-admin.php:255
+#: admin/class-traffic-admin.php:290
+msgid "Download and display"
+msgstr ""
+
+#: admin/class-traffic-admin.php:293
+msgid ""
+"If checked, Traffic will download favicons of websites to display them in "
+"reports."
+msgstr ""
+
+#: admin/class-traffic-admin.php:293
+msgid "Note: This feature uses the (free) Google Favicon Service."
+msgstr ""
+
+#: admin/class-traffic-admin.php:302 admin/class-traffic-admin.php:321
+#, php-format
+msgid "Your site is currently using %s."
+msgstr ""
+
+#: admin/class-traffic-admin.php:305
 #, php-format
 msgid ""
 "Your site does not use any IP geographic information plugin. To take "
@@ -94,66 +114,92 @@ msgid ""
 "mandatory."
 msgstr ""
 
-#: admin/class-traffic-admin.php:259
+#: admin/class-traffic-admin.php:309
 msgid "IP information"
 msgstr ""
 
-#: admin/class-traffic-admin.php:270
+#: admin/class-traffic-admin.php:324
+#, php-format
+msgid ""
+"Your site does not use any logging plugin. To log all events triggered in "
+"Traffic, I recommend you to install the excellent (and free) %s. But it is "
+"not mandatory."
+msgstr ""
+
+#: admin/class-traffic-admin.php:328
+msgid "Logging"
+msgstr ""
+
+#: admin/class-traffic-admin.php:339
+msgid "Resources"
+msgstr ""
+
+#: admin/class-traffic-admin.php:344
+msgid "Use public CDN"
+msgstr ""
+
+#: admin/class-traffic-admin.php:347
+msgid ""
+"If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and "
+"stylesheets."
+msgstr ""
+
+#: admin/class-traffic-admin.php:355
 msgid "Plugin updates"
 msgstr ""
 
-#: admin/class-traffic-admin.php:275
+#: admin/class-traffic-admin.php:360
 msgid "Automatic (recommended)"
 msgstr ""
 
-#: admin/class-traffic-admin.php:278
+#: admin/class-traffic-admin.php:363
 msgid ""
 "If checked, Traffic will update itself as soon as a new version is "
 "available."
 msgstr ""
 
-#: admin/class-traffic-admin.php:286
+#: admin/class-traffic-admin.php:371
 msgid "Admin notices"
 msgstr ""
 
-#: admin/class-traffic-admin.php:291
+#: admin/class-traffic-admin.php:376
 msgid "Display"
 msgstr ""
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:379
 msgid ""
 "Allows Traffic to display admin notices throughout the admin dashboard."
 msgstr ""
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:379
 msgid "Note: Traffic respects DISABLE_NAG_NOTICES flag."
 msgstr ""
 
-#: admin/class-traffic-admin.php:311 admin/class-traffic-admin.php:354
+#: admin/class-traffic-admin.php:396 admin/class-traffic-admin.php:439
 msgid "Analytics"
 msgstr ""
 
-#: admin/class-traffic-admin.php:316 admin/class-traffic-admin.php:359
+#: admin/class-traffic-admin.php:401 admin/class-traffic-admin.php:444
 msgid "Activated"
 msgstr ""
 
-#: admin/class-traffic-admin.php:319
+#: admin/class-traffic-admin.php:404
 msgid ""
 "If checked, Traffic will analyze inbound API calls (the calls made by "
 "external sites or apps to your site)."
 msgstr ""
 
-#: admin/class-traffic-admin.php:327 admin/class-traffic-admin.php:370
+#: admin/class-traffic-admin.php:412 admin/class-traffic-admin.php:455
 msgid "Path cut"
 msgstr ""
 
-#: admin/class-traffic-admin.php:337 admin/class-traffic-admin.php:380
+#: admin/class-traffic-admin.php:422 admin/class-traffic-admin.php:465
 msgid ""
 "Allows to keep only the first most significative elements of the endpoint "
 "path."
 msgstr ""
 
-#: admin/class-traffic-admin.php:362
+#: admin/class-traffic-admin.php:447
 msgid ""
 "If checked, Traffic will analyze outbound API calls (the calls made by "
 "your site to external services)."
@@ -213,292 +259,347 @@ msgstr ""
 msgid "Reset to Defaults"
 msgstr ""
 
-#: includes/features/class-analytics.php:425
-#: includes/features/class-analytics.php:427
-#: includes/features/class-analytics.php:529
-#: includes/features/class-analytics.php:657
+#: includes/features/class-analytics.php:428
+#: includes/features/class-analytics.php:430
+#: includes/features/class-analytics.php:532
+#: includes/features/class-analytics.php:678
 msgid "Other"
 msgstr ""
 
-#: includes/features/class-analytics.php:579
+#: includes/features/class-analytics.php:586
 msgid "Details"
 msgstr ""
 
-#: includes/features/class-analytics.php:580
+#: includes/features/class-analytics.php:587
 msgid "Calls"
 msgstr ""
 
-#: includes/features/class-analytics.php:581
+#: includes/features/class-analytics.php:588
 msgid "Data Volume"
 msgstr ""
 
-#: includes/features/class-analytics.php:582
+#: includes/features/class-analytics.php:589
 msgid "Latency"
 msgstr ""
 
-#: includes/features/class-analytics.php:606
+#: includes/features/class-analytics.php:613
 #, php-format
 msgid "%d subdomain"
 msgid_plural "%d subdomains"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/features/class-analytics.php:607
+#: includes/features/class-analytics.php:614
 #, php-format
 msgid "%d endpoint"
 msgid_plural "%d endpoints"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/features/class-analytics.php:749
+#: includes/features/class-analytics.php:770
 msgid "calls"
 msgstr ""
 
-#: includes/features/class-analytics.php:908
+#: includes/features/class-analytics.php:929
 msgid "Success"
 msgstr ""
 
-#: includes/features/class-analytics.php:912
+#: includes/features/class-analytics.php:933
 msgid "Error"
 msgstr ""
 
-#: includes/features/class-analytics.php:916
+#: includes/features/class-analytics.php:937
 msgid "Quota Error"
 msgstr ""
 
-#: includes/features/class-analytics.php:945
+#: includes/features/class-analytics.php:966
 msgid "Incoming Data"
 msgstr ""
 
-#: includes/features/class-analytics.php:949
+#: includes/features/class-analytics.php:970
 msgid "Outcoming Data"
 msgstr ""
 
-#: includes/features/class-analytics.php:965
+#: includes/features/class-analytics.php:986
 msgid "Perceived Uptime"
 msgstr ""
 
-#: includes/features/class-analytics.php:1079
+#: includes/features/class-analytics.php:1100
 #, php-format
 msgid "avg latency: %sms."
 msgstr ""
 
-#: includes/features/class-analytics.php:1187
+#: includes/features/class-analytics.php:1206
 #, php-format
 msgid "%s calls in error"
 msgstr ""
 
-#: includes/features/class-analytics.php:1190
+#: includes/features/class-analytics.php:1209
 #, php-format
 msgid "%s blocked calls"
 msgstr ""
 
-#: includes/features/class-analytics.php:1193
+#: includes/features/class-analytics.php:1212
 #, php-format
 msgid "%s successful calls"
 msgstr ""
 
-#: includes/features/class-analytics.php:1199
+#: includes/features/class-analytics.php:1218
 msgid "no downtime"
 msgstr ""
 
-#: includes/features/class-analytics.php:1201
+#: includes/features/class-analytics.php:1220
 #, php-format
 msgid "down %s"
 msgstr ""
 
-#: includes/features/class-analytics.php:1220
+#: includes/features/class-analytics.php:1239
 msgid "Domains Details"
 msgstr ""
 
-#: includes/features/class-analytics.php:1223
-#: includes/features/class-analytics.php:1228
-#: includes/features/class-analytics.php:1243
-#: includes/features/class-analytics.php:1270
-#: includes/features/class-analytics.php:1297
+#: includes/features/class-analytics.php:1242
+#: includes/features/class-analytics.php:1247
+#: includes/features/class-analytics.php:1262
+#: includes/features/class-analytics.php:1289
+#: includes/features/class-analytics.php:1316
 msgid "Domain Summary"
 msgstr ""
 
-#: includes/features/class-analytics.php:1226
+#: includes/features/class-analytics.php:1245
 msgid "Domain Details"
 msgstr ""
 
-#: includes/features/class-analytics.php:1229
-#: includes/features/class-analytics.php:1244
-#: includes/features/class-analytics.php:1259
-#: includes/features/class-analytics.php:1271
-#: includes/features/class-analytics.php:1286
-#: includes/features/class-analytics.php:1298
+#: includes/features/class-analytics.php:1248
+#: includes/features/class-analytics.php:1263
+#: includes/features/class-analytics.php:1278
+#: includes/features/class-analytics.php:1290
+#: includes/features/class-analytics.php:1305
+#: includes/features/class-analytics.php:1317
 #, php-format
 msgid "Return to %s"
 msgstr ""
 
-#: includes/features/class-analytics.php:1241
-#: includes/features/class-analytics.php:1258
-#: includes/features/class-analytics.php:1285
+#: includes/features/class-analytics.php:1260
+#: includes/features/class-analytics.php:1277
+#: includes/features/class-analytics.php:1304
 msgid "Subdomain Summary"
 msgstr ""
 
-#: includes/features/class-analytics.php:1256
+#: includes/features/class-analytics.php:1275
 msgid "Subdomain Details"
 msgstr ""
 
-#: includes/features/class-analytics.php:1283
+#: includes/features/class-analytics.php:1302
 msgid "Endpoint Summary"
 msgstr ""
 
-#: includes/features/class-analytics.php:1310
+#: includes/features/class-analytics.php:1329
 msgid "Country"
 msgstr ""
 
-#: includes/features/class-analytics.php:1316
-#: includes/features/class-analytics.php:1340
+#: includes/features/class-analytics.php:1335
+#: includes/features/class-analytics.php:1382
 msgid "Main Summary"
 msgstr ""
 
-#: includes/features/class-analytics.php:1317
+#: includes/features/class-analytics.php:1336
 msgid "Return to Traffic main page."
 msgstr ""
 
-#: includes/features/class-analytics.php:1394
+#: includes/features/class-analytics.php:1360
+#: includes/features/class-analytics.php:1464
+msgid "All Sites"
+msgstr ""
+
+#: includes/features/class-analytics.php:1364
+#: includes/features/class-analytics.php:1366
+#, php-format
+msgid "Site ID %s"
+msgstr ""
+
+#: includes/features/class-analytics.php:1432
+msgid "Responses types distribution."
+msgstr ""
+
+#: includes/features/class-analytics.php:1433
+msgid "Data volume distribution."
+msgstr ""
+
+#: includes/features/class-analytics.php:1434
+msgid "Uptime distribution."
+msgstr ""
+
+#: includes/features/class-analytics.php:1440
 msgid "Metrics Variations"
 msgstr ""
 
-#: includes/features/class-analytics.php:1418
+#: includes/features/class-analytics.php:1484
 msgid "All Domains"
 msgstr ""
 
-#: includes/features/class-analytics.php:1438
+#: includes/features/class-analytics.php:1504
 msgid "All Subdomains"
 msgstr ""
 
-#: includes/features/class-analytics.php:1458
-#: includes/features/class-analytics.php:1491
+#: includes/features/class-analytics.php:1524
+#: includes/features/class-analytics.php:1557
 msgid "All Endpoints"
 msgstr ""
 
-#: includes/features/class-analytics.php:1479
+#: includes/features/class-analytics.php:1545
 msgid "All HTTP Codes"
 msgstr ""
 
-#: includes/features/class-analytics.php:1482
+#: includes/features/class-analytics.php:1548
 msgid "All Protocols"
 msgstr ""
 
-#: includes/features/class-analytics.php:1485
+#: includes/features/class-analytics.php:1551
 msgid "All Methods"
 msgstr ""
 
-#: includes/features/class-analytics.php:1488
+#: includes/features/class-analytics.php:1554
 msgid "All Countries"
 msgstr ""
 
-#: includes/features/class-analytics.php:1517
+#: includes/features/class-analytics.php:1582
+msgid "View the details of all domains."
+msgstr ""
+
+#: includes/features/class-analytics.php:1584
 msgid "Top Domains"
 msgstr ""
 
-#: includes/features/class-analytics.php:1545
+#: includes/features/class-analytics.php:1611
+msgid "View the details of all subdomains."
+msgstr ""
+
+#: includes/features/class-analytics.php:1613
 msgid "Top Subdomains"
 msgstr ""
 
-#: includes/features/class-analytics.php:1573
+#: includes/features/class-analytics.php:1640
+msgid "View the details of all endpoints."
+msgstr ""
+
+#: includes/features/class-analytics.php:1642
 msgid "Top Endpoints"
 msgstr ""
 
-#: includes/features/class-analytics.php:1624
+#: includes/features/class-analytics.php:1692
+msgid "View the details of all countries."
+msgstr ""
+
+#: includes/features/class-analytics.php:1694
 msgid "Countries"
 msgstr ""
 
-#: includes/features/class-analytics.php:1675
+#: includes/features/class-analytics.php:1744
+msgid "View the details of all codes."
+msgstr ""
+
+#: includes/features/class-analytics.php:1746
 msgid "HTTP codes"
 msgstr ""
 
-#: includes/features/class-analytics.php:1726
+#: includes/features/class-analytics.php:1796
+msgid "View the details of protocols breakdown."
+msgstr ""
+
+#: includes/features/class-analytics.php:1798
 msgid "Protocols"
 msgstr ""
 
-#: includes/features/class-analytics.php:1777
+#: includes/features/class-analytics.php:1848
+msgid "View the details of all methods."
+msgstr ""
+
+#: includes/features/class-analytics.php:1850
 msgid "Methods"
 msgstr ""
 
-#: includes/features/class-analytics.php:1800
+#: includes/features/class-analytics.php:1873
 msgctxt "Noun - Number API calls."
 msgid "Number of Calls"
 msgstr ""
 
-#: includes/features/class-analytics.php:1801
-msgid "Number of API calls"
+#: includes/features/class-analytics.php:1874
+msgid "Number of API calls."
 msgstr ""
 
-#: includes/features/class-analytics.php:1805
+#: includes/features/class-analytics.php:1878
 msgctxt "Noun - Volume of transferred data."
 msgid "Data Volume"
 msgstr ""
 
-#: includes/features/class-analytics.php:1806
-msgid "Volume of transferred data"
+#: includes/features/class-analytics.php:1879
+msgid "Volume of transferred data."
 msgstr ""
 
-#: includes/features/class-analytics.php:1810
+#: includes/features/class-analytics.php:1883
 msgctxt ""
 "Noun - Ratio of the number of HTTP errors to the total number of calls."
 msgid "Server Error Rate"
 msgstr ""
 
-#: includes/features/class-analytics.php:1811
+#: includes/features/class-analytics.php:1884
 msgid "Ratio of the number of HTTP errors to the total number of calls."
 msgstr ""
 
-#: includes/features/class-analytics.php:1815
+#: includes/features/class-analytics.php:1888
 msgctxt ""
 "Noun - Ratio of the quota enforcement number to the total number of calls."
 msgid "Quotas Error Rate"
 msgstr ""
 
-#: includes/features/class-analytics.php:1816
+#: includes/features/class-analytics.php:1889
 msgid "Ratio of the quota enforcement number to the total number of calls."
 msgstr ""
 
-#: includes/features/class-analytics.php:1820
+#: includes/features/class-analytics.php:1893
 msgctxt ""
 "Noun - Ratio of the number of HTTP success to the total number of calls."
 msgid "Effective Pass Rate"
 msgstr ""
 
-#: includes/features/class-analytics.php:1821
+#: includes/features/class-analytics.php:1894
 msgid "Ratio of the number of HTTP success to the total number of calls."
 msgstr ""
 
-#: includes/features/class-analytics.php:1825
+#: includes/features/class-analytics.php:1898
 msgctxt "Noun - Perceived uptime, from the viewpoint of the site."
 msgid "Perceived Uptime"
 msgstr ""
 
-#: includes/features/class-analytics.php:1826
+#: includes/features/class-analytics.php:1899
 msgid "Perceived uptime, from the viewpoint of the site."
 msgstr ""
 
-#: includes/features/class-analytics.php:2035
+#: includes/features/class-analytics.php:2112
+msgid "Custom Range"
+msgstr ""
+
+#: includes/features/class-analytics.php:2112
 msgid "Cancel"
 msgstr ""
 
-#: includes/features/class-analytics.php:2035
+#: includes/features/class-analytics.php:2112
 msgid "Apply"
 msgstr ""
 
-#: includes/features/class-analytics.php:2037
+#: includes/features/class-analytics.php:2114
 msgid "Today"
 msgstr ""
 
-#: includes/features/class-analytics.php:2038
+#: includes/features/class-analytics.php:2115
 msgid "Yesterday"
 msgstr ""
 
-#: includes/features/class-analytics.php:2039
+#: includes/features/class-analytics.php:2116
 msgid "This Month"
 msgstr ""
 
-#: includes/features/class-analytics.php:2040
+#: includes/features/class-analytics.php:2117
 msgid "Last Month"
 msgstr ""
 
@@ -541,17 +642,22 @@ msgstr ""
 msgid "<a href=\"%1$s\">%2$s %3$s</a>%4$s by %5$s (%6$s)"
 msgstr ""
 
-#: includes/plugin/class-updater.php:40
+#: includes/plugin/class-updater.php:41
 #, php-format
 msgid "%1$s has been correctly installed."
 msgstr ""
 
-#: includes/plugin/class-updater.php:44
+#: includes/plugin/class-updater.php:45
 #, php-format
 msgid "%1$s has been correctly updated from version %2$s to version %3$s."
 msgstr ""
 
-#: includes/plugin/class-updater.php:131
+#: includes/plugin/class-updater.php:47
+#, php-format
+msgid "See <a href=\"%s\">what's new</a>."
+msgstr ""
+
+#: includes/plugin/class-updater.php:138
 msgid "Sorry, unable to find or read changelog file."
 msgstr ""
 
@@ -667,19 +773,19 @@ msgid_plural "hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/system/class-environment.php:172
+#: includes/system/class-environment.php:203
 msgid "log"
 msgstr ""
 
-#: includes/system/class-environment.php:177
+#: includes/system/class-environment.php:208
 msgid "display"
 msgstr ""
 
-#: includes/system/class-environment.php:183
+#: includes/system/class-environment.php:214
 msgid "Debug enabled"
 msgstr ""
 
-#: includes/system/class-environment.php:183
+#: includes/system/class-environment.php:214
 msgid "Debug disabled"
 msgstr ""
 
