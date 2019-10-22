@@ -14,6 +14,8 @@ use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Nag;
 use Traffic\System\Option;
 use Traffic\System\Environment;
+use Traffic\System\Logger;
+use Traffic\System\Role;
 use Exception;
 
 /**
@@ -44,13 +46,14 @@ class Updater {
 				$this->update( $old );
 				// phpcs:ignore
 				$message  = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
-				if ( Environment::is_wordpress_multisite() ) {
-					$url = TRAFFIC_PRODUCT_URL . '/blob/master/CHANGELOG.md';
+				Logger::notice( $message );
+				if ( ( Environment::is_wordpress_multisite() && Role::SUPER_ADMIN === Role::admin_type() ) || Role::SINGLE_ADMIN === Role::admin_type() ) {
+					// phpcs:ignore
+					$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), admin_url( 'options-general.php?page=traffic-settings&tab=about' ) );
 				} else {
-					$url = admin_url( 'options-general.php?page=traffic-settings&tab=about' );
+					// phpcs:ignore
+					$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), TRAFFIC_PRODUCT_URL . '/blob/master/CHANGELOG.md' );
 				}
-				// phpcs:ignore
-				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), $url );
 			}
 			Nag::add( 'update', 'info', $message );
 			Option::network_set( 'version', TRAFFIC_VERSION );
@@ -159,6 +162,7 @@ class Updater {
 				}
 			} catch ( Exception $e ) {
 				$result = esc_html( $error );
+				Logger::warning( $result );
 			}
 		}
 		return $result;
