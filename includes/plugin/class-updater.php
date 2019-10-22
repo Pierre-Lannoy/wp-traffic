@@ -13,6 +13,7 @@ use Parsedown;
 use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Nag;
 use Traffic\System\Option;
+use Traffic\System\Environment;
 use Exception;
 
 /**
@@ -43,8 +44,13 @@ class Updater {
 				$this->update( $old );
 				// phpcs:ignore
 				$message  = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
+				if ( Environment::is_wordpress_multisite() ) {
+					$url = TRAFFIC_PRODUCT_URL . '/blob/master/CHANGELOG.md';
+				} else {
+					$url = admin_url( 'options-general.php?page=traffic-settings&tab=about' );
+				}
 				// phpcs:ignore
-				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), admin_url( 'options-general.php?page=traffic-settings&tab=about' ) );
+				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), $url );
 			}
 			Nag::add( 'update', 'info', $message );
 			Option::network_set( 'version', TRAFFIC_VERSION );
