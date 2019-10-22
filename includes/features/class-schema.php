@@ -308,7 +308,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function get_oldest_date() {
-		$result = Cache::get_global( 'get_oldest_date' );
+		$result = Cache::get_global( '/Data/OldestDate' );
 		if ( $result ) {
 			return $result;
 		}
@@ -317,7 +317,7 @@ class Schema {
 		// phpcs:ignore
 		$result = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $result ) && 0 < count( $result ) && array_key_exists( 'timestamp', $result[0] ) ) {
-			Cache::set_global( 'get_oldest_date', $result[0]['timestamp'], 'infinite' );
+			Cache::set_global( '/Data/OldestDate', $result[0]['timestamp'], 'infinite' );
 			return $result[0]['timestamp'];
 		}
 		return '';
@@ -332,7 +332,7 @@ class Schema {
 	 */
 	public static function get_authority( $filter ) {
 		// phpcs:ignore
-		$id = md5( __FUNCTION__ . serialize( $filter ) );
+		$id = Cache::id( __FUNCTION__ . serialize( $filter ) );
 		$result = Cache::get_global( $id );
 		if ( $result ) {
 			return $result;
@@ -362,7 +362,7 @@ class Schema {
 			unset( $filter['context'] );
 		}
 		// phpcs:ignore
-		$id = md5( __FUNCTION__ . serialize( $filter ) );
+		$id = Cache::id( __FUNCTION__ . serialize( $filter ) );
 		if ( $cache ) {
 			$result = Cache::get_global( $id );
 			if ( $result ) {
@@ -402,7 +402,7 @@ class Schema {
 			unset( $filter['context'] );
 		}
 		// phpcs:ignore
-		$id = md5( __FUNCTION__ . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') );
+		$id = Cache::id( __FUNCTION__ . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') );
 		if ( $cache ) {
 			$result = Cache::get_global( $id );
 			if ( $result ) {
@@ -464,7 +464,7 @@ class Schema {
 	 */
 	public static function get_grouped_list( $group, $count, $filter, $cache = true, $extra_field = '', $extras = [], $not = false, $order = '', $limit = 0 ) {
 		// phpcs:ignore
-		$id = md5( __FUNCTION__ . $group . serialize( $count ) . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
+		$id = Cache::id( __FUNCTION__ . $group . serialize( $count ) . serialize( $filter ) . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
 		if ( $cache ) {
 			$result = Cache::get_global( $id );
 			if ( $result ) {

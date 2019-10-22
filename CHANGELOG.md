@@ -3,6 +3,12 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+- Normalization of cache IDs to avoid name collisions.
+### Fixed
+- Some cached elements may be autoloaded even if not needed.
+- [MultiSite] The "what's new?" screen is only viewable by network admin.
+
 ## [1.2.1] - 2019-10-17
 ### Changed
 - Improvements to endpoint cleaning.
