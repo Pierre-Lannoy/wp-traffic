@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Normalization of cache IDs to avoid name collisions.
 ### Fixed
 - Some cached elements may be autoloaded even if not needed.
+- A PHP notice may appear when enqueuing some plugin assets.
 - [MultiSite] The "what's new?" screen is only viewable by network admin.
 
 ## [1.2.1] - 2019-10-17
