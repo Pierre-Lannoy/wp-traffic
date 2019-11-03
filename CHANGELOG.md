@@ -3,10 +3,11 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.2] - 2019-11-03
 ### Changed
 - Normalization of cache IDs to avoid name collisions.
 ### Fixed
+- Main graph doesn't show when time range is strictly one month.
 - Some cached elements may be autoloaded even if not needed.
 - A PHP notice may appear when enqueuing some plugin assets.
 - [MultiSite] The "what's new?" screen is only viewable by network admin.

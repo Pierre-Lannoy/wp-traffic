@@ -293,7 +293,7 @@ class Analytics {
 			$start->sub( $delta );
 			$end->sub( $delta );
 		}
-		$this->duration = $delta->d + 1;
+		$this->duration = $delta->days + 1;
 		if ( $start === $end ) {
 			$this->previous[] = "timestamp='" . $start->format( 'Y-m-d' ) . "'";
 		} else {
