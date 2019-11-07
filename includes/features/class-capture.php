@@ -413,9 +413,9 @@ class Capture {
 			if ( array_key_exists( 'X-FORWARDED_FOR', $_SERVER ) ) {
 				$args['remote_ip'] = filter_input( INPUT_SERVER, 'FORWARDED_FOR' );
 			}
-			if ( is_array( $response ) && array_key_exists( 'data', $result ) && array_key_exists( 'status', $result['data'] ) ) {
+			if ( is_array( $result ) && array_key_exists( 'data', $result ) && is_array( $result['data'] ) && array_key_exists( 'status', $result['data'] ) ) {
 				$response['response']['code'] = (int) $result['data']['status'];
-			} elseif ( is_array( $response ) && ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
+			} elseif ( is_array( $result ) && ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
 				$response['response']['code'] = 200;
 			} elseif ( [] === $result ) {
 				$response['response']['code'] = 200;
