@@ -278,9 +278,7 @@ class Capture {
 			if ( array_key_exists( 'cookies', $args ) ) {
 				$c = [];
 				foreach ( $args['cookies'] as $key => $value ) {
-					if ( is_string( $value ) ) {
-						$c .= $key . '=' . $value;
-					}
+					$c[] = $key . '=' . $value;
 				}
 				$cookie = 'Cookie: ' . implode( '; ', $c ) . PHP_EOL;
 			}
