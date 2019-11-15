@@ -103,9 +103,9 @@ class Date {
 	public static function get_age_array_from_seconds( $age, $legend = false, $abbrev = false ) {
 		if ( $abbrev ) {
 			$intervals = [
-				[ 60, _x( 'sec.', 'Abbreviation - Stands for "second".', 'traffic' ), _x( 'sec.', 'Abbreviation - Stands for "second".', 'traffic' ) ],
-				[ 60, _x( 'min.', 'Abbreviation - Stands for "minute".', 'traffic' ), _x( 'min.', 'Abbreviation - Stands for "minute".', 'traffic' ) ],
-				[ 100000, _x( 'hr.', 'Abbreviation - Stands for "hour".', 'traffic' ), _x( 'hr.', 'Abbreviation - Stands for "hour".', 'traffic' ) ],
+				[ 60, _x( 'sec', 'Unit abbreviation - Stands for "second".', 'traffic' ), _x( 'sec', 'Unit abbreviation - Stands for "second".', 'traffic' ) ],
+				[ 60, _x( 'min', 'Unit abbreviation - Stands for "minute".', 'traffic' ), _x( 'min', 'Unit abbreviation - Stands for "minute".', 'traffic' ) ],
+				[ 100000, _x( 'hr', 'Unit abbreviation - Stands for "hour".', 'traffic' ), _x( 'hr', 'Unit abbreviation - Stands for "hour".', 'traffic' ) ],
 			];
 		} else {
 			$intervals = [

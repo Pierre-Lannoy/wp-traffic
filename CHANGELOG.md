@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 ### Changed
 - Upgraded Feather library from version 4.22.1 to version 4.24.1.
+- Unit symbols and abbreviations are now visually differentiated.
+- There's now a non-breaking space between values and units.
 ## Fixed
 - PHP warning (in some rare cases) when executing "rest_pre_echo_response" hook.
 - Counting cookies sizes may produce a PHP notice in some cases.

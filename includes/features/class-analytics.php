@@ -517,7 +517,7 @@ class Analytics {
 			$result .= '</div>';
 			$result .= '<div class="traffic-top-line-content">';
 			$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
-			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[ $cpt ]['sum_hit'], 2 ) . '</div>';
+			$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $data[ $cpt ]['sum_hit'], 2, false, '&nbsp;' ) . '</div>';
 			$result .= '</div>';
 			$result .= '</div>';
 			++$cpt;
@@ -533,7 +533,7 @@ class Analytics {
 		$result .= '</div>';
 		$result .= '<div class="traffic-top-line-content">';
 		$result .= '<div class="traffic-bar-graph"><div class="traffic-bar-graph-value" style="width:' . $percent . '%"></div></div>';
-		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2 ) . '</div>';
+		$result .= '<div class="traffic-bar-detail">' . Conversion::number_shorten( $other, 2, false, '&nbsp;' ) . '</div>';
 		$result .= '</div>';
 		$result .= '</div>';
 		return [ 'traffic-top-' . $type => $result ];
@@ -686,26 +686,26 @@ class Analytics {
 					$group = 'country';
 					break;
 			}
-			$calls = Conversion::number_shorten( $row['sum_hit'], 2 );
-			$in    = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2 ) . '</span>';
-			$out   = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$calls = Conversion::number_shorten( $row['sum_hit'], 2, false, '&nbsp;' );
+			$in    = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_in'] * 1024, 2, false, '&nbsp;' ) . '</span>';
+			$out   = '<span class="traffic-table-text">' . Conversion::data_shorten( $row['sum_kb_out'] * 1024, 2, false, '&nbsp;' ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
 			$data  = $in . ' &nbsp;&nbsp; ' . $out;
 			if ( 1 < $row['sum_hit'] ) {
 				$min = Conversion::number_shorten( $row['min_latency'], 0 );
 				if ( false !== strpos( $min, 'K' ) ) {
-					$min = str_replace( 'K', 's', $min );
+					$min = str_replace( 'K', esc_html_x( 's', 'Unit symbol - Stands for "second".', 'traffic' ), $min );
 				} else {
-					$min = $min . 'ms';
+					$min = $min . esc_html_x( 'ms', 'Unit symbol - Stands for "millisecond".', 'traffic' );
 				}
 				$max = Conversion::number_shorten( $row['max_latency'], 0 );
 				if ( false !== strpos( $max, 'K' ) ) {
-					$max = str_replace( 'K', 's', $max );
+					$max = str_replace( 'K', esc_html_x( 's', 'Unit symbol - Stands for "second".', 'traffic' ), $max );
 				} else {
-					$max = $max . 'ms';
+					$max = $max . esc_html_x( 'ms', 'Unit symbol - Stands for "millisecond".', 'traffic' );
 				}
-				$latency = (int) $row['avg_latency'] . 'ms&nbsp;<small>' . $min . '→' . $max . '</small>';
+				$latency = (int) $row['avg_latency'] . '&nbsp;' . esc_html_x( 'ms', 'Unit symbol - Stands for "millisecond".', 'traffic' ) . '&nbsp;<small>(' . $min . '→' . $max . ')</small>';
 			} else {
-				$latency = (int) $row['avg_latency'] . 'ms';
+				$latency = (int) $row['avg_latency'] . '&nbsp;' . esc_html_x( 'ms', 'Unit symbol - Stands for "millisecond".', 'traffic' );
 			}
 			if ( 'codes' === $type && '0' === $row[ $group ] ) {
 				$latency = '-';
@@ -1017,7 +1017,7 @@ class Analytics {
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [call_tooltip' . $uuid . '],';
 		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
-		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $call_max . ', labelInterpolationFnc: function (value) {return value.toString() + "' . $call_abbr . '";}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $call_max . ', labelInterpolationFnc: function (value) {return value.toString() + " ' . $call_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-calls", call_data' . $uuid . ', call_option' . $uuid . ');';
 		$result .= '});';
@@ -1036,7 +1036,7 @@ class Analytics {
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [data_tooltip' . $uuid . '],';
 		$result .= '  axisX: {type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
-		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $data_max . ', labelInterpolationFnc: function (value) {return value.toString() + "' . $data_abbr . '";}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $data_max . ', labelInterpolationFnc: function (value) {return value.toString() + " ' . $data_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-data", data_data' . $uuid . ', data_option' . $uuid . ');';
 		$result .= '});';
@@ -1055,7 +1055,7 @@ class Analytics {
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [uptime_tooltip' . $uuid . '],';
 		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
-		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + "%";}},';
+		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + " %";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-uptime", uptime_data' . $uuid . ', uptime_option' . $uuid . ');';
 		$result .= '});';
@@ -1084,20 +1084,20 @@ class Analytics {
 			if ( is_array( $pdata ) && array_key_exists( 'sum_hit', $pdata ) && ! empty( $pdata['sum_hit'] ) ) {
 				$previous = (float) $pdata['sum_hit'];
 			}
-			$result[ 'kpi-main-' . $queried ] = Conversion::number_shorten( $current, 1 );
+			$result[ 'kpi-main-' . $queried ] = Conversion::number_shorten( $current, 1, false, '&nbsp;' );
 			if ( 0.0 !== $current && 0.0 !== $previous ) {
 				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
 				if ( 0.1 > abs( $percent ) ) {
 					$percent = 0;
 				}
-				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '&nbsp;%</span>';
 			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
 			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
 			if ( is_array( $data ) && array_key_exists( 'avg_latency', $data ) && ! empty( $data['avg_latency'] ) ) {
-				$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( 'avg latency: %sms.', 'traffic' ), (int) $data['avg_latency'] ) . '</span>';
+				$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( 'avg latency: %s ms.', 'traffic' ), (int) $data['avg_latency'] ) . '</span>';
 			}
 		}
 		if ( 'data' === $queried ) {
@@ -1121,20 +1121,20 @@ class Analytics {
 			}
 			$current                          = $current_in + $current_out;
 			$previous                         = $previous_in + $previous_out;
-			$result[ 'kpi-main-' . $queried ] = Conversion::data_shorten( $current, 1 );
+			$result[ 'kpi-main-' . $queried ] = Conversion::data_shorten( $current, 1, false, '&nbsp;' );
 			if ( 0.0 !== $current && 0.0 !== $previous ) {
 				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
 				if ( 0.1 > abs( $percent ) ) {
 					$percent = 0;
 				}
-				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '&nbsp;%</span>';
 			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
 			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
 			}
-			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_in, 2 ) . '</span>';
-			$out                                = '<span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_out, 2 ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
+			$in                                 = '<img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-down-right', 'none', '#73879C' ) . '" /><span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_in, 2, false, '&nbsp;' ) . '</span>';
+			$out                                = '<span class="traffic-kpi-large-bottom-text">' . Conversion::data_shorten( $current_out, 2, false, '&nbsp;' ) . '</span><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'arrow-up-right', 'none', '#73879C' ) . '" />';
 			$result[ 'kpi-bottom-' . $queried ] = $in . ' &nbsp;&nbsp; ' . $out;
 		}
 		if ( 'server' === $queried || 'quota' === $queried || 'pass' === $queried || 'uptime' === $queried ) {
@@ -1173,12 +1173,12 @@ class Analytics {
 			}
 			if ( 0.0 !== $base_value && 0.0 !== $data_value ) {
 				$current                          = 100 * $data_value / $base_value;
-				$result[ 'kpi-main-' . $queried ] = round( $current, 1 ) . '%';
+				$result[ 'kpi-main-' . $queried ] = round( $current, 1 ) . '&nbsp;%';
 			} else {
 				if ( 0.0 !== $data_value ) {
-					$result[ 'kpi-main-' . $queried ] = '100%';
+					$result[ 'kpi-main-' . $queried ] = '100&nbsp;%';
 				} elseif ( 0.0 !== $base_value ) {
-					$result[ 'kpi-main-' . $queried ] = '0%';
+					$result[ 'kpi-main-' . $queried ] = '0&nbsp;%';
 				} else {
 					$result[ 'kpi-main-' . $queried ] = '-';
 				}
@@ -1195,7 +1195,7 @@ class Analytics {
 				if ( 0.1 > abs( $percent ) ) {
 					$percent = 0;
 				}
-				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '%</span>';
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '&nbsp;%</span>';
 			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
 				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
 			} elseif ( 0.0 !== $previous && 100 !== $previous && 0.0 === $current ) {
@@ -1203,13 +1203,13 @@ class Analytics {
 			}
 			switch ( $queried ) {
 				case 'server':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s calls in error', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s calls in error', 'traffic' ), Conversion::number_shorten( $data_value, 2, false, '&nbsp;' ) ) . '</span>';
 					break;
 				case 'quota':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s blocked calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s blocked calls', 'traffic' ), Conversion::number_shorten( $data_value, 2, false, '&nbsp;' ) ) . '</span>';
 					break;
 				case 'pass':
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s successful calls', 'traffic' ), Conversion::number_shorten( $data_value, 2 ) ) . '</span>';
+					$result[ 'kpi-bottom-' . $queried ] = '<span class="traffic-kpi-large-bottom-text">' . sprintf( esc_html__( '%s successful calls', 'traffic' ), Conversion::number_shorten( $data_value, 2, false, '&nbsp;' ) ) . '</span>';
 					break;
 				case 'uptime':
 					if ( 0.0 !== $base_value ) {
