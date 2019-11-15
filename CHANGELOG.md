@@ -3,9 +3,11 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.3] - 2019-11-15
-
 ## [Unreleased]
+## Fixed
+- With non-standard dashboard colors, tooltip shadow may be ugly.
+
+## [1.2.3] - 2019-11-15
 ### Changed
 - Unit symbols and abbreviations are now visually differentiated.
 - There's now a non-breaking space between values and units.
