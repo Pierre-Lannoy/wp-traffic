@@ -409,8 +409,12 @@
     display: none;
 }
 
-.ct-labels {
+.ct-labels .ct-horizontal {
     transform: translateX(-18px);
+}
+
+.ct-labels .ct-vertical {
+    transform: translateX(-6px) translateY(6px);
 }
 
 .traffic-minor-data {

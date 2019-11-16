@@ -1431,7 +1431,7 @@ class Analytics {
 		if ( 1 < $this->duration ) {
 			$help_calls  = esc_html__( 'Responses types distribution.', 'traffic' );
 			$help_data   = esc_html__( 'Data volume distribution.', 'traffic' );
-			$help_uptime = esc_html__( 'Uptime distribution.', 'traffic' );
+			$help_uptime = esc_html__( 'Uptime variation.', 'traffic' );
 			$detail      = '<span class="traffic-chart-button not-ready left" id="traffic-chart-button-calls" data-position="left" data-tooltip="' . $help_calls . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'hash', 'none', '#73879C' ) . '" /></span>';
 			$detail     .= '&nbsp;&nbsp;&nbsp;<span class="traffic-chart-button not-ready left" id="traffic-chart-button-data" data-position="left" data-tooltip="' . $help_data . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'link-2', 'none', '#73879C' ) . '" /></span>&nbsp;&nbsp;&nbsp;';
 			$detail     .= '<span class="traffic-chart-button not-ready left" id="traffic-chart-button-uptime" data-position="left" data-tooltip="' . $help_uptime . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';

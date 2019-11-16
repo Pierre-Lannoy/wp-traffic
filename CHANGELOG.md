@@ -4,6 +4,9 @@ All notable changes to **Traffic** is documented in this *changelog*.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Graph labels are now rightly positioned and aligned.
+- Graph names have been changed to mark the difference between 'variation' and 'distribution'.
 ## Fixed
 - With non-standard dashboard colors, tooltip shadow may be ugly.
 
