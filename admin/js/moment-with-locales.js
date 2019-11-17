@@ -6013,7 +6013,7 @@
             M : 'un mes',
             MM : '%d mesos',
             y : 'un any',
-            yy : '%d anys'
+            yy : '%d anys',
         },
         dayOfMonthOrdinalParse: /\d{1,2}(r|n|t|è|a)/,
         ordinal : function (number, period) {

@@ -1016,7 +1016,7 @@ class Analytics {
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [call_tooltip' . $uuid . '],';
-		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
+		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
 		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $call_max . ', labelInterpolationFnc: function (value) {return value.toString() + " ' . $call_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-calls", call_data' . $uuid . ', call_option' . $uuid . ');';
@@ -1035,7 +1035,7 @@ class Analytics {
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [data_tooltip' . $uuid . '],';
-		$result .= '  axisX: {type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
+		$result .= '  axisX: {type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
 		$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, high: ' . $data_max . ', labelInterpolationFnc: function (value) {return value.toString() + " ' . $data_abbr . '";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-data", data_data' . $uuid . ', data_option' . $uuid . ');';
@@ -1054,7 +1054,7 @@ class Analytics {
 		$result .= '  showLine: true,';
 		$result .= '  showPoint: false,';
 		$result .= '  plugins: [uptime_tooltip' . $uuid . '],';
-		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("MMM DD");}},';
+		$result .= '  axisX: {scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
 		$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + " %";}},';
 		$result .= ' };';
 		$result .= ' new Chartist.Line("#traffic-chart-uptime", uptime_data' . $uuid . ', uptime_option' . $uuid . ');';
@@ -2099,7 +2099,7 @@ class Analytics {
 		$result .= ' var start = moment("' . $this->start . '");';
 		$result .= ' var end = moment("' . $this->end . '");';
 		$result .= ' function changeDate(start, end) {';
-		$result .= '  $("span.traffic-datepicker-value").html(start.format("ll") + " - " + end.format("ll"));';
+		$result .= '  $("span.traffic-datepicker-value").html(start.format("LL") + " - " + end.format("LL"));';
 		$result .= ' }';
 		$result .= ' $(".traffic-datepicker").daterangepicker({';
 		$result .= '  opens: "left",';
