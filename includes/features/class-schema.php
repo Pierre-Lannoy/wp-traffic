@@ -12,7 +12,8 @@
 namespace Traffic\Plugin\Feature;
 
 use Traffic\System\Blog;
-use Traffic\System\Environment;
+use Traffic\System\Option;
+use Traffic\System\Database;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
 use Traffic\System\Logger;
@@ -96,6 +97,7 @@ class Schema {
 		if ( 0 < count( self::$statistics_buffer ) && ! $final ) {
 			self::write_statistics( true );
 		}
+		self::purge();
 	}
 
 	/**
@@ -204,6 +206,32 @@ class Schema {
 		} catch ( \Throwable $e ) {
 			Logger::alert( sprintf( 'Unable to update "%s" table: %s', $wpdb->base_prefix . self::$statistics, $e->getMessage() ), $e->getCode() );
 		}
+	}
+
+	/**
+	 * Purge old records.
+	 *
+	 * @since    1.0.0
+	 */
+	private static function purge() {
+		Option::network_set( 'history', 1 );
+		$days = (int) Option::network_get( 'history' );
+		if ( ! is_numeric( $days ) || 30 > $days ) {
+			$days = 30;
+			Option::network_set( 'history', $days );
+		}
+		$database = new Database();
+		$count    = $database->purge( self::$statistics, 'timestamp', 24 * $days );
+		if ( 0 === $count ) {
+			Logger::emergency( 'No old records to delete.' );
+		} elseif ( 1 === $count ) {
+			Logger::emergency( '1 old record deleted.' );
+			Cache::delete_global( '/Data/OldestDate' );
+		} else {
+			Logger::emergency( sprintf( '%1$s old records deleted.', $count ) );
+			Cache::delete_global( '/Data/OldestDate' );
+		}
+
 	}
 
 	/**
