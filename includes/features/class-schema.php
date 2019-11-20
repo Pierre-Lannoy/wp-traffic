@@ -223,12 +223,12 @@ class Schema {
 		$database = new Database();
 		$count    = $database->purge( self::$statistics, 'timestamp', 24 * $days );
 		if ( 0 === $count ) {
-			Logger::emergency( 'No old records to delete.' );
+			Logger::debug( 'No old records to delete.' );
 		} elseif ( 1 === $count ) {
-			Logger::emergency( '1 old record deleted.' );
+			Logger::debug( '1 old record deleted.' );
 			Cache::delete_global( '/Data/OldestDate' );
 		} else {
-			Logger::emergency( sprintf( '%1$s old records deleted.', $count ) );
+			Logger::debug( sprintf( '%1$s old records deleted.', $count ) );
 			Cache::delete_global( '/Data/OldestDate' );
 		}
 
