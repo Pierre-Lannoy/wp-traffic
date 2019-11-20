@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Traffic - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-10-17 18:14+0200\n"
+"PO-Revision-Date: 2019-11-20 16:05+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -11,8 +11,22 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: Plugins - Traffic - Stable (latest release)\n"
 "POT-Creation-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: \n"
+
+#: includes/features/class-analytics.php:698
+#: includes/features/class-analytics.php:704
+#: includes/features/class-analytics.php:706
+#: includes/features/class-analytics.php:708
+msgctxt "Unit symbol - Stands for \"millisecond\"."
+msgid "ms"
+msgstr "ms"
+
+#: includes/features/class-analytics.php:696
+#: includes/features/class-analytics.php:702
+msgctxt "Unit symbol - Stands for \"second\"."
+msgid "s"
+msgstr "s"
 
 #: includes/features/class-analytics.php:2112
 msgid "Custom Range"
@@ -92,7 +106,7 @@ msgstr "Favicons"
 msgid "API usage"
 msgstr "Utilisation de l’API"
 
-#: includes/plugin/class-updater.php:47
+#: includes/plugin/class-updater.php:51
 msgid "See <a href=\"%s\">what's new</a>."
 msgstr "Voir <a href=\"%s\">les nouveautés</a>."
 
@@ -262,8 +276,8 @@ msgid "Options"
 msgstr "Options"
 
 #. translators: as in the sentence "Traffic Settings" or "WordPress Settings"
-#: admin/partials/traffic-admin-settings-main.php:28
 #: admin/class-traffic-admin.php:91
+#: admin/partials/traffic-admin-settings-main.php:28
 msgid "%s Settings"
 msgstr "Réglages %s"
 
@@ -309,15 +323,15 @@ msgstr "Licence MIT"
 msgid "%s & contributors"
 msgstr "%s et contributeurs"
 
-#: includes/plugin/class-updater.php:138
+#: includes/plugin/class-updater.php:142
 msgid "Sorry, unable to find or read changelog file."
 msgstr "Désolé, il est impossible de trouver ou de lire le journal des modifications."
 
-#: includes/plugin/class-updater.php:45
+#: includes/plugin/class-updater.php:48
 msgid "%1$s has been correctly updated from version %2$s to version %3$s."
 msgstr "%1$s a été correctement mis à jour de la version %2$s à la version %3$s."
 
-#: includes/plugin/class-updater.php:41
+#: includes/plugin/class-updater.php:44
 msgid "%1$s has been correctly installed."
 msgstr "%1$s a été correctement installé."
 
@@ -337,67 +351,67 @@ msgstr "affichage"
 msgid "log"
 msgstr "registre"
 
-#: includes/system/class-conversion.php:86
+#: includes/system/class-conversion.php:88
 msgctxt "Abbreviation - Stands for \"exabytes\"."
 msgid "EB"
 msgstr "Eo"
 
-#: includes/system/class-conversion.php:85
+#: includes/system/class-conversion.php:87
 msgctxt "Abbreviation - Stands for \"petabytes\"."
 msgid "PB"
 msgstr "Po"
 
-#: includes/system/class-conversion.php:84
+#: includes/system/class-conversion.php:86
 msgctxt "Abbreviation - Stands for \"terabytes\"."
 msgid "TB"
 msgstr "To"
 
-#: includes/system/class-conversion.php:83
+#: includes/system/class-conversion.php:85
 msgctxt "Abbreviation - Stands for \"gigabytes\"."
 msgid "GB"
 msgstr "Go"
 
-#: includes/system/class-conversion.php:82
+#: includes/system/class-conversion.php:84
 msgctxt "Abbreviation - Stands for \"megabytes\"."
 msgid "MB"
 msgstr "Mo"
 
-#: includes/system/class-conversion.php:81
+#: includes/system/class-conversion.php:83
 msgctxt "Abbreviation - Stands for \"kilobytes\"."
 msgid "KB"
 msgstr "Ko"
 
-#: includes/system/class-conversion.php:80
+#: includes/system/class-conversion.php:82
 msgctxt "Abbreviation - Stands for \"byte\"."
 msgid "B"
 msgstr "o"
 
-#: includes/system/class-conversion.php:50
+#: includes/system/class-conversion.php:51
 msgctxt "Abbreviation - Stands for \"quintillion\"."
 msgid "Qi"
 msgstr "Qi"
 
-#: includes/system/class-conversion.php:49
+#: includes/system/class-conversion.php:50
 msgctxt "Abbreviation - Stands for \"quadrillion\"."
 msgid "Qa"
 msgstr "Qa"
 
-#: includes/system/class-conversion.php:48
+#: includes/system/class-conversion.php:49
 msgctxt "Abbreviation - Stands for \"trillion\"."
 msgid "T"
 msgstr "T"
 
-#: includes/system/class-conversion.php:47
+#: includes/system/class-conversion.php:48
 msgctxt "Abbreviation - Stands for \"billion\"."
 msgid "B"
 msgstr "G"
 
-#: includes/system/class-conversion.php:46
+#: includes/system/class-conversion.php:47
 msgctxt "Abbreviation - Stands for \"million\"."
 msgid "M"
 msgstr "M"
 
-#: includes/system/class-conversion.php:45
+#: includes/system/class-conversion.php:46
 msgctxt "Abbreviation - Stands for \"thousand\"."
 msgid "K"
 msgstr "K"
@@ -421,18 +435,18 @@ msgstr[0] "seconde"
 msgstr[1] "secondes"
 
 #: includes/system/class-date.php:108
-msgctxt "Abbreviation - Stands for \"hour\"."
-msgid "hr."
-msgstr "h"
+msgctxt "Unit abbreviation - Stands for \"hour\"."
+msgid "hr"
+msgstr "h."
 
 #: includes/system/class-date.php:107
-msgctxt "Abbreviation - Stands for \"minute\"."
-msgid "min."
+msgctxt "Unit abbreviation - Stands for \"minute\"."
+msgid "min"
 msgstr "min."
 
 #: includes/system/class-date.php:106
-msgctxt "Abbreviation - Stands for \"second\"."
-msgid "sec."
+msgctxt "Unit abbreviation - Stands for \"second\"."
+msgid "sec"
 msgstr "sec."
 
 #: includes/system/class-date.php:73
@@ -659,8 +673,8 @@ msgid "%s calls in error"
 msgstr "%s appels en erreur"
 
 #: includes/features/class-analytics.php:1100
-msgid "avg latency: %sms."
-msgstr "latence moyenne : %sms."
+msgid "avg latency: %s ms."
+msgstr "latence moyenne : %s ms."
 
 #: includes/features/class-analytics.php:986
 msgid "Perceived Uptime"
