@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Traffic\n"
-"POT-Creation-Date: 2019-11-15 11:26+0100\n"
+"POT-Creation-Date: 2019-11-20 16:13+0100\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
@@ -440,7 +440,7 @@ msgid "Data volume distribution."
 msgstr ""
 
 #: includes/features/class-analytics.php:1434
-msgid "Uptime distribution."
+msgid "Uptime variation."
 msgstr ""
 
 #: includes/features/class-analytics.php:1440
