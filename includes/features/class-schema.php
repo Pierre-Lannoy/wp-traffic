@@ -231,7 +231,6 @@ class Schema {
 			Logger::debug( sprintf( '%1$s old records deleted.', $count ) );
 			Cache::delete_global( '/Data/OldestDate' );
 		}
-
 	}
 
 	/**
