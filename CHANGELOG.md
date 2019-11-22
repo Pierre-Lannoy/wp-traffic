@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Graph names have been changed to mark the difference between 'variation' and 'distribution'.
 ## Fixed
 - With non-standard dashboard colors, tooltip shadow may be ugly.
+- The buttons of the date range picker may have a wrong size.
 
 ## [1.2.3] - 2019-11-15
 ### Changed
