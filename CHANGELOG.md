@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 - Graph labels are now rightly positioned and aligned.
 - Graph names have been changed to mark the difference between 'variation' and 'distribution'.
-## Fixed
+### Fixed
 - With non-standard dashboard colors, tooltip shadow may be ugly.
 - The buttons of the date range picker may have a wrong size.
 
@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Unit symbols and abbreviations are now visually differentiated.
 - There's now a non-breaking space between values and units.
 - Upgraded Feather library from version 4.22.1 to version 4.24.1.
-## Fixed
+### Fixed
 - PHP warning (in some rare cases) when executing "rest_pre_echo_response" hook.
 - Counting cookies sizes may produce a PHP notice in some cases.
 
