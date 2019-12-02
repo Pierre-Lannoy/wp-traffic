@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Traffic\n"
-"POT-Creation-Date: 2019-11-20 16:13+0100\n"
+"POT-Creation-Date: 2019-12-03 00:36+0100\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
@@ -66,46 +66,46 @@ msgstr ""
 msgid "GitHub repository"
 msgstr ""
 
-#: admin/class-traffic-admin.php:241
+#: admin/class-traffic-admin.php:240
 msgid "Plugin settings have been saved."
 msgstr ""
 
-#: admin/class-traffic-admin.php:246
+#: admin/class-traffic-admin.php:245
 msgid "Plugin settings have not been saved. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:263
+#: admin/class-traffic-admin.php:262
 msgid "Plugin settings have been reset to defaults."
 msgstr ""
 
-#: admin/class-traffic-admin.php:268
+#: admin/class-traffic-admin.php:267
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:285
+#: admin/class-traffic-admin.php:284
 msgid "Favicons"
 msgstr ""
 
-#: admin/class-traffic-admin.php:290
+#: admin/class-traffic-admin.php:289
 msgid "Download and display"
 msgstr ""
 
-#: admin/class-traffic-admin.php:293
+#: admin/class-traffic-admin.php:292
 msgid ""
 "If checked, Traffic will download favicons of websites to display them in "
 "reports."
 msgstr ""
 
-#: admin/class-traffic-admin.php:293
+#: admin/class-traffic-admin.php:292
 msgid "Note: This feature uses the (free) Google Favicon Service."
 msgstr ""
 
-#: admin/class-traffic-admin.php:302 admin/class-traffic-admin.php:321
+#: admin/class-traffic-admin.php:301 admin/class-traffic-admin.php:320
 #, php-format
 msgid "Your site is currently using %s."
 msgstr ""
 
-#: admin/class-traffic-admin.php:305
+#: admin/class-traffic-admin.php:304
 #, php-format
 msgid ""
 "Your site does not use any IP geographic information plugin. To take "
@@ -114,11 +114,11 @@ msgid ""
 "mandatory."
 msgstr ""
 
-#: admin/class-traffic-admin.php:309
+#: admin/class-traffic-admin.php:308
 msgid "IP information"
 msgstr ""
 
-#: admin/class-traffic-admin.php:324
+#: admin/class-traffic-admin.php:323
 #, php-format
 msgid ""
 "Your site does not use any logging plugin. To log all events triggered in "
@@ -126,80 +126,66 @@ msgid ""
 "not mandatory."
 msgstr ""
 
-#: admin/class-traffic-admin.php:328
+#: admin/class-traffic-admin.php:327
 msgid "Logging"
 msgstr ""
 
-#: admin/class-traffic-admin.php:339
+#: admin/class-traffic-admin.php:338
 msgid "Resources"
 msgstr ""
 
-#: admin/class-traffic-admin.php:344
+#: admin/class-traffic-admin.php:343
 msgid "Use public CDN"
 msgstr ""
 
-#: admin/class-traffic-admin.php:347
+#: admin/class-traffic-admin.php:346
 msgid ""
 "If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and "
 "stylesheets."
 msgstr ""
 
-#: admin/class-traffic-admin.php:355
-msgid "Plugin updates"
-msgstr ""
-
-#: admin/class-traffic-admin.php:360
-msgid "Automatic (recommended)"
-msgstr ""
-
-#: admin/class-traffic-admin.php:363
-msgid ""
-"If checked, Traffic will update itself as soon as a new version is "
-"available."
-msgstr ""
-
-#: admin/class-traffic-admin.php:371
+#: admin/class-traffic-admin.php:354
 msgid "Admin notices"
 msgstr ""
 
-#: admin/class-traffic-admin.php:376
+#: admin/class-traffic-admin.php:359
 msgid "Display"
 msgstr ""
 
-#: admin/class-traffic-admin.php:379
+#: admin/class-traffic-admin.php:362
 msgid ""
 "Allows Traffic to display admin notices throughout the admin dashboard."
 msgstr ""
 
-#: admin/class-traffic-admin.php:379
+#: admin/class-traffic-admin.php:362
 msgid "Note: Traffic respects DISABLE_NAG_NOTICES flag."
 msgstr ""
 
-#: admin/class-traffic-admin.php:396 admin/class-traffic-admin.php:439
+#: admin/class-traffic-admin.php:379 admin/class-traffic-admin.php:422
 msgid "Analytics"
 msgstr ""
 
-#: admin/class-traffic-admin.php:401 admin/class-traffic-admin.php:444
+#: admin/class-traffic-admin.php:384 admin/class-traffic-admin.php:427
 msgid "Activated"
 msgstr ""
 
-#: admin/class-traffic-admin.php:404
+#: admin/class-traffic-admin.php:387
 msgid ""
 "If checked, Traffic will analyze inbound API calls (the calls made by "
 "external sites or apps to your site)."
 msgstr ""
 
-#: admin/class-traffic-admin.php:412 admin/class-traffic-admin.php:455
+#: admin/class-traffic-admin.php:395 admin/class-traffic-admin.php:438
 msgid "Path cut"
 msgstr ""
 
-#: admin/class-traffic-admin.php:422 admin/class-traffic-admin.php:465
+#: admin/class-traffic-admin.php:405 admin/class-traffic-admin.php:448
 msgid ""
 "Allows to keep only the first most significative elements of the endpoint "
 "path."
 msgstr ""
 
-#: admin/class-traffic-admin.php:447
+#: admin/class-traffic-admin.php:430
 msgid ""
 "If checked, Traffic will analyze outbound API calls (the calls made by "
 "your site to external services)."
@@ -671,7 +657,7 @@ msgstr ""
 msgid "See <a href=\"%s\">what's new</a>."
 msgstr ""
 
-#: includes/plugin/class-updater.php:142
+#: includes/plugin/class-updater.php:99
 msgid "Sorry, unable to find or read changelog file."
 msgstr ""
 

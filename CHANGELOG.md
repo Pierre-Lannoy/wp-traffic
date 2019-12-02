@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 - With non-standard dashboard colors, tooltip shadow may be ugly.
 - The buttons of the date range picker may have a wrong size.
+### Removed
+- As a result of the Plugin Team's request, the auto-update feature has been removed.
 
 ## [1.2.3] - 2019-11-15
 ### Changed

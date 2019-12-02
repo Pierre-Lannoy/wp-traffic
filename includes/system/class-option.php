@@ -40,7 +40,6 @@ class Option {
 		self::$defaults['use_cdn']           = false;
 		self::$defaults['download_favicons'] = false;
 		self::$defaults['script_in_footer']  = false;
-		self::$defaults['auto_update']       = true;
 		self::$defaults['display_nag']       = true;
 		self::$defaults['nags']              = [];
 		self::$defaults['version']           = '0.0.0';
@@ -162,7 +161,6 @@ class Option {
 		self::network_set( 'use_cdn', self::$defaults['use_cdn'] );
 		self::network_set( 'download_favicons', self::$defaults['download_favicons'] );
 		self::network_set( 'script_in_footer', self::$defaults['script_in_footer'] );
-		self::network_set( 'auto_update', self::$defaults['auto_update'] );
 		self::network_set( 'display_nag', self::$defaults['display_nag'] );
 		self::network_set( 'inbound_cut_path', self::$defaults['inbound_cut_path'] );
 		self::network_set( 'outbound_cut_path', self::$defaults['outbound_cut_path'] );

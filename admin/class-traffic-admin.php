@@ -232,7 +232,6 @@ class Traffic_Admin {
 			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
 				Option::network_set( 'use_cdn', array_key_exists( 'traffic_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_usecdn' ) : false );
 				Option::network_set( 'download_favicons', array_key_exists( 'traffic_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_favicons' ) : false );
-				Option::network_set( 'auto_update', array_key_exists( 'traffic_plugin_options_autoupdate', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_autoupdate' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
 				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
 				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_outbound_options_capture' ) : false );
@@ -350,22 +349,6 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_usecdn' );
-		add_settings_field(
-			'traffic_plugin_options_autoupdate',
-			__( 'Plugin updates', 'traffic' ),
-			[ $form, 'echo_field_checkbox' ],
-			'traffic_plugin_options_section',
-			'traffic_plugin_options_section',
-			[
-				'text'        => esc_html__( 'Automatic (recommended)', 'traffic' ),
-				'id'          => 'traffic_plugin_options_autoupdate',
-				'checked'     => Option::network_get( 'auto_update' ),
-				'description' => esc_html__( 'If checked, Traffic will update itself as soon as a new version is available.', 'traffic' ),
-				'full_width'  => true,
-				'enabled'     => true,
-			]
-		);
-		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_autoupdate' );
 		add_settings_field(
 			'traffic_plugin_options_nag',
 			__( 'Admin notices', 'traffic' ),
