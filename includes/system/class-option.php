@@ -47,6 +47,7 @@ class Option {
 		self::$defaults['outbound_cut_path'] = 3;
 		self::$defaults['outbound_capture']  = true;
 		self::$defaults['inbound_capture']   = true;
+		self::$defaults['history']           = 90;
 	}
 
 	/**
@@ -166,6 +167,7 @@ class Option {
 		self::network_set( 'outbound_cut_path', self::$defaults['outbound_cut_path'] );
 		self::network_set( 'inbound_capture', self::$defaults['inbound_capture'] );
 		self::network_set( 'outbound_capture', self::$defaults['outbound_capture'] );
+		self::network_set( 'history', self::$defaults['history'] );
 	}
 
 	/**

@@ -143,6 +143,7 @@ class Traffic_Admin {
 	public function init_settings_sections() {
 		add_settings_section( 'traffic_inbound_options_section', esc_html__( 'Inbound APIs', 'traffic' ), [ $this, 'inbound_options_section_callback' ], 'traffic_inbound_options_section' );
 		add_settings_section( 'traffic_outbound_options_section', esc_html__( 'Outbound APIs', 'traffic' ), [ $this, 'outbound_options_section_callback' ], 'traffic_outbound_options_section' );
+		add_settings_section( 'traffic_plugin_features_section', esc_html__( 'Plugin features', 'traffic' ), [ $this, 'plugin_features_section_callback' ], 'traffic_plugin_features_section' );
 		add_settings_section( 'traffic_plugin_options_section', esc_html__( 'Plugin options', 'traffic' ), [ $this, 'plugin_options_section_callback' ], 'traffic_plugin_options_section' );
 	}
 
@@ -237,6 +238,7 @@ class Traffic_Admin {
 				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_outbound_options_capture' ) : false );
 				Option::network_set( 'inbound_cut_path', array_key_exists( 'traffic_inbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_inbound_options_cut_path' ) : Option::network_get( 'traffic_inbound_options_cut_path' ) );
 				Option::network_set( 'outbound_cut_path', array_key_exists( 'traffic_outbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_outbound_options_cut_path' ) : Option::network_get( 'traffic_outbound_options_cut_path' ) );
+				Option::network_set( 'history', array_key_exists( 'traffic_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'traffic_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'traffic' );
 				$code    = 0;
 				add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
@@ -365,6 +367,50 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_nag' );
+	}
+
+	/**
+	 * Callback for plugin features section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function plugin_features_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'traffic_plugin_features_history',
+			esc_html__( 'Historical data', 'traffic' ),
+			[ $form, 'echo_field_select' ],
+			'traffic_plugin_features_section',
+			'traffic_plugin_features_section',
+			[
+				'list'        => $this->get_retentions_array(),
+				'id'          => 'traffic_plugin_features_history',
+				'value'       => Option::network_get( 'history' ),
+				'description' => esc_html__( 'Maximum age of data to keep for statistics.', 'traffic' ),
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'traffic_plugin_features_section', 'traffic_plugin_features_history' );
+	}
+
+	/**
+	 * Get the available history retentions.
+	 *
+	 * @return array An array containing the history modes.
+	 * @since  3.2.0
+	 */
+	protected function get_retentions_array() {
+		$result = [];
+		for ( $i = 1; $i < 7; $i++ ) {
+			// phpcs:ignore
+			$result[] = [ (int) ( 30 * $i ), esc_html( sprintf( _n( '%d month', '%d months', $i, 'traffic' ), $i ) ) ];
+		}
+		for ( $i = 1; $i < 7; $i++ ) {
+			// phpcs:ignore
+			$result[] = [ (int) ( 365 * $i ), esc_html( sprintf( _n( '%d year', '%d years', $i, 'traffic' ), $i ) ) ];
+		}
+		return $result;
 	}
 
 	/**

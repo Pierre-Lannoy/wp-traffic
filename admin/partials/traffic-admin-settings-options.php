@@ -27,6 +27,7 @@
 	" method="POST">
 	<?php do_settings_sections( 'traffic_inbound_options_section' ); ?>
 	<?php do_settings_sections( 'traffic_outbound_options_section' ); ?>
+	<?php do_settings_sections( 'traffic_plugin_features_section' ); ?>
 	<?php do_settings_sections( 'traffic_plugin_options_section' ); ?>
 	<?php wp_nonce_field( 'traffic-plugin-options' ); ?>
 	<p><?php echo get_submit_button( esc_html__( 'Reset to Defaults', 'traffic' ), 'secondary', 'reset-to-defaults', false ); ?>&nbsp;&nbsp;&nbsp;<?php echo get_submit_button( null, 'primary', 'submit', false ); ?></p>
