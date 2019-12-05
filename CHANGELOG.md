@@ -3,7 +3,7 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.7.0] - 2019-12-05
+## [1.3.0] - 2019-12-05
 ### Added
 - A new option (in settings) to set the data retention period.
 ### Changed
