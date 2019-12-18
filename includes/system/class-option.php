@@ -132,7 +132,7 @@ class Option {
 	 */
 	public static function network_set( $option, $value ) {
 		if ( false === $value ) {
-			update_site_option( DECALOG_PRODUCT_ABBREVIATION . '_' . $option, true );
+			update_site_option( TRAFFIC_PRODUCT_ABBREVIATION . '_' . $option, true );
 		}
 		return update_site_option( TRAFFIC_PRODUCT_ABBREVIATION . '_' . $option, $value );
 	}
