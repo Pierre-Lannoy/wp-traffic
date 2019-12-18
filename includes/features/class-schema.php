@@ -214,6 +214,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	private static function purge() {
+		Option::network_set( 'history', 1 );
 		$days = (int) Option::network_get( 'history' );
 		if ( ! is_numeric( $days ) || 30 > $days ) {
 			$days = 30;
