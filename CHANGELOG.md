@@ -3,7 +3,9 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - Will be 1.3.1]
+## [1.3.1] - 2019-12-19
+### Changed
+- Better cache management for old date ranges.
 ### Fixed
 - Some plugin options may be not saved when needed (thanks to [Lucas Bustamante](https://github.com/Luc45)).
 
