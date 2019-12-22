@@ -28,30 +28,6 @@ class Cache {
 	private static $pool_name = TRAFFIC_SLUG;
 
 	/**
-	 * Differentiates cache items by blogs.
-	 *
-	 * @since  1.0.0
-	 * @var    boolean    $blog_aware    Is the item id must contain the blog id?
-	 */
-	private static $blog_aware = false;
-
-	/**
-	 * Differentiates cache items by current locale.
-	 *
-	 * @since  1.0.0
-	 * @var    boolean    $blog_aware    Is the item id must contain the locale id?
-	 */
-	private static $locale_aware = false;
-
-	/**
-	 * Differentiates cache items by current user.
-	 *
-	 * @since  1.0.0
-	 * @var    boolean    $blog_aware    Is the item id must contain the user id?
-	 */
-	private static $user_aware = false;
-
-	/**
 	 * Available TTLs.
 	 *
 	 * @since  1.0.0
@@ -95,30 +71,54 @@ class Cache {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function id( $args, $path = '/Data' ) {
-		return $path . '/Raw/' . md5( (string) $args );
+	public static function id( $args, $path = 'data/' ) {
+		if ( '/' === $path[0] ) {
+			$path = substr( $path, 1 );
+		}
+		if ( '/' !== $path[strlen( $path ) - 1] ) {
+			$path = $path . '/';
+		}
+		return $path . md5( (string) $args );
 	}
 
 	/**
 	 * Full item name.
 	 *
 	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
+	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
+	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
 	 * @return string The full item name.
 	 * @since  1.0.0
 	 */
-	private static function full_item_name( $item_name ) {
-		$name = self::$pool_name . '/';
-		if ( self::$blog_aware ) {
+	private static function full_item_name( $item_name, $blog_aware = false, $locale_aware = false, $user_aware = false ) {
+		$name = '';
+		if ( $blog_aware ) {
 			$name .= (string) get_current_blog_id() . '/';
 		}
-		if ( self::$locale_aware ) {
+		if ( $locale_aware ) {
 			$name .= (string) L10n::get_display_locale() . '/';
 		}
-		if ( self::$user_aware ) {
+		if ( $user_aware ) {
 			$name .= (string) User::get_current_user_id() . '/';
 		}
 		$name .= $item_name;
-		return substr( trim( $name ), 0, 172 );
+		return substr( trim( $name ), 0, 172 - strlen( self::$pool_name ) );
+	}
+
+	/**
+	 * Normalized item name.
+	 *
+	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @return string The normalized item name.
+	 * @since  1.0.0
+	 */
+	private static function normalized_item_name( $item_name ) {
+		while ( 0 !== substr_count( $item_name, '//' ) ) {
+			$item_name = str_replace( '//', '/', $item_name );
+		}
+		$item_name = str_replace( '/', '_', $item_name );
+		return strtolower( $item_name );
 	}
 
 	/**
@@ -132,11 +132,11 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	private static function get_for_full_name( $item_name ) {
-		while ( 0 !== substr_count( $item_name, '//' ) ) {
-			$item_name = str_replace( '//', '/', $item_name );
+		if ( wp_using_ext_object_cache() ) {
+			return wp_cache_get( $item_name, self::$pool_name );
+		} else {
+			return get_transient( self::$pool_name . '_' . self::normalized_item_name( $item_name ) );
 		}
-		$item_name = str_replace( '/', '_', $item_name );
-		return get_transient( $item_name );
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	public static function get_global( $item_name ) {
-		return self::get_for_full_name( self::$pool_name . '/' . $item_name );
+		return self::get_for_full_name( self::full_item_name( $item_name ) );
 	}
 
 	/**
@@ -160,11 +160,14 @@ class Cache {
 	 * then the return value will be false.
 	 *
 	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
+	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
+	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
 	 * @return mixed Value of item.
 	 * @since  1.0.0
 	 */
-	public static function get( $item_name ) {
-		return self::get_for_full_name( self::full_item_name( $item_name ) );
+	public static function get( $item_name, $blog_aware = false, $locale_aware = false, $user_aware = false ) {
+		return self::get_for_full_name( self::full_item_name( $item_name, $blog_aware, $locale_aware, $user_aware ) );
 	}
 
 	/**
@@ -181,16 +184,17 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	private static function set_for_full_name( $item_name, $value, $ttl = 'default' ) {
-		while ( 0 !== substr_count( $item_name, '//' ) ) {
-			$item_name = str_replace( '//', '/', $item_name );
-		}
-		$item_name  = str_replace( '/', '_', $item_name );
 		$expiration = self::$default_ttl;
 		if ( array_key_exists( $ttl, self::$ttls ) ) {
 			$expiration = self::$ttls[ $ttl ];
 		}
+		Logger::warning('SET     '  . self::normalized_item_name( $item_name ) . '   ' .  $value . '   ' . $expiration);
 		if ( $expiration >= 0 ) {
-			return set_transient( $item_name, $value, $expiration );
+			if ( wp_using_ext_object_cache() ) {
+				return wp_cache_set( self::normalized_item_name( $item_name ), $value, self::$pool_name, $expiration );
+			} else {
+				return set_transient( self::$pool_name . '_' . self::normalized_item_name( $item_name ), $value, $expiration );
+			}
 		} else {
 			return false;
 		}
@@ -210,7 +214,7 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	public static function set_global( $item_name, $value, $ttl = 'default' ) {
-		return self::set_for_full_name( self::$pool_name . '/' . $item_name, $value, $ttl );
+		return self::set_for_full_name( self::full_item_name( $item_name ), $value, $ttl );
 	}
 
 	/**
@@ -219,15 +223,18 @@ class Cache {
 	 * You do not need to serialize values. If the value needs to be serialized, then
 	 * it will be serialized before it is set.
 	 *
-	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
-	 * @param  mixed  $value     Item value. Must be serializable if non-scalar.
-	 *                           Expected to not be SQL-escaped.
-	 * @param  string $ttl       Optional. The previously defined ttl @see self::init().
+	 * @param  string  $item_name    Item name. Expected to not be SQL-escaped.
+	 * @param  mixed   $value        Item value. Must be serializable if non-scalar.
+	 *                               Expected to not be SQL-escaped.
+	 * @param  string  $ttl          Optional. The previously defined ttl @see self::init().
+	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
+	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
+	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
 	 * @return bool False if value was not set and true if value was set.
 	 * @since  1.0.0
 	 */
-	public static function set( $item_name, $value, $ttl = 'default' ) {
-		return self::set_for_full_name( self::full_item_name( $item_name ), $value, $ttl );
+	public static function set( $item_name, $value, $ttl = 'default', $blog_aware = false, $locale_aware = false, $user_aware = false ) {
+		return self::set_for_full_name( self::full_item_name( $item_name, $blog_aware, $locale_aware, $user_aware ), $value, $ttl );
 	}
 
 	/**
