@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Full compatibility (for internal cache) with Redis and Memcached.
 - Using APCu rather than database transients if APCu is available.
+### Fixed
+- Some headers may be wrongly analyzed when they are arrays.
 
 ## [1.3.1] - 2019-12-19
 ### Changed

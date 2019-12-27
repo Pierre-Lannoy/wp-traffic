@@ -298,7 +298,8 @@ class Capture {
 					if ( array_key_exists( 'content-length', $headers ) && array_key_exists( 'accept-ranges', $headers ) && 'bytes' === $headers['accept-ranges'] ) {
 						$header = '';
 						foreach ( $headers as $key => $value ) {
-							$header .= $key . ': ' . $value . PHP_EOL;
+							// phpcs:ignore
+							$header .= $key . ': ' . serialize( $value ) . PHP_EOL;
 						}
 						$b_in  = (int) $headers['content-length'] + strlen( $header );
 						$sized = true;
