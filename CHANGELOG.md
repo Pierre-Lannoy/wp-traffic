@@ -3,6 +3,11 @@ All notable changes to **Traffic** is documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased - will be 1.4.0]
+### Added
+- Full compatibility (for internal cache) with Redis and Memcached.
+- Using APCu rather than database transients if APCu is available.
+
 ## [1.3.1] - 2019-12-19
 ### Changed
 - Better cache management for old date ranges.
