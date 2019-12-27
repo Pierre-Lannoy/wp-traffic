@@ -44,6 +44,38 @@ class Cache {
 	private static $default_ttl = 3600;
 
 	/**
+	 * Is APCu available.
+	 *
+	 * @since  1.0.0
+	 * @var    boolean    $apcu_available    Is APCu available.
+	 */
+	private static $apcu_available = false;
+
+	/**
+	 * Hits values.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $hit    Hits values.
+	 */
+	public static $hit = [];
+
+	/**
+	 * Miss values.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $miss    Miss values.
+	 */
+	public static $miss = [];
+
+	/**
+	 * Current (temporary) values.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $current    Current (temporary) values.
+	 */
+	private static $current = [];
+
+	/**
 	 * Initializes the class and set its properties.
 	 *
 	 * @since 1.0.0
@@ -64,6 +96,10 @@ class Cache {
 			'diagnosis'         => HOUR_IN_SECONDS,
 			'plugin-statistics' => DAY_IN_SECONDS,
 		];
+		if ( wp_using_ext_object_cache() ) {
+			wp_cache_add_global_groups( self::$pool_name );
+		}
+		self::$apcu_available = function_exists( 'apcu_delete' ) && function_exists( 'apcu_fetch' ) && function_exists( 'apcu_store' );
 	}
 
 	/**
@@ -75,7 +111,7 @@ class Cache {
 		if ( '/' === $path[0] ) {
 			$path = substr( $path, 1 );
 		}
-		if ( '/' !== $path[strlen( $path ) - 1] ) {
+		if ( '/' !== $path[ strlen( $path ) - 1 ] ) {
 			$path = $path . '/';
 		}
 		return $path . md5( (string) $args );
@@ -84,7 +120,7 @@ class Cache {
 	/**
 	 * Full item name.
 	 *
-	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  string  $item_name Item name. Expected to not be SQL-escaped.
 	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
 	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
 	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
@@ -114,6 +150,9 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	private static function normalized_item_name( $item_name ) {
+		if ( '/' === $item_name[0] ) {
+			$item_name = substr( $item_name, 1 );
+		}
 		while ( 0 !== substr_count( $item_name, '//' ) ) {
 			$item_name = str_replace( '//', '/', $item_name );
 		}
@@ -132,10 +171,26 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	private static function get_for_full_name( $item_name ) {
+		$chrono    = microtime( true );
+		$item_name = self::normalized_item_name( $item_name );
+		$found     = false;
 		if ( wp_using_ext_object_cache() ) {
-			return wp_cache_get( $item_name, self::$pool_name );
+			$result = wp_cache_get( $item_name, self::$pool_name, false, $found );
+		} elseif ( self::$apcu_available ) {
+			$result = apcu_fetch( self::$pool_name . '_' . $item_name, $found );
 		} else {
-			return get_transient( self::$pool_name . '_' . self::normalized_item_name( $item_name ) );
+			$result = get_transient( self::$pool_name . '_' . $item_name );
+			$found  = false !== $result;
+		}
+		if ( $found ) {
+			self::$hit[] = [
+				'time' => microtime( true ) - $chrono,
+				'size' => strlen( serialize( $result ) ),
+			];
+			return $result;
+		} else {
+			self::$current[ $item_name ] = $chrono;
+			return null;
 		}
 	}
 
@@ -159,7 +214,7 @@ class Cache {
 	 * If the item does not exist, does not have a value, or has expired,
 	 * then the return value will be false.
 	 *
-	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  string  $item_name Item name. Expected to not be SQL-escaped.
 	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
 	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
 	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
@@ -184,20 +239,29 @@ class Cache {
 	 * @since  1.0.0
 	 */
 	private static function set_for_full_name( $item_name, $value, $ttl = 'default' ) {
+		$item_name  = self::normalized_item_name( $item_name );
 		$expiration = self::$default_ttl;
 		if ( array_key_exists( $ttl, self::$ttls ) ) {
 			$expiration = self::$ttls[ $ttl ];
 		}
-		Logger::warning('SET     '  . self::normalized_item_name( $item_name ) . '   ' .  $value . '   ' . $expiration);
 		if ( $expiration >= 0 ) {
 			if ( wp_using_ext_object_cache() ) {
-				return wp_cache_set( self::normalized_item_name( $item_name ), $value, self::$pool_name, $expiration );
+				$result = wp_cache_set( $item_name, $value, self::$pool_name, (int) $expiration );
+			} elseif ( self::$apcu_available ) {
+				$result = apcu_store( self::$pool_name . '_' . $item_name, $value, $expiration );
 			} else {
-				return set_transient( self::$pool_name . '_' . self::normalized_item_name( $item_name ), $value, $expiration );
+				$result = set_transient( self::$pool_name . '_' . $item_name, $value, $expiration );
+			}
+			if ( array_key_exists( $item_name, self::$current ) ) {
+				self::$miss[] = [
+					'time' => microtime( true ) - self::$current[ $item_name ],
+					'size' => strlen( serialize( $result ) ),
+				];
 			}
 		} else {
-			return false;
+			$result = false;
 		}
+		return $result;
 	}
 
 	/**
@@ -240,20 +304,32 @@ class Cache {
 	/**
 	 * Delete the value of a fully named cache item.
 	 *
-	 * This function accepts generic car "*".
+	 * This function accepts generic car "*" for transients.
 	 *
 	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
 	 * @return integer Number of deleted items.
 	 * @since  1.0.0
 	 */
 	private static function delete_for_ful_name( $item_name ) {
-		global $wpdb;
-		while ( 0 !== substr_count( $item_name, '//' ) ) {
-			$item_name = str_replace( '//', '/', $item_name );
-		}
-		$item_name = str_replace( '/', '_', $item_name );
+		$item_name = self::normalized_item_name( $item_name );
 		$result    = 0;
-		if ( strlen( $item_name ) - 1 === strpos( $item_name, '/*' ) && '/' === $item_name[0] ) {
+		if ( wp_using_ext_object_cache() ) {
+			if ( strlen( $item_name ) - 1 === strpos( $item_name, '_*' ) ) {
+				return false;
+			} else {
+				return wp_cache_delete( $item_name, self::$pool_name );
+			}
+		}
+		if ( self::$apcu_available ) {
+			if ( strlen( $item_name ) - 1 === strpos( $item_name, '_*' ) ) {
+				return false;
+			} else {
+				return apcu_delete( $item_name );
+			}
+		}
+		global $wpdb;
+		$item_name = self::$pool_name . '_' . $item_name;
+		if ( strlen( $item_name ) - 1 === strpos( $item_name, '_*' ) ) {
 			// phpcs:ignore
 			$delete = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name = '_transient_timeout_" . str_replace( '_*', '', $item_name ) . "' OR option_name LIKE '_transient_timeout_" . str_replace( '_*', '_%', $item_name ) . "';" );
 		} else {
@@ -272,27 +348,30 @@ class Cache {
 	/**
 	 * Delete the value of a global cache item.
 	 *
-	 * This function accepts generic car "*".
+	 * This function accepts generic car "*" for transients.
 	 *
 	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
 	 * @return integer Number of deleted items.
 	 * @since  1.0.0
 	 */
 	public static function delete_global( $item_name ) {
-		return self::delete_for_ful_name( self::$pool_name . '/' . $item_name );
+		return self::delete_for_ful_name( self::full_item_name( $item_name ) );
 	}
 
 	/**
 	 * Delete the value of a standard cache item.
 	 *
-	 * This function accepts generic car "*".
+	 * This function accepts generic car "*" for transients.
 	 *
-	 * @param  string $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  string  $item_name Item name. Expected to not be SQL-escaped.
+	 * @param  boolean $blog_aware   Optional. Has the name must take care of blog.
+	 * @param  boolean $locale_aware Optional. Has the name must take care of locale.
+	 * @param  boolean $user_aware   Optional. Has the name must take care of user.
 	 * @return integer Number of deleted items.
 	 * @since  1.0.0
 	 */
-	public static function delete( $item_name ) {
-		return self::delete_for_ful_name( self::full_item_name( $item_name ) );
+	public static function delete( $item_name, $blog_aware = false, $locale_aware = false, $user_aware = false ) {
+		return self::delete_for_ful_name( self::full_item_name( $item_name, $blog_aware, $locale_aware, $user_aware ) );
 	}
 
 }
