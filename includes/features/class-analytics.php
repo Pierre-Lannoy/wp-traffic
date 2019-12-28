@@ -1236,13 +1236,43 @@ class Analytics {
 	public function get_title_selector() {
 		switch ( $this->type ) {
 			case 'domains':
-				$title = esc_html__( 'Domains Details', 'traffic' );
+				switch ( $this->extra ) {
+					case 'codes':
+						$title = esc_html__( 'HTTP Codes Details', 'traffic' );
+						break;
+					case 'schemes':
+						$title = esc_html__( 'Protocols Details', 'traffic' );
+						break;
+					case 'methods':
+						$title = esc_html__( 'Methods Details', 'traffic' );
+						break;
+					case 'countries':
+						$title = esc_html__( 'Countries Details', 'traffic' );
+						break;
+					default:
+						$title = esc_html__( 'Domains Details', 'traffic' );
+				}
 				break;
 			case 'domain':
 				$title = esc_html__( 'Domain Summary', 'traffic' );
 				break;
 			case 'authorities':
-				$title         = esc_html__( 'Domain Details', 'traffic' );
+				switch ( $this->extra ) {
+					case 'codes':
+						$title = esc_html__( 'HTTP Codes Details', 'traffic' );
+						break;
+					case 'schemes':
+						$title = esc_html__( 'Protocols Details', 'traffic' );
+						break;
+					case 'methods':
+						$title = esc_html__( 'Methods Details', 'traffic' );
+						break;
+					case 'countries':
+						$title = esc_html__( 'Countries Details', 'traffic' );
+						break;
+					default:
+						$title = esc_html__( 'Domain Details', 'traffic' );
+				}
 				$breadcrumbs[] = [
 					'title'    => esc_html__( 'Domain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->domain ),
@@ -1272,7 +1302,22 @@ class Analytics {
 				];
 				break;
 			case 'endpoints':
-				$title         = esc_html__( 'Subdomain Details', 'traffic' );
+				switch ( $this->extra ) {
+					case 'codes':
+						$title = esc_html__( 'HTTP Codes Details', 'traffic' );
+						break;
+					case 'schemes':
+						$title = esc_html__( 'Protocols Details', 'traffic' );
+						break;
+					case 'methods':
+						$title = esc_html__( 'Methods Details', 'traffic' );
+						break;
+					case 'countries':
+						$title = esc_html__( 'Countries Details', 'traffic' );
+						break;
+					default:
+						$title = esc_html__( 'Subdomain Details', 'traffic' );
+				}
 				$breadcrumbs[] = [
 					'title'    => esc_html__( 'Subdomain Summary', 'traffic' ),
 					'subtitle' => sprintf( esc_html__( 'Return to %s', 'traffic' ), $this->subdomain ),
@@ -1555,7 +1600,6 @@ class Analytics {
 				break;
 			default:
 				$title = esc_html__( 'All Endpoints', 'traffic' );
-
 		}
 		$result  = '<div class="traffic-box traffic-box-full-line">';
 		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . $title . '</span></div>';
