@@ -579,7 +579,6 @@ class Analytics {
 				break;
 			case 'sites':
 				$group  = 'site';
-				$follow = 'summary';
 				break;
 		}
 		$data         = Schema::get_grouped_list( $group, [ 'authority', 'endpoint' ], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
@@ -617,13 +616,22 @@ class Analytics {
 					if ( 0 === (int) $row['sum_hit'] ) {
 						break;
 					}
-					$url  = $this->get_url(
-						[],
-						[
-							'type' => $follow,
-							'site' => $row['site'],
-						]
-					);
+					if ( 'summary' === $this->type ) {
+						$url = $this->get_url(
+							[],
+							[
+								'site' => $row['site'],
+							]
+						);
+					} else {
+						$url = $this->get_url(
+							[],
+							[
+								'site'   => $row['site'],
+								'domain' => $row['id'],
+							]
+						);
+					}
 					$site = Blog::get_blog_url( $row['site'] );
 					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( $site ) . '" />&nbsp;&nbsp;<span class="traffic-table-text"><a href="' . esc_url( $url ) . '">' . $site . '</a></span>';
 					break;
@@ -1506,7 +1514,7 @@ class Analytics {
 	 */
 	public function get_sites_list() {
 		$result  = '<div class="traffic-box traffic-box-full-line">';
-		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'All Sites', 'traffic' ) . '</span></div>';
+		$result .= '<div class="traffic-module-title-bar"><span class="traffic-module-title">' . esc_html__( 'Sites Breakdown', 'traffic' ) . '</span></div>';
 		$result .= '<div class="traffic-module-content" id="traffic-sites">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
@@ -2036,9 +2044,10 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function get_url( $exclude = [], $replace = [] ) {
-		$params         = [];
-		$params['type'] = $this->type;
-		$params['site'] = $this->site;
+		$params           = [];
+		$params['type']   = $this->type;
+		$params['site']   = $this->site;
+		$params['domain'] = $this->domain;
 		if ( '' !== $this->id ) {
 			$params['id'] = $this->id;
 		}
