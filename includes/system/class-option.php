@@ -10,6 +10,7 @@
  */
 
 namespace Traffic\System;
+use Traffic\System\Environment;
 
 /**
  * Define the options functionality.
@@ -27,9 +28,36 @@ class Option {
 	 *
 	 * @since  1.0.0
 	 * @access private
-	 * @var    array    $defaults    The $defaults list.
+	 * @var    array    $defaults    The defaults list.
 	 */
 	private static $defaults = [];
+
+	/**
+	 * The list of network-wide options.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    array    $network    The network-wide list.
+	 */
+	private static $network = [];
+
+	/**
+	 * The list of site options.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    array    $site    The site list.
+	 */
+	private static $site = [];
+
+	/**
+	 * The list of private options.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    array    $private    The private options list.
+	 */
+	private static $private = [];
 
 	/**
 	 * Set the defaults options.
@@ -48,6 +76,30 @@ class Option {
 		self::$defaults['outbound_capture']  = true;
 		self::$defaults['inbound_capture']   = true;
 		self::$defaults['history']           = 90;
+		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'history' ];
+	}
+
+	/**
+	 * Get the options infos for Site Health "info" tab.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function debug_info() {
+		$result = [];
+		$si     = '[Site Option]';
+		$nt     = $si;
+		if ( Environment::is_wordpress_multisite() ) {
+			$nt = '[Network Option]';
+		}
+		foreach ( self::$network as $opt ) {
+			$val            = self::network_get( $opt );
+			$result[ $opt ] = [
+				'label'   => $nt . ' ' . $opt,
+				'value'   => is_bool( $val ) ? $val ? 1 : 0 : $val,
+				'private' => in_array( $opt, self::$private, true ),
+			];
+		}
+		return $result;
 	}
 
 	/**

@@ -8,11 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Full compatibility (for internal cache) with Redis and Memcached.
 - Using APCu rather than database transients if APCu is available.
 - [MultiSite] A new "Sites Breakdown" list in all reports is available to network admins.
+- New Site Health "status" sections for OPcache, object cache and i18n extension. 
+- New Site Health "info" sections for the plugin itself. 
 ### Changed
 - Reports have now a specific title for HTTP codes, protocols, methods and countries details.
 - [MultiSite] Switching from a single site to all sites now preserves the reference domain.
 ### Fixed
 - Some headers may be wrongly analyzed when they are arrays.
+- A wrong value may be used for the data retention period.
 
 ## [1.3.1] - 2019-12-19
 ### Changed
