@@ -99,6 +99,14 @@ class Option {
 				'private' => in_array( $opt, self::$private, true ),
 			];
 		}
+		foreach ( self::$site as $opt ) {
+			$val            = self::network_get( $opt );
+			$result[ $opt ] = [
+				'label'   => $si . ' ' . $opt,
+				'value'   => is_bool( $val ) ? $val ? 1 : 0 : $val,
+				'private' => in_array( $opt, self::$private, true ),
+			];
+		}
 		return $result;
 	}
 

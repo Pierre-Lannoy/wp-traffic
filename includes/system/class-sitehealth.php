@@ -116,14 +116,20 @@ class Sitehealth {
 	 * @since 1.0.0
 	 */
 	public function perfopsone_info( $debug_info ) {
-		$debug_info[ 'perfopsone_opcache' ] = [
-			'label' => 'OPcache',
-			'fields'      => Option::debug_info(),
-		];
-		$debug_info[ 'perfopsone_objectcache' ] = [
-			'label' => esc_html__( 'Object cache', 'traffic' ),
-			'fields'      => Option::debug_info(),
-		];
+		$key = 'perfopsone_objectcache';
+		if ( ! array_key_exists( $key, $debug_info ) ) {
+			$debug_info[ $key ] = [
+				'label'  => esc_html__( 'Object cache', 'traffic' ),
+				'fields' => Option::debug_info(),
+			];
+		}
+		$key = 'perfopsone_opcache';
+		if ( ! array_key_exists( $key, $debug_info ) ) {
+			$debug_info[ $key ] = [
+				'label'  => 'OPcache',
+				'fields' => Option::debug_info(),
+			];
+		}
 		return $debug_info;
 	}
 
