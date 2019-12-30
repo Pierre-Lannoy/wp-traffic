@@ -50,7 +50,7 @@ class Favicon {
 	 */
 	public static function get_raw( $name = 'wordpress.org', $force_download = false ) {
 		if ( filter_var( $name, FILTER_VALIDATE_IP ) ) {
-			if ( ! filter_var( $name, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE ) ) {
+			if ( ! filter_var( $name, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
 				return self::get_private();
 			}
 		}
@@ -59,8 +59,14 @@ class Favicon {
 		}
 		$dir  = WP_CONTENT_DIR . '/cache/site-favicons/';
 		$name = strtolower( $name );
-		if ( 0 === strpos ( $name, '192.0.100.' ) ) {
-			$name = 'automattic.com';
+		if ( 0 === strpos( $name, '192.0.' ) ) {   // Automattic has IPs from 192.0.64.0 to 192.0.127.254.
+			$c = substr( $name, 6 );
+			if ( false !== strpos( $c, '.' ) ) {
+				$c = (int) substr( $c, 0, strpos( $c, '.' ) );
+				if ( $c >= 64 && $c <= 127 ) {
+					$name = 'automattic.com';
+				}
+			}
 		}
 		$filename = $dir . sanitize_file_name( $name ) . '.png';
 		if ( array_key_exists( $name, self::$icons ) ) {
