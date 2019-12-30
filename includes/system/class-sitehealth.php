@@ -120,7 +120,7 @@ class Sitehealth {
 		if ( ! array_key_exists( $key, $debug_info ) ) {
 			$debug_info[ $key ] = [
 				'label'  => esc_html__( 'Object cache', 'traffic' ),
-				'fields' => Option::debug_info(),
+				'fields' => Cache::debug_info(),
 			];
 		}
 		$key = 'perfopsone_opcache';
@@ -197,7 +197,7 @@ class Sitehealth {
 					'label' => esc_html__( 'Performance', 'traffic' ),
 					'color' => 'blue',
 				],
-				'description' => sprintf( '<p>%s %s</p>', esc_html__( 'Your site uses APCu, but only some plugins know how to take advantage of it.', 'traffic' ), esc_html__( 'You should consider using a dedicated object caching mechanism, like Memcached or Redis, to improve your site\'s speed.', 'traffic' ) ),
+				'description' => sprintf( '<p>%s %s</p>', esc_html__( 'Your site uses APCu, but only a few plugins know how to take advantage of it.', 'traffic' ), esc_html__( 'You should consider using a dedicated object caching mechanism, like Memcached or Redis, to improve your site\'s speed.', 'traffic' ) ),
 				'actions'     => '',
 				'test'        => $key,
 			];

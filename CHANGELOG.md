@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Using APCu rather than database transients if APCu is available.
 - [MultiSite] A new "Sites Breakdown" list in all reports is available to network admins.
 - New Site Health "status" sections about OPcache and object cache. 
-- New Site Health "status" section about i18n extension for non `en_US` sites. 
+- New Site Health "status" section about i18n extension for non `en_US` sites.
+- New Site Health "info" sections about OPcache and object cache. 
 - New Site Health "info" section about the plugin itself. 
 ### Changed
 - Reports have now a specific title for HTTP codes, protocols, methods and countries details.
