@@ -126,8 +126,9 @@ class Sitehealth {
 		$key = 'perfopsone_opcache';
 		if ( ! array_key_exists( $key, $debug_info ) ) {
 			$debug_info[ $key ] = [
-				'label'  => 'OPcache',
-				'fields' => Option::debug_info(),
+				'label'       => 'OPcache',
+				'description' => esc_html__( 'OPcache settings and status', 'traffic' ),
+				'fields'      => OPcache::debug_info(),
 			];
 		}
 		return $debug_info;
