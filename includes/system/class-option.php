@@ -86,23 +86,23 @@ class Option {
 	 */
 	public static function debug_info() {
 		$result = [];
-		$si     = '[Site Option]';
+		$si     = '[Site Option] ';
 		$nt     = $si;
 		if ( Environment::is_wordpress_multisite() ) {
-			$nt = '[Network Option]';
+			$nt = '[Network Option] ';
 		}
 		foreach ( self::$network as $opt ) {
 			$val            = self::network_get( $opt );
 			$result[ $opt ] = [
-				'label'   => $nt . ' ' . $opt,
+				'label'   => $nt . $opt,
 				'value'   => is_bool( $val ) ? $val ? 1 : 0 : $val,
 				'private' => in_array( $opt, self::$private, true ),
 			];
 		}
 		foreach ( self::$site as $opt ) {
-			$val            = self::network_get( $opt );
+			$val            = self::site_get( $opt );
 			$result[ $opt ] = [
-				'label'   => $si . ' ' . $opt,
+				'label'   => $si . $opt,
 				'value'   => is_bool( $val ) ? $val ? 1 : 0 : $val,
 				'private' => in_array( $opt, self::$private, true ),
 			];
