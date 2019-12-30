@@ -72,7 +72,7 @@ class OPcache {
 			$raw = opcache_get_configuration();
 			if ( array_key_exists( 'directives', $raw ) ) {
 				foreach ( $raw['directives'] as $key => $directive ) {
-					$result[ $key ] = [
+					$result[ 'directive_' . $key ] = [
 						'label' => '[Directive] ' . str_replace( 'opcache.', '', $key ),
 						'value' => $directive,
 					];
@@ -85,13 +85,13 @@ class OPcache {
 				}
 				if ( is_array( $status ) ) {
 					foreach ( $status as $skey => $sstatus ) {
-						$result[ $skey ] = [
+						$result[ 'status_' . $skey ] = [
 							'label' => '[Status] ' . $skey,
 							'value' => $sstatus,
 						];
 					}
 				} else {
-					$result[ $key ] = [
+					$result[ 'status_' . $key ] = [
 						'label' => '[Status] ' . $key,
 						'value' => $status,
 					];
