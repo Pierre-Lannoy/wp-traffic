@@ -39,6 +39,7 @@ class Initializer {
 		\Traffic\System\Cache::init();
 		\Traffic\System\Sitehealth::init();
 		\Traffic\Plugin\Feature\Capture::init();
+		\Traffic\System\APCu::init();
 	}
 
 }
