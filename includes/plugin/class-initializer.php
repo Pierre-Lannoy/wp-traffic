@@ -35,7 +35,10 @@ class Initializer {
 	 * @since 1.0.0
 	 */
 	public function initialize() {
-
+		\Traffic\System\Logger::init();
+		\Traffic\System\Cache::init();
+		\Traffic\System\Sitehealth::init();
+		\Traffic\Plugin\Feature\Capture::init();
 	}
 
 }
