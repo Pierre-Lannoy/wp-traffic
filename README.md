@@ -39,3 +39,7 @@ Alternatively, if you have usage questions, you can open a discussion on the [Wo
 Before submitting an issue or a pull request, please read the [contribution guidelines](CONTRIBUTING.md).
 
 > ⚠️ The `master` branch is the current development state of the plugin. If you want a stable, production-ready version, please pick the last official [release](https://github.com/Pierre-Lannoy/wp-traffic/releases).
+
+## Smoke tests
+[![WP compatibility](https://plugintests.com/plugins/traffic/wp-badge.svg)](https://plugintests.com/plugins/traffic/latest)
+[![PHP compatibility](https://plugintests.com/plugins/traffic/php-badge.svg)](https://plugintests.com/plugins/traffic/latest)
