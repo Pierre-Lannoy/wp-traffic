@@ -278,11 +278,15 @@ class Capture {
 			if ( array_key_exists( 'cookies', $args ) ) {
 				$c = [];
 				foreach ( $args['cookies'] as $key => $value ) {
-					$c[] = $key . '=' . $value;
+					if ( is_scalar( $value ) ) {
+						$c[] = $key . '=' . $value;
+					} else {
+						// phpcs:ignore
+						$c[] = $key . '=' . serialize( $value );
+					}
 				}
 				$cookie = 'Cookie: ' . implode( '; ', $c ) . PHP_EOL;
 			}
-			$body = '';
 			if ( array_key_exists( 'body', $args ) ) {
 				// phpcs:ignore
 				$body = serialize( $args['body'] ) . PHP_EOL;
