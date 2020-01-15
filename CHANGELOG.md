@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased - will be 1.5.0]
 ### Added
 - Full compatibility with [APCu Manager](https://wordpress.org/plugins/apcu-manager/).
+### Changed
+- Country flags are now cached.
 ### Fixed
 - Some headers may be wrongly analyzed when they are arrays of arrays.
 

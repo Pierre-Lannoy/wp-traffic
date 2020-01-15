@@ -11,6 +11,8 @@
 
 namespace Flagiconcss;
 
+use Traffic\System\Cache;
+
 /**
  * Wraps the Flag-Icon-CSS functionality.
  *
@@ -41,7 +43,7 @@ class Flags {
 	/**
 	 * Get a raw (SVG) icon.
 	 *
-	 * @param   string $name        Optional. The name of the flag.
+	 * @param   string  $name        Optional. The name of the flag.
 	 * @param   boolean $squared    Optional. The flag must be squared.
 	 * @return  string  The raw value of the SVG flag.
 	 * @since   1.0.0
@@ -49,13 +51,30 @@ class Flags {
 	public static function get_raw( $name = 'fr', $squared = false ) {
 		$fname    = ( $squared ? '1x1/' : '4x3/' ) . strtolower( $name );
 		$filename = __DIR__ . '/flags/' . $fname . '.svg';
-		if ( array_key_exists( $fname, self::$flags ) ) {
-			return self::$flags[ $fname ];
+		if ( Cache::is_memory() ) {
+			// phpcs:ignore
+			$id = Cache::id( serialize( [ 'name' => $name, 'squared' => $squared ] ), 'flags/' );
+			$flag = Cache::get_global( $id );
+			if ( isset( $flag ) ) {
+				return $flag;
+			}
+		} else {
+			if ( array_key_exists( $fname, self::$flags ) ) {
+				return self::$flags[ $fname ];
+			}
 		}
 		if ( ! file_exists( $filename ) ) {
 			return ( 'fr' === $name ? '' : self::get_raw() );
 		}
-		self::$flags[ $fname ] = file_get_contents( $filename );
+		if ( Cache::is_memory() ) {
+			// phpcs:ignore
+			$id = Cache::id( serialize( [ 'name' => $name, 'squared' => $squared ] ), 'flags/' );
+			// phpcs:ignore
+			Cache::set_global( $id, file_get_contents( $filename ), 'infinite' );
+		} else {
+			// phpcs:ignore
+			self::$flags[ $fname ] = file_get_contents( $filename );
+		}
 		return ( self::get_raw( $name ) );
 	}
 
