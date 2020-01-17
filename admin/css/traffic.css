@@ -100,6 +100,7 @@
     box-shadow: var(--main-box-shadow);
     margin-top: -8px;
     padding: 8px;
+    width: 31%;
 }
 
 .traffic-33-left-module {
