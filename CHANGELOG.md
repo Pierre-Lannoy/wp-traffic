@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Country flags are now cached.
 ### Fixed
 - Some headers may be wrongly analyzed when they are arrays of arrays.
+- With some plugins, box tooltips may be misplaced (css collision).
 - In analytics reports, the layout for lines with 3 boxes may be ugly at some resolutions.
 
 ## [1.4.0] - 2020-01-01
