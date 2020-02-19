@@ -15,9 +15,6 @@ define( 'TRAFFIC_SLUG', 'traffic' );
 define( 'TRAFFIC_VERSION', '1.5.0-dev0' );
 define( 'TRAFFIC_CODENAME', '"-"' );
 
-define( 'TRAFFIC_MINIMUM_WP_VERSION', '5.2' );
-define( 'TRAFFIC_MINIMUM_PHP_VERSION', '7.2' );
-
 define( 'TRAFFIC_CDN_AVAILABLE', true );
 
 if ( ! defined( 'TRAFFIC_INBOUND_CHRONO' ) ) {
