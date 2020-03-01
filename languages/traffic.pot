@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Traffic\n"
-"POT-Creation-Date: 2019-12-31 19:05+0100\n"
+"POT-Creation-Date: 2020-03-01 17:21+0100\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: traffic.php\n"
@@ -22,94 +22,109 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #. translators: as in the sentence "Traffic Settings" or "WordPress Settings"
-#: admin/class-traffic-admin.php:91
+#: admin/class-traffic-admin.php:100
 #: admin/partials/traffic-admin-settings-main.php:28
+#: perfopsone/class-adminmenus.php:70
 #, php-format
 msgid "%s Settings"
 msgstr ""
 
-#. translators: as in the sentence "Traffic Viewer"
-#: admin/class-traffic-admin.php:97
-#, php-format
-msgid "%s Viewer"
+#. translators: as in the sentence "DecaLog Viewer"
+#: admin/class-traffic-admin.php:114 admin/class-traffic-admin.php:120
+#: admin/class-traffic-admin.php:121
+msgid "API Traffic"
 msgstr ""
 
-#: admin/class-traffic-admin.php:116 admin/class-traffic-admin.php:133
+#. translators: as in the sentence "Find out inbound and outbound API calls made to/from your network." or "Find out inbound and outbound API calls made to/from your website."
+#: admin/class-traffic-admin.php:116
+#, php-format
+msgid "Find out inbound and outbound API calls made to/from your %s."
+msgstr ""
+
+#: admin/class-traffic-admin.php:116
+msgid "network"
+msgstr ""
+
+#: admin/class-traffic-admin.php:116
+msgid "website"
+msgstr ""
+
+#: admin/class-traffic-admin.php:153 admin/class-traffic-admin.php:170
 msgid "API usage"
 msgstr ""
 
-#: admin/class-traffic-admin.php:144
+#: admin/class-traffic-admin.php:181
 msgid "Inbound APIs"
 msgstr ""
 
-#: admin/class-traffic-admin.php:145
+#: admin/class-traffic-admin.php:182
 msgid "Outbound APIs"
 msgstr ""
 
-#: admin/class-traffic-admin.php:146
+#: admin/class-traffic-admin.php:183
 msgid "Plugin features"
 msgstr ""
 
-#: admin/class-traffic-admin.php:147
+#: admin/class-traffic-admin.php:184
 msgid "Plugin options"
 msgstr ""
 
-#: admin/class-traffic-admin.php:163
+#: admin/class-traffic-admin.php:200
 msgid "Settings"
 msgstr ""
 
-#: admin/class-traffic-admin.php:164
+#: admin/class-traffic-admin.php:201
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-traffic-admin.php:178
+#: admin/class-traffic-admin.php:215
 msgid "Support"
 msgstr ""
 
-#: admin/class-traffic-admin.php:179
+#: admin/class-traffic-admin.php:216
 msgid "GitHub repository"
 msgstr ""
 
-#: admin/class-traffic-admin.php:242
+#: admin/class-traffic-admin.php:279
 msgid "Plugin settings have been saved."
 msgstr ""
 
-#: admin/class-traffic-admin.php:247
+#: admin/class-traffic-admin.php:284
 msgid "Plugin settings have not been saved. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:264
+#: admin/class-traffic-admin.php:301
 msgid "Plugin settings have been reset to defaults."
 msgstr ""
 
-#: admin/class-traffic-admin.php:269
+#: admin/class-traffic-admin.php:306
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr ""
 
-#: admin/class-traffic-admin.php:286
+#: admin/class-traffic-admin.php:323
 msgid "Favicons"
 msgstr ""
 
-#: admin/class-traffic-admin.php:291
+#: admin/class-traffic-admin.php:328
 msgid "Download and display"
 msgstr ""
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:331
 msgid ""
 "If checked, Traffic will download favicons of websites to display them in "
 "reports."
 msgstr ""
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:331
 msgid "Note: This feature uses the (free) Google Favicon Service."
 msgstr ""
 
-#: admin/class-traffic-admin.php:303 admin/class-traffic-admin.php:322
+#: admin/class-traffic-admin.php:340 admin/class-traffic-admin.php:359
 #, php-format
 msgid "Your site is currently using %s."
 msgstr ""
 
-#: admin/class-traffic-admin.php:306
+#: admin/class-traffic-admin.php:343
 #, php-format
 msgid ""
 "Your site does not use any IP geographic information plugin. To take "
@@ -118,11 +133,11 @@ msgid ""
 "mandatory."
 msgstr ""
 
-#: admin/class-traffic-admin.php:310
+#: admin/class-traffic-admin.php:347
 msgid "IP information"
 msgstr ""
 
-#: admin/class-traffic-admin.php:325
+#: admin/class-traffic-admin.php:362
 #, php-format
 msgid ""
 "Your site does not use any logging plugin. To log all events triggered in "
@@ -130,88 +145,88 @@ msgid ""
 "not mandatory."
 msgstr ""
 
-#: admin/class-traffic-admin.php:329
+#: admin/class-traffic-admin.php:366
 msgid "Logging"
 msgstr ""
 
-#: admin/class-traffic-admin.php:340
+#: admin/class-traffic-admin.php:377
 msgid "Resources"
 msgstr ""
 
-#: admin/class-traffic-admin.php:345
+#: admin/class-traffic-admin.php:382
 msgid "Use public CDN"
 msgstr ""
 
-#: admin/class-traffic-admin.php:348
+#: admin/class-traffic-admin.php:385
 msgid ""
 "If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and "
 "stylesheets."
 msgstr ""
 
-#: admin/class-traffic-admin.php:356
+#: admin/class-traffic-admin.php:393
 msgid "Admin notices"
 msgstr ""
 
-#: admin/class-traffic-admin.php:361
+#: admin/class-traffic-admin.php:398
 msgid "Display"
 msgstr ""
 
-#: admin/class-traffic-admin.php:364
+#: admin/class-traffic-admin.php:401
 msgid ""
 "Allows Traffic to display admin notices throughout the admin dashboard."
 msgstr ""
 
-#: admin/class-traffic-admin.php:364
+#: admin/class-traffic-admin.php:401
 msgid "Note: Traffic respects DISABLE_NAG_NOTICES flag."
 msgstr ""
 
-#: admin/class-traffic-admin.php:381
+#: admin/class-traffic-admin.php:418
 msgid "Historical data"
 msgstr ""
 
-#: admin/class-traffic-admin.php:389
+#: admin/class-traffic-admin.php:426
 msgid "Maximum age of data to keep for statistics."
 msgstr ""
 
-#: admin/class-traffic-admin.php:407
+#: admin/class-traffic-admin.php:444
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-traffic-admin.php:411
+#: admin/class-traffic-admin.php:448
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-traffic-admin.php:425 admin/class-traffic-admin.php:468
+#: admin/class-traffic-admin.php:462 admin/class-traffic-admin.php:505
 msgid "Analytics"
 msgstr ""
 
-#: admin/class-traffic-admin.php:430 admin/class-traffic-admin.php:473
+#: admin/class-traffic-admin.php:467 admin/class-traffic-admin.php:510
 msgid "Activated"
 msgstr ""
 
-#: admin/class-traffic-admin.php:433
+#: admin/class-traffic-admin.php:470
 msgid ""
 "If checked, Traffic will analyze inbound API calls (the calls made by "
 "external sites or apps to your site)."
 msgstr ""
 
-#: admin/class-traffic-admin.php:441 admin/class-traffic-admin.php:484
+#: admin/class-traffic-admin.php:478 admin/class-traffic-admin.php:521
 msgid "Path cut"
 msgstr ""
 
-#: admin/class-traffic-admin.php:451 admin/class-traffic-admin.php:494
+#: admin/class-traffic-admin.php:488 admin/class-traffic-admin.php:531
 msgid ""
 "Allows to keep only the first most significative elements of the endpoint "
 "path."
 msgstr ""
 
-#: admin/class-traffic-admin.php:476
+#: admin/class-traffic-admin.php:513
 msgid ""
 "If checked, Traffic will analyze outbound API calls (the calls made by "
 "your site to external services)."
@@ -826,19 +841,19 @@ msgid_plural "hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/system/class-environment.php:203
+#: includes/system/class-environment.php:192
 msgid "log"
 msgstr ""
 
-#: includes/system/class-environment.php:208
+#: includes/system/class-environment.php:197
 msgid "display"
 msgstr ""
 
-#: includes/system/class-environment.php:214
+#: includes/system/class-environment.php:203
 msgid "Debug enabled"
 msgstr ""
 
-#: includes/system/class-environment.php:214
+#: includes/system/class-environment.php:203
 msgid "Debug disabled"
 msgstr ""
 
@@ -948,6 +963,104 @@ msgstr ""
 msgid ""
 "You should consider using PHP Intl extension. It would improve "
 "localization features on your site."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:54 perfopsone/class-adminmenus.php:55
+msgid "Dashboard"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:54
+#, php-format
+msgid "%s Analytics"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:58 perfopsone/class-adminmenus.php:59
+msgid "Available Tools"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:58
+#, php-format
+msgid "%s Tools"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:62 perfopsone/class-adminmenus.php:63
+msgid "Available Reports"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:62
+#, php-format
+msgid "%s Insights"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:66 perfopsone/class-adminmenus.php:67
+msgid "Available Catalogues"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:66
+#, php-format
+msgid "%s Records"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:70 perfopsone/class-adminmenus.php:71
+msgid "Control Center"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:108
+msgid ""
+"This analytics feature is currently disabled. Click here to activate it."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:203
+#, php-format
+msgid "Need to be updated to %s."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:209 perfopsone/class-adminmenus.php:216
+msgid "OK"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:211 perfopsone/class-adminmenus.php:218
+msgid "need update"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:228
+#, php-format
+msgid "%s+ installs."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:233
+#, php-format
+msgid "%s downloads."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:238
+#, php-format
+msgid "%s reviews."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:241
+msgid "No review yet."
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:366
+msgid "settings"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:367
+msgid "about"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:368
+msgid "support"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:369
+msgid "contribution"
+msgstr ""
+
+#: perfopsone/class-adminmenus.php:378
+#, php-format
+msgid "Requires at least PHP %1$s%2$s and WordPress %3$s%4$s."
 msgstr ""
 
 #. Plugin Name of the plugin/theme
