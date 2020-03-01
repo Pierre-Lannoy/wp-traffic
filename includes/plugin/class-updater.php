@@ -48,7 +48,7 @@ class Updater {
 				$message  = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'traffic' ), TRAFFIC_PRODUCT_NAME, $old, TRAFFIC_VERSION );
 				Logger::notice( $message );
 				// phpcs:ignore
-				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), admin_url( 'options-general.php?page=traffic-settings&tab=about' ) );
+				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'traffic' ), admin_url( 'admin.php?page=traffic-settings&tab=about' ) );
 			}
 			Nag::add( 'update', 'info', $message );
 			Option::network_set( 'version', TRAFFIC_VERSION );

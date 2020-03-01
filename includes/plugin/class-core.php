@@ -84,6 +84,7 @@ class Core {
 		$libraries = new Libraries();
 		$this->loader->add_filter( 'perfopsone_plugin_info', self::class, 'perfopsone_plugin_info' );
 		$this->loader->add_action( 'init', $bootstrap, 'initialize' );
+		$this->loader->add_action( 'init', $bootstrap, 'late_initialize', PHP_INT_MAX );
 		$this->loader->add_action( 'wp_head', $assets, 'prefetch' );
 		add_shortcode( 'traffic-changelog', [ $updater, 'sc_get_changelog' ] );
 		add_shortcode( 'traffic-libraries', [ $libraries, 'sc_get_list' ] );

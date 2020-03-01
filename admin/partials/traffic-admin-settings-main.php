@@ -16,7 +16,7 @@ $url        = esc_url(
 		[
 			'page' => 'traffic-viewer',
 		],
-		admin_url( 'tools.php' )
+		admin_url( 'admin.php' )
 	)
 );
 $note       = sprintf(__('Note: analytics reports are available via the <a href="%s">tools menu</a>.', 'traffic' ), $url );
@@ -37,7 +37,7 @@ $note       = sprintf(__('Note: analytics reports are available via the <a href=
 					'page' => 'traffic-settings',
 					'tab'  => 'misc',
 				),
-				admin_url( 'options-general.php' )
+				admin_url( 'admin.php' )
 			)
 		);
 		?>
@@ -50,7 +50,7 @@ $note       = sprintf(__('Note: analytics reports are available via the <a href=
 					'page' => 'traffic-settings',
 					'tab'  => 'about',
 				),
-				admin_url( 'options-general.php' )
+				admin_url( 'admin.php' )
 			)
 		);
 		?>

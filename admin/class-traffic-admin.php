@@ -20,6 +20,8 @@ use Traffic\System\Blog;
 use Traffic\System\Date;
 use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
+use Traffic\System\Environment;
+use PerfOpsOne\AdminMenus;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -81,26 +83,61 @@ class Traffic_Admin {
 	}
 
 	/**
+	 * Init PerfOps admin menus.
+	 *
+	 * @param array $perfops    The already declared menus.
+	 * @return array    The completed menus array.
+	 * @since 1.0.0
+	 */
+	public function init_perfops_admin_menus( $perfops ) {
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
+			$perfops['settings'][] = [
+				'name'          => TRAFFIC_PRODUCT_NAME,
+				'description'   => '',
+				'icon_callback' => [ \Traffic\Plugin\Core::class, 'get_base64_logo' ],
+				'slug'          => 'traffic-settings',
+				/* translators: as in the sentence "Traffic Settings" or "WordPress Settings" */
+				'page_title'    => sprintf( esc_html__( '%s Settings', 'traffic' ), TRAFFIC_PRODUCT_NAME ),
+				'menu_title'    => TRAFFIC_PRODUCT_NAME,
+				'capability'    => 'manage_options',
+				'callback'      => [ $this, 'get_settings_page' ],
+				'position'      => 50,
+				'plugin'        => TRAFFIC_SLUG,
+				'version'       => TRAFFIC_VERSION,
+				'activated'     => true,
+				'remedy'        => '',
+				'statistics'    => [ '\Traffic\System\Statistics', 'sc_get_raw' ],
+			];
+		}
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
+			$perfops['analytics'][] = [
+				'name'          => esc_html__( 'API Traffic', 'traffic' ),
+				/* translators: as in the sentence "Find out inbound and outbound API calls made to/from your network." or "Find out inbound and outbound API calls made to/from your website." */
+				'description'   => sprintf( esc_html__( 'Find out inbound and outbound API calls made to/from your %s.', 'traffic' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'traffic' ) : esc_html__( 'website', 'traffic' ) ),
+				'icon_callback' => [ \Traffic\Plugin\Core::class, 'get_base64_logo' ],
+				'slug'          => 'traffic-viewer',
+				/* translators: as in the sentence "DecaLog Viewer" */
+				'page_title'    => sprintf( esc_html__( 'API Traffic', 'traffic' ), TRAFFIC_PRODUCT_NAME ),
+				'menu_title'    => esc_html__( 'API Traffic', 'traffic' ),
+				'capability'    => 'manage_options',
+				'callback'      => [ $this, 'get_viewer_page' ],
+				'position'      => 50,
+				'plugin'        => TRAFFIC_SLUG,
+				'activated'     => true,
+				'remedy'        => '',
+			];
+		}
+		return $perfops;
+	}
+
+	/**
 	 * Set the items in the settings menu.
 	 *
 	 * @since 1.0.0
 	 */
 	public function init_admin_menus() {
-		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
-			/* translators: as in the sentence "Traffic Settings" or "WordPress Settings" */
-			$settings = add_submenu_page( 'options-general.php', sprintf( esc_html__( '%s Settings', 'traffic' ), TRAFFIC_PRODUCT_NAME ), TRAFFIC_PRODUCT_NAME, 'manage_options', 'traffic-settings', [ $this, 'get_settings_page' ] );
-		}
-		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
-			$name = add_submenu_page(
-				'tools.php',
-				/* translators: as in the sentence "Traffic Viewer" */
-				sprintf( esc_html__( '%s Viewer', 'traffic' ), TRAFFIC_PRODUCT_NAME ),
-				TRAFFIC_PRODUCT_NAME,
-				'manage_options',
-				'traffic-viewer',
-				[ $this, 'get_tools_page' ]
-			);
-		}
+		add_filter( 'init_perfops_admin_menus', [ $this, 'init_perfops_admin_menus' ] );
+		AdminMenus::initialize();
 	}
 
 	/**
@@ -113,7 +150,7 @@ class Traffic_Admin {
 	 */
 	public function blog_action( $actions, $user_blog ) {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
-			$actions .= " | <a href='" . esc_url( admin_url( 'tools.php?page=traffic-viewer&site=' . $user_blog->userblog_id ) ) . "'>" . __( 'API usage', 'traffic' ) . '</a>';
+			$actions .= " | <a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $user_blog->userblog_id ) ) . "'>" . __( 'API usage', 'traffic' ) . '</a>';
 		}
 		return $actions;
 	}
@@ -130,7 +167,7 @@ class Traffic_Admin {
 	 */
 	public function site_action( $actions, $blog_id, $blogname ) {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
-			$actions['api_usage'] = "<a href='" . esc_url( admin_url( 'tools.php?page=traffic-viewer&site=' . $blog_id ) ) . "' rel='bookmark'>" . __( 'API usage', 'traffic' ) . '</a>';
+			$actions['api_usage'] = "<a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $blog_id ) ) . "' rel='bookmark'>" . __( 'API usage', 'traffic' ) . '</a>';
 		}
 		return $actions;
 	}
@@ -160,8 +197,8 @@ class Traffic_Admin {
 	 * @since 1.0.0
 	 */
 	public function add_actions_links( $actions, $plugin_file, $plugin_data, $context ) {
-		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=traffic-settings' ) ), esc_html__( 'Settings', 'traffic' ) );
-		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'tools.php?page=traffic-viewer' ) ), esc_html__( 'Statistics', 'traffic' ) );
+		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'admin.php?page=traffic-settings' ) ), esc_html__( 'Settings', 'traffic' ) );
+		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'admin.php?page=traffic-viewer' ) ), esc_html__( 'Statistics', 'traffic' ) );
 		return $actions;
 	}
 
@@ -186,7 +223,7 @@ class Traffic_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function get_tools_page() {
+	public function get_viewer_page() {
 		$analytics = AnalyticsFactory::get_analytics();
 		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-analytics.php';
 	}

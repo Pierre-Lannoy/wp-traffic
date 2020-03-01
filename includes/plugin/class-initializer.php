@@ -42,4 +42,13 @@ class Initializer {
 		\Traffic\System\APCu::init();
 	}
 
+	/**
+	 * Initialize the plugin.
+	 *
+	 * @since 1.0.0
+	 */
+	public function late_initialize() {
+		require_once MAILARCHIVER_PLUGIN_DIR . 'perfopsone/init.php';
+	}
+
 }
