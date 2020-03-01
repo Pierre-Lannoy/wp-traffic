@@ -2,17 +2,132 @@
 # This file is distributed under the same license as the Plugins - Traffic - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-01-03 09:07+0100\n"
+"PO-Revision-Date: 2020-03-01 21:01+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "Language: fr\n"
 "Project-Id-Version: Plugins - Traffic - Stable (latest release)\n"
 "POT-Creation-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+
+#: perfopsone/class-adminmenus.php:378
+msgid "Requires at least PHP %1$s%2$s and WordPress %3$s%4$s."
+msgstr "Nécessite au moins PHP %1$s%2$s et WordPress %3$s%4$s."
+
+#: perfopsone/class-adminmenus.php:369
+msgid "contribution"
+msgstr "contribution"
+
+#: perfopsone/class-adminmenus.php:368
+msgid "support"
+msgstr "assistance"
+
+#: perfopsone/class-adminmenus.php:367
+msgid "about"
+msgstr "à propos"
+
+#: perfopsone/class-adminmenus.php:366
+msgid "settings"
+msgstr "réglages"
+
+#: perfopsone/class-adminmenus.php:241
+msgid "No review yet."
+msgstr "Pas encore d’avis."
+
+#: perfopsone/class-adminmenus.php:238
+msgid "%s reviews."
+msgstr "%s avis."
+
+#: perfopsone/class-adminmenus.php:233
+msgid "%s downloads."
+msgstr "%s téléchargements."
+
+#: perfopsone/class-adminmenus.php:228
+msgid "%s+ installs."
+msgstr "%s+ installations."
+
+#: perfopsone/class-adminmenus.php:211 perfopsone/class-adminmenus.php:218
+msgid "need update"
+msgstr "nécessite une mise à jour"
+
+#: perfopsone/class-adminmenus.php:209 perfopsone/class-adminmenus.php:216
+msgid "OK"
+msgstr "OK"
+
+#: perfopsone/class-adminmenus.php:203
+msgid "Need to be updated to %s."
+msgstr "Nécessite d’être mis à jour vers %s."
+
+#: perfopsone/class-adminmenus.php:108
+msgid "This analytics feature is currently disabled. Click here to activate it."
+msgstr "Cette fonctionnalité d’analyse est actuellement désactivée. Cliquez ici pour l’activer."
+
+#: perfopsone/class-adminmenus.php:70 perfopsone/class-adminmenus.php:71
+msgid "Control Center"
+msgstr "Centre de contrôle"
+
+#: perfopsone/class-adminmenus.php:66
+msgid "%s Records"
+msgstr "Enregistrements %s"
+
+#: perfopsone/class-adminmenus.php:66 perfopsone/class-adminmenus.php:67
+msgid "Available Catalogues"
+msgstr "Catalogues disponibles"
+
+#: perfopsone/class-adminmenus.php:62
+msgid "%s Insights"
+msgstr "Idées %s"
+
+#: perfopsone/class-adminmenus.php:62 perfopsone/class-adminmenus.php:63
+msgid "Available Reports"
+msgstr "Rapports disponibles"
+
+#: perfopsone/class-adminmenus.php:58
+msgid "%s Tools"
+msgstr "Outils %s"
+
+#: perfopsone/class-adminmenus.php:58 perfopsone/class-adminmenus.php:59
+msgid "Available Tools"
+msgstr "Outils disponibles"
+
+#: perfopsone/class-adminmenus.php:54
+msgid "%s Analytics"
+msgstr "Statistiques %s"
+
+#: perfopsone/class-adminmenus.php:54 perfopsone/class-adminmenus.php:55
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. translators: as in the sentence "Find out inbound and outbound API calls
+#. made to/from your network." or "Find out inbound and outbound API calls made
+#. to/from your website."
+#: admin/class-traffic-admin.php:116
+msgid "website"
+msgstr "site web"
+
+#. translators: as in the sentence "Find out inbound and outbound API calls
+#. made to/from your network." or "Find out inbound and outbound API calls made
+#. to/from your website."
+#: admin/class-traffic-admin.php:116
+msgid "network"
+msgstr "réseau"
+
+#. translators: as in the sentence "Find out inbound and outbound API calls
+#. made to/from your network." or "Find out inbound and outbound API calls made
+#. to/from your website."
+#: admin/class-traffic-admin.php:116
+msgid "Find out inbound and outbound API calls made to/from your %s."
+msgstr "Apprenez en plus sur les appels API entrants et sortants effectués vers/à partir de votre %s."
+
+#. translators: as in the sentence "DecaLog Viewer"
+#: admin/class-traffic-admin.php:114 admin/class-traffic-admin.php:120
+#: admin/class-traffic-admin.php:121
+msgid "API Traffic"
+msgstr "Trafic API"
 
 #: includes/system/class-sitehealth.php:320
 msgid "You should consider using PHP Intl extension. It would improve localization features on your site."
@@ -144,27 +259,27 @@ msgstr "Détails des codes HTTP"
 msgid "Uptime variation."
 msgstr "Variation de disponibilité."
 
-#: admin/class-traffic-admin.php:411
+#: admin/class-traffic-admin.php:448
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d an"
 msgstr[1] "%d ans"
 
-#: admin/class-traffic-admin.php:407
+#: admin/class-traffic-admin.php:444
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] "%d mois"
 msgstr[1] "%d mois"
 
-#: admin/class-traffic-admin.php:389
+#: admin/class-traffic-admin.php:426
 msgid "Maximum age of data to keep for statistics."
 msgstr "Âge maximum des données à conserver pour les statistiques."
 
-#: admin/class-traffic-admin.php:381
+#: admin/class-traffic-admin.php:418
 msgid "Historical data"
 msgstr "Données d’historiques"
 
-#: admin/class-traffic-admin.php:146
+#: admin/class-traffic-admin.php:183
 msgid "Plugin features"
 msgstr "Fonctionnalités de l’extension"
 
@@ -231,27 +346,27 @@ msgstr "Site ID %s"
 msgid "All Sites"
 msgstr "Tous les sites"
 
-#: admin/class-traffic-admin.php:348
+#: admin/class-traffic-admin.php:385
 msgid "If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and stylesheets."
 msgstr "Si coché, Traffic utilisera un CDN public (jsDelivr) pour la distribution des scripts et des feuilles de style."
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:331
 msgid "Note: This feature uses the (free) Google Favicon Service."
 msgstr "Remarque : cette fonctionnalité utilise le service Google Favicon (gratuit)."
 
-#: admin/class-traffic-admin.php:294
+#: admin/class-traffic-admin.php:331
 msgid "If checked, Traffic will download favicons of websites to display them in reports."
 msgstr "Si coché, Traffic téléchargera les favicons des sites Web pour les afficher dans les rapports."
 
-#: admin/class-traffic-admin.php:291
+#: admin/class-traffic-admin.php:328
 msgid "Download and display"
 msgstr "Téléchargement et affichage"
 
-#: admin/class-traffic-admin.php:286
+#: admin/class-traffic-admin.php:323
 msgid "Favicons"
 msgstr "Favicons"
 
-#: admin/class-traffic-admin.php:116 admin/class-traffic-admin.php:133
+#: admin/class-traffic-admin.php:153 admin/class-traffic-admin.php:170
 msgid "API usage"
 msgstr "Utilisation de l’API"
 
@@ -259,122 +374,117 @@ msgstr "Utilisation de l’API"
 msgid "See <a href=\"%s\">what's new</a>."
 msgstr "Voir <a href=\"%s\">les nouveautés</a>."
 
-#: admin/class-traffic-admin.php:345
+#: admin/class-traffic-admin.php:382
 msgid "Use public CDN"
 msgstr "Utiliser un CDN public"
 
-#: admin/class-traffic-admin.php:340
+#: admin/class-traffic-admin.php:377
 msgid "Resources"
 msgstr "Ressources"
 
-#: admin/class-traffic-admin.php:329
+#: admin/class-traffic-admin.php:366
 msgid "Logging"
 msgstr "Journalisation"
 
-#: admin/class-traffic-admin.php:325
+#: admin/class-traffic-admin.php:362
 msgid "Your site does not use any logging plugin. To log all events triggered in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory."
 msgstr "Votre site n’utilise aucune extension de journalisation. Pour enregistrer tous les évènements déclenchés par Traffic, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
 
-#: admin/class-traffic-admin.php:303 admin/class-traffic-admin.php:322
+#: admin/class-traffic-admin.php:340 admin/class-traffic-admin.php:359
 msgid "Your site is currently using %s."
 msgstr "Votre site utilise actuellement %s."
 
-#: admin/class-traffic-admin.php:476
+#: admin/class-traffic-admin.php:513
 msgid "If checked, Traffic will analyze outbound API calls (the calls made by your site to external services)."
 msgstr "Si coché, Traffic analysera les appels API sortants (les appels effectués par votre site vers des services externes)."
 
-#: admin/class-traffic-admin.php:451 admin/class-traffic-admin.php:494
+#: admin/class-traffic-admin.php:488 admin/class-traffic-admin.php:531
 msgid "Allows to keep only the first most significative elements of the endpoint path."
 msgstr "Permet de ne conserver que les premiers éléments les plus significatifs du chemin de point de terminaison."
 
-#: admin/class-traffic-admin.php:441 admin/class-traffic-admin.php:484
+#: admin/class-traffic-admin.php:478 admin/class-traffic-admin.php:521
 msgid "Path cut"
 msgstr "Coupure du chemin"
 
-#: admin/class-traffic-admin.php:433
+#: admin/class-traffic-admin.php:470
 msgid "If checked, Traffic will analyze inbound API calls (the calls made by external sites or apps to your site)."
 msgstr "Si coché, Traffic analysera les appels API entrants (les appels effectués par des sites ou des applications externes vers votre site)."
 
-#: admin/class-traffic-admin.php:430 admin/class-traffic-admin.php:473
+#: admin/class-traffic-admin.php:467 admin/class-traffic-admin.php:510
 msgid "Activated"
 msgstr "Activé"
 
-#: admin/class-traffic-admin.php:425 admin/class-traffic-admin.php:468
+#: admin/class-traffic-admin.php:462 admin/class-traffic-admin.php:505
 msgid "Analytics"
 msgstr "Statistiques"
 
-#: admin/class-traffic-admin.php:364
+#: admin/class-traffic-admin.php:401
 msgid "Note: Traffic respects DISABLE_NAG_NOTICES flag."
 msgstr "Note : Traffic respecte l’indicateur DISABLE_NAG_NOTICES."
 
-#: admin/class-traffic-admin.php:364
+#: admin/class-traffic-admin.php:401
 msgid "Allows Traffic to display admin notices throughout the admin dashboard."
 msgstr "Autoriser Traffic à afficher les avis d’administration dans le Tableau de bord."
 
-#: admin/class-traffic-admin.php:361
+#: admin/class-traffic-admin.php:398
 msgid "Display"
 msgstr "Affichage"
 
-#: admin/class-traffic-admin.php:356
+#: admin/class-traffic-admin.php:393
 msgid "Admin notices"
 msgstr "Avis d’administration"
 
-#: admin/class-traffic-admin.php:310
+#: admin/class-traffic-admin.php:347
 msgid "IP information"
 msgstr "Géolocalisation IP"
 
-#: admin/class-traffic-admin.php:306
+#: admin/class-traffic-admin.php:343
 msgid "Your site does not use any IP geographic information plugin. To take advantage of the geographical distribution of calls in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory."
 msgstr "Votre site n’utilise aucune extension de géolocalisation d’IP. Pour profiter de la répartition géographique des appels dans Traffic, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
 
-#: admin/class-traffic-admin.php:269
+#: admin/class-traffic-admin.php:306
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr "Les réglages n’ont pas été réinitialisés à leurs valeurs par défaut. Veuillez réessayer."
 
-#: admin/class-traffic-admin.php:264
+#: admin/class-traffic-admin.php:301
 msgid "Plugin settings have been reset to defaults."
 msgstr "Le réglages ont été réinitialisées aux valeurs par défaut."
 
-#: admin/class-traffic-admin.php:247
+#: admin/class-traffic-admin.php:284
 msgid "Plugin settings have not been saved. Please try again."
 msgstr "Les réglages n’ont pas été mis à jour. Veuillez réessayer."
 
-#: admin/class-traffic-admin.php:242
+#: admin/class-traffic-admin.php:279
 msgid "Plugin settings have been saved."
 msgstr "Les réglages ont été mis à jour."
 
-#: admin/class-traffic-admin.php:179
+#: admin/class-traffic-admin.php:216
 msgid "GitHub repository"
-msgstr "dépôt GitHub"
+msgstr "Dépôt GitHub"
 
-#: admin/class-traffic-admin.php:178
+#: admin/class-traffic-admin.php:215
 msgid "Support"
 msgstr "Assistance"
 
-#: admin/class-traffic-admin.php:164
+#: admin/class-traffic-admin.php:201
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: admin/class-traffic-admin.php:163
+#: admin/class-traffic-admin.php:200
 msgid "Settings"
 msgstr "Réglages"
 
-#: admin/class-traffic-admin.php:147
+#: admin/class-traffic-admin.php:184
 msgid "Plugin options"
 msgstr "Options de l’extension"
 
-#: admin/class-traffic-admin.php:145
+#: admin/class-traffic-admin.php:182
 msgid "Outbound APIs"
 msgstr "API sortantes"
 
-#: admin/class-traffic-admin.php:144
+#: admin/class-traffic-admin.php:181
 msgid "Inbound APIs"
 msgstr "API entrants"
-
-#. translators: as in the sentence "Traffic Viewer"
-#: admin/class-traffic-admin.php:97
-msgid "%s Viewer"
-msgstr "Visualiseur %s"
 
 #: admin/partials/traffic-admin-settings-about.php:38
 msgid "Changelog"
@@ -413,8 +523,9 @@ msgid "Options"
 msgstr "Options"
 
 #. translators: as in the sentence "Traffic Settings" or "WordPress Settings"
-#: admin/class-traffic-admin.php:91
+#: admin/class-traffic-admin.php:100
 #: admin/partials/traffic-admin-settings-main.php:28
+#: perfopsone/class-adminmenus.php:70
 msgid "%s Settings"
 msgstr "Réglages %s"
 
@@ -472,19 +583,19 @@ msgstr "%1$s a été correctement mis à jour de la version %2$s à la version %
 msgid "%1$s has been correctly installed."
 msgstr "%1$s a été correctement installé."
 
-#: includes/system/class-environment.php:214
+#: includes/system/class-environment.php:203
 msgid "Debug disabled"
 msgstr "Débogage désactivé"
 
-#: includes/system/class-environment.php:214
+#: includes/system/class-environment.php:203
 msgid "Debug enabled"
 msgstr "Débogage activé"
 
-#: includes/system/class-environment.php:208
+#: includes/system/class-environment.php:197
 msgid "display"
 msgstr "affichage"
 
-#: includes/system/class-environment.php:203
+#: includes/system/class-environment.php:192
 msgid "log"
 msgstr "registre"
 
