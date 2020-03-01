@@ -48,7 +48,7 @@ class Initializer {
 	 * @since 1.0.0
 	 */
 	public function late_initialize() {
-		require_once MAILARCHIVER_PLUGIN_DIR . 'perfopsone/init.php';
+		require_once TRAFFIC_PLUGIN_DIR . 'perfopsone/init.php';
 	}
 
 }

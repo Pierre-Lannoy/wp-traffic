@@ -9,8 +9,8 @@
 
 namespace PerfOpsOne;
 
-use APCuManager\System\Plugin;
-use APCuManager\System\Conversion;
+use Traffic\System\Plugin;
+use Traffic\System\Conversion;
 
 /**
  * Standard PerfOpsOne menus handling.
