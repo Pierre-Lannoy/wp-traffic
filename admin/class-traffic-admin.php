@@ -329,7 +329,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_plugin_options_favicons',
 				'checked'     => Option::network_get( 'download_favicons' ),
 				'description' => esc_html__( 'If checked, Traffic will download favicons of websites to display them in reports.', 'traffic' ) . '<br/>' . esc_html__( 'Note: This feature uses the (free) Google Favicon Service.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -383,7 +383,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_plugin_options_usecdn',
 				'checked'     => Option::network_get( 'use_cdn' ),
 				'description' => esc_html__( 'If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and stylesheets.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -399,7 +399,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_plugin_options_nag',
 				'checked'     => Option::network_get( 'display_nag' ),
 				'description' => esc_html__( 'Allows Traffic to display admin notices throughout the admin dashboard.', 'traffic' ) . '<br/>' . esc_html__( 'Note: Traffic respects DISABLE_NAG_NOTICES flag.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -424,7 +424,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_plugin_features_history',
 				'value'       => Option::network_get( 'history' ),
 				'description' => esc_html__( 'Maximum age of data to keep for statistics.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -468,7 +468,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_inbound_options_capture',
 				'checked'     => Option::network_get( 'inbound_capture' ),
 				'description' => esc_html__( 'If checked, Traffic will analyze inbound API calls (the calls made by external sites or apps to your site).', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -486,7 +486,7 @@ class Traffic_Admin {
 				'max'         => 10,
 				'step'        => 1,
 				'description' => esc_html__( 'Allows to keep only the first most significative elements of the endpoint path.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -511,7 +511,7 @@ class Traffic_Admin {
 				'id'          => 'traffic_outbound_options_capture',
 				'checked'     => Option::network_get( 'outbound_capture' ),
 				'description' => esc_html__( 'If checked, Traffic will analyze outbound API calls (the calls made by your site to external services).', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
@@ -529,7 +529,7 @@ class Traffic_Admin {
 				'max'         => 10,
 				'step'        => 1,
 				'description' => esc_html__( 'Allows to keep only the first most significative elements of the endpoint path.', 'traffic' ),
-				'full_width'  => true,
+				'full_width'  => false,
 				'enabled'     => true,
 			]
 		);
