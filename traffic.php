@@ -66,6 +66,7 @@ function traffic_uninstall() {
  * @since 1.0.0
  */
 function traffic_run() {
+	\Traffic\System\Logger::init();
 	$plugin = new Traffic\Plugin\Core();
 	$plugin->run();
 }
