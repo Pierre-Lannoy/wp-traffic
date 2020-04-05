@@ -313,6 +313,16 @@ class Capture {
 					$r    = $response['http_response']->get_response_object();
 					$b_in = strlen( $r->raw );
 				}
+				if ( array_key_exists( 'filename', $args ) && $args['filename'] ) {
+					global $wp_filesystem;
+					if ( is_null( $wp_filesystem ) ) {
+						require_once ABSPATH . '/wp-admin/includes/file.php';
+						WP_Filesystem();
+					}
+					if ( $wp_filesystem->exists( $args['filename'] ) ) {
+						$b_in += $wp_filesystem->size( $args['filename'] );
+					}
+				}
 			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( 'Outbound API post-analysis: ' . $t->getMessage(), $t->getCode() );
