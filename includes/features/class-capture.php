@@ -19,6 +19,7 @@ use Traffic\System\Option;
 use Traffic\System\Timezone;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
+use Traffic\System\IP;
 
 /**
  * Define the captures functionality.
@@ -420,14 +421,8 @@ class Capture {
 			}
 			$args = [
 				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
-				'remote_ip' => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
+				'remote_ip' => IP::get_current(),
 			];
-			if ( array_key_exists( 'HTTP_X_REAL_IP', $_SERVER ) ) {
-				$args['remote_ip'] = filter_input( INPUT_SERVER, 'HTTP_X_REAL_IP', FILTER_SANITIZE_STRING );
-			}
-			if ( array_key_exists( 'X-FORWARDED_FOR', $_SERVER ) ) {
-				$args['remote_ip'] = filter_input( INPUT_SERVER, 'FORWARDED_FOR' );
-			}
 			if ( is_array( $result ) && array_key_exists( 'data', $result ) && is_array( $result['data'] ) && array_key_exists( 'status', $result['data'] ) ) {
 				$response['response']['code'] = (int) $result['data']['status'];
 			} elseif ( is_array( $result ) && ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
