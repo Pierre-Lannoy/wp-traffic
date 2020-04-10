@@ -24,7 +24,7 @@ use Traffic\System\Favicon;
 use Traffic\System\Timezone;
 use Traffic\System\UUID;
 use Feather;
-use Flagiconcss;
+use Traffic\System\GeoIP;
 
 
 /**
@@ -598,6 +598,7 @@ class Analytics {
 		$result   .= '</tr>';
 		$other     = false;
 		$other_str = '';
+		$geoip     = new GeoIP();
 		foreach ( $data as $key => $row ) {
 			$url         = $this->get_url(
 				[],
@@ -686,10 +687,8 @@ class Analytics {
 						$name = esc_html__( 'Other', 'traffic' );
 					} else {
 						$country_name = L10n::get_country_name( $name );
-						if ( $country_name === $name ) {
-							$country_name = '';
-						}
-						$name = '<img style="width:16px;vertical-align:baseline;" src="' . Flagiconcss\Flags::get_base64( strtolower( $name ) ) . '" />&nbsp;&nbsp;<span class="traffic-table-text" style="vertical-align: text-bottom;">' . $country_name . '</span>';
+						$icon         = $geoip->get_flag_from_country_code( $name, '', 'width:16px;vertical-align:baseline;' );
+						$name         = $icon . '&nbsp;&nbsp;<span class="traffic-table-text" style="vertical-align: text-bottom;">' . $country_name . '</span>';
 					}
 					$group = 'country';
 					break;

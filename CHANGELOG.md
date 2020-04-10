@@ -3,12 +3,10 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - Will be 1.6.0]
-
-=+> IP Locator integration
-
+## [1.6.0] - 2020-04-10
 ### Added
 - Compatibility with [DecaLog](https://wordpress.org/plugins/decalog/) early loading feature.
+- Full integration with [IP Locator](https://wordpress.org/plugins/ip-locator/).
 ### Changed
 - Analytics now integrate file size in total request size for outbound POST and GET.
 - Improved remote IP detection.
