@@ -4,6 +4,9 @@ All notable changes to **Traffic** are documented in this *changelog*.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased - Will be 1.6.0]
+
+=+> IP Locator integration
+
 ### Added
 - Compatibility with [DecaLog](https://wordpress.org/plugins/decalog/) early loading feature.
 ### Changed
@@ -16,7 +19,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Dependency to "Geolocation IP Detection" plugin. Nevertheless, this plugin can be used as a fallback solution.
 - Flagiconcss as library. If there's no other way, flags will be rendered as emoji.
 - Unneeded tool links in settings page.
-
 
 ## [1.5.0] - 2020-03-01
 ### Added
