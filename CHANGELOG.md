@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ##[Unreleased - Will be 1.6.2]
 ### Fixed
 - There's an error while activating the plugin when the server is Microsoft IIS with Windows 10.
+- With Microsoft Edge, some layouts may be ugly.
 
 ## [1.6.1] - 2020-04-10
 ### Fixed
