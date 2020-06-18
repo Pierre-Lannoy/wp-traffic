@@ -3,7 +3,9 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - will be 1.6.3]
+## [1.6.3] - 2020-06-18
+### Changed
+- Improved detection of HTTP 200 code for inbound requests.
 ### Fixed
 - When used for the first time, settings checkboxes may remain checked after being unchecked.
 

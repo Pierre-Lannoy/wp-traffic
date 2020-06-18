@@ -419,18 +419,13 @@ class Capture {
 				}
 				$url = $scheme . '://' . $server . $port . $url;
 			}
-			$args = [
+			$args                         = [
 				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
 				'remote_ip' => IP::get_current(),
 			];
+			$response['response']['code'] = 200;
 			if ( is_array( $result ) && array_key_exists( 'data', $result ) && is_array( $result['data'] ) && array_key_exists( 'status', $result['data'] ) ) {
 				$response['response']['code'] = (int) $result['data']['status'];
-			} elseif ( is_array( $result ) && ( array_key_exists( 'route', $result ) || array_key_exists( 'routes', $result ) ) && ( array_key_exists( 'namespace', $result ) || array_key_exists( 'namespaces', $result ) ) ) {
-				$response['response']['code'] = 200;
-			} elseif ( [] === $result ) {
-				$response['response']['code'] = 200;
-			} else {
-				$response['response']['code'] = 0;
 			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( 'Inbound API pre-analysis: ' . $t->getMessage(), $t->getCode() );
