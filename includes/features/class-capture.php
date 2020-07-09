@@ -155,7 +155,7 @@ class Capture {
 	 */
 	public static function pre_http_request( $preempt, $args, $url ) {
 		self::outbound_start( $url, $args );
-		return false;
+		return $preempt;
 	}
 
 	/**
