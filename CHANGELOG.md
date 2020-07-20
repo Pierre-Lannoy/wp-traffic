@@ -3,7 +3,9 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - will be 1.6.5]
+## [1.7.0] - 2020-07-20
+### Added
+- Compatibility with WordPress 5.5.
 ### Changed
 - Improved compatibility with plugins using long treatments in `pre_http_request` hook.
 
