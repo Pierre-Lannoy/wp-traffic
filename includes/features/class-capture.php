@@ -235,6 +235,7 @@ class Capture {
 			$record['latency_max'] = $record['latency_min'];
 			if ( '-' !== $record['id'] && '-' !== $record['authority'] ) {
 				Schema::store_statistics( $record );
+				//TODO : inbound / outbound logging
 			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
