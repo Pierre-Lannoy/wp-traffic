@@ -9,7 +9,6 @@
 
 namespace Traffic\Plugin;
 
-use Parsedown;
 use Traffic\Plugin\Feature\Schema;
 use Traffic\System\Nag;
 use Traffic\System\Option;
