@@ -54,6 +54,21 @@ $url        = esc_url(
 		);
 		?>
 		" class="nav-tab <?php echo 'about' === $active_tab ? 'nav-tab-active' : ''; ?>" style="float:right;"><?php esc_html_e( 'About', 'traffic' ); ?></a>
+		<?php if ( class_exists( 'Traffic\Plugin\Feature\Wpcli' ) ) { ?>
+            <a href="
+            <?php
+			echo esc_url(
+				add_query_arg(
+					array(
+						'page' => 'traffic-settings',
+						'tab'  => 'wpcli',
+					),
+					admin_url( 'admin.php' )
+				)
+			);
+			?>
+            " class="nav-tab <?php echo 'wpcli' === $active_tab ? 'nav-tab-active' : ''; ?>" style="float:right;">WP-CLI</a>
+		<?php } ?>
 	</h2>
     
 	<?php if ( 'misc' === $active_tab ) { ?>
@@ -61,5 +76,9 @@ $url        = esc_url(
 	<?php } ?>
 	<?php if ( 'about' === $active_tab ) { ?>
 		<?php include __DIR__ . '/traffic-admin-settings-about.php'; ?>
+	<?php } ?>
+	<?php if ( 'wpcli' === $active_tab ) { ?>
+		<?php wp_enqueue_style( TRAFFIC_ASSETS_ID ); ?>
+		<?php echo do_shortcode( '[traffic-wpcli]' ); ?>
 	<?php } ?>
 </div>
