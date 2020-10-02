@@ -79,7 +79,9 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function write() {
-		self::write_statistics();
+		if ( Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ) ) {
+			self::write_statistics();
+		}
 	}
 
 	/**
@@ -172,7 +174,11 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function store_statistics( $record ) {
-		self::$statistics_buffer[] = $record;
+		foreach ( [ 'outbound', 'inbound' ] as $bound ) {
+			if ( Option::network_get( $bound . '_capture' ) && array_key_exists( 'context', $record ) && $bound === $record['context'] ) {
+				self::$statistics_buffer[] = $record;
+			}
+		}
 	}
 
 	/**
