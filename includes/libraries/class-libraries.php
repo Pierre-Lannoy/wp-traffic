@@ -58,6 +58,17 @@ class Libraries {
 	 */
 	public static function init() {
 		self::$psr4_libraries              = [];
+		self::$psr4_libraries['lock']   = [
+			'name'    => 'Lock',
+			'prefix'  => 'malkusch\lock',
+			'base'    => TRAFFIC_VENDOR_DIR . 'lock/',
+			'version' => '2.1',
+			// phpcs:ignore
+			'author'  => sprintf( esc_html__( '%s & contributors', 'decalog' ), 'Willem Stuursma-Ruwen' ),
+			'url'     => 'https://github.com/php-lock/lock',
+			'license' => 'wtpfl',
+			'langs'   => 'en',
+		];
 		self::$psr4_libraries['feather']   = [
 			'name'    => 'Feather',
 			'prefix'  => 'Feather',
