@@ -11,6 +11,8 @@
 
 namespace Traffic\System;
 
+use Traffic\System\GeoIP;
+
 /**
  * Define the HTTP functionality.
  *
@@ -176,6 +178,7 @@ class Http {
 		599 => 'Network connect timeout error',
 		999 => 'Forbidden by quota manager',
 	];
+
 	/**
 	 * Set the plugin user agent.
 	 *
@@ -217,6 +220,52 @@ class Http {
 		}
 		$slice  = ( $subtld && ( count( $parts ) > 2 ) ) ? 3 : 2;
 		$result = implode( '.', array_slice( $parts, ( 0 - $slice ), $slice ) );
+		return $result;
+	}
+
+	/**
+	 * Format a captured record.
+	 *
+	 * @param   array   $record     The record to fromat.
+	 * @return  array   The record formatted.
+	 * @since  1.0.0
+	 */
+	public static function format_record( $record ) {
+		$result              = [];
+		$result['timestamp'] = $record['timestamp'];
+		$result['site_id']   = 0;
+		$result['bound']     = strtoupper( $record['context'] );
+		$result['authority'] = '-';
+		$result['scheme']    = '-';
+		$result['endpoint']  = '-';
+		$result['country']   = '-';
+		$result['verb']      = '-';
+		$result['code']      = 0;
+		$result['message']   = '-';
+		$result['size']      = 0;
+		$result['latency']   = 0;
+		if ( ! in_array( $result['bound'], [ 'INBOUND', 'OUTBOUND' ], true ) ) {
+			return $result;
+		}
+		$result['site_id']   = $record['site'];
+		$result['authority'] = $record['authority'];
+		$result['scheme']    = $record['scheme'];
+		$result['endpoint']  = $record['endpoint'];
+		$result['id']        = $record['id'];
+		if ( 'INBOUND' === $result['bound'] ) {
+			$geo_ip  = new GeoIP();
+			$country = $geo_ip->get_iso3166_alpha2( $record['id'] );
+			if ( ! empty( $country ) ) {
+				$result['country'] = $country;
+			}
+		}
+		$result['verb'] = strtoupper( $record['verb'] );
+		$result['code'] = $record['code'];
+		if ( array_key_exists( $record['code'], self::$http_status_codes ) ) {
+			$result['message'] = self::$http_status_codes[ $record['code'] ];
+		}
+		$result['size']    = (int) ( ( $record['kb_out'] + $record['kb_in'] ) * 1024 );
+		$result['latency'] = $record['latency_min'];
 		return $result;
 	}
 }

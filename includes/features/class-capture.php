@@ -15,6 +15,8 @@ use Traffic\System\Blog;
 use Traffic\System\Environment;
 use Traffic\System\Logger;
 use Traffic\Plugin\Feature\Schema;
+use Traffic\Plugin\Feature\Memory;
+use Traffic\Plugin\Feature\DecaLog;
 use Traffic\System\Option;
 use Traffic\System\Timezone;
 use Traffic\System\Http;
@@ -70,21 +72,12 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		$started = false;
-		if ( Option::network_get( 'outbound_capture' ) ) {
-			add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
-			add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
-			$started = true;
-		}
-		if ( Option::network_get( 'inbound_capture' ) ) {
-			add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
-			$started = true;
-		}
-		if ( $started ) {
-			self::$default_chrono = microtime( true );
-			self::$local_timezone = Timezone::network_get();
-			Logger::debug( 'Capture engine started.' );
-		}
+		add_filter( 'pre_http_request', [ 'Traffic\Plugin\Feature\Capture', 'pre_http_request' ], 10, 3 );
+		add_filter( 'http_api_debug', [ 'Traffic\Plugin\Feature\Capture', 'http_api_debug' ], 10, 5 );
+		add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
+		self::$default_chrono = microtime( true );
+		self::$local_timezone = Timezone::network_get();
+		Logger::debug( 'Capture engine started.' );
 	}
 
 	/**
@@ -146,7 +139,7 @@ class Capture {
 	 *
 	 * Returning any other value may result in unexpected behaviour.
 	 *
-	 * @param false|array|WP_Error $preempt Whether to preempt an HTTP request's return value. Default false.
+	 * @param false|array|\WP_Error $preempt Whether to preempt an HTTP request's return value. Default false.
 	 * @param array                $args     HTTP request arguments.
 	 * @param string               $url      The request URL.
 	 * @return  FALSE|array|object FALSE if everything is okay, an array of request
@@ -161,7 +154,7 @@ class Capture {
 	/**
 	 * Records an entry.
 	 *
-	 * @param array|WP_Error $response HTTP response or WP_Error object.
+	 * @param array|\WP_Error $response HTTP response or WP_Error object.
 	 * @param array          $args     HTTP request arguments.
 	 * @param string         $url      The request URL.
 	 * @param string         $bound    Optional. The bound.
@@ -235,7 +228,8 @@ class Capture {
 			$record['latency_max'] = $record['latency_min'];
 			if ( '-' !== $record['id'] && '-' !== $record['authority'] ) {
 				Schema::store_statistics( $record );
-				//TODO : inbound / outbound logging
+				Memory::store_statistics( $record );
+				DecaLog::log( $record );
 			}
 		} catch ( \Throwable $t ) {
 			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
@@ -245,7 +239,7 @@ class Capture {
 	/**
 	 * Fires after an HTTP API response is received and before the response is returned.
 	 *
-	 * @param array|WP_Error $response HTTP response or WP_Error object.
+	 * @param array|\WP_Error $response HTTP response or WP_Error object.
 	 * @param string         $context  Context under which the hook is fired.
 	 * @param string         $class    HTTP transport used.
 	 * @param array          $args     HTTP request arguments.

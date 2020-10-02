@@ -22,6 +22,8 @@ use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
 use Traffic\System\Environment;
 use PerfOpsOne\AdminMenus;
+use Traffic\System\SharedMemory;
+use Traffic\Plugin\Feature\Memory;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -271,10 +273,13 @@ class Traffic_Admin {
 				Option::network_set( 'use_cdn', array_key_exists( 'traffic_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_usecdn' ) : false );
 				Option::network_set( 'download_favicons', array_key_exists( 'traffic_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_favicons' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
+				Option::network_set( 'livelog', array_key_exists( 'traffic_plugin_features_livelog', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_livelog' ) : false );
 				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
 				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_outbound_options_capture' ) : false );
 				Option::network_set( 'inbound_cut_path', array_key_exists( 'traffic_inbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_inbound_options_cut_path' ) : Option::network_get( 'traffic_inbound_options_cut_path' ) );
 				Option::network_set( 'outbound_cut_path', array_key_exists( 'traffic_outbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_outbound_options_cut_path' ) : Option::network_get( 'traffic_outbound_options_cut_path' ) );
+				Option::network_set( 'inbound_level', array_key_exists( 'traffic_inbound_options_level', $_POST ) ? (string) filter_input( INPUT_POST, 'traffic_inbound_options_level' ) : Option::network_get( 'traffic_inbound_options_level' ) );
+				Option::network_set( 'outbound_level', array_key_exists( 'traffic_outbound_options_level', $_POST ) ? (string) filter_input( INPUT_POST, 'traffic_outbound_options_level' ) : Option::network_get( 'traffic_outbound_options_level' ) );
 				Option::network_set( 'history', array_key_exists( 'traffic_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'traffic_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'traffic' );
 				$code    = 0;
@@ -372,6 +377,24 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_logger' );
+		if ( SharedMemory::$available ) {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
+			$help .= esc_html__('Shared memory is available on your server: you can use live console.', 'traffic' );
+		} else {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__('Shared memory is not available on your server. To use live console you must activate %s PHP module.', 'traffic' ), '<code>shmop</code>' );
+		}
+		add_settings_field(
+			'traffic_plugin_options_shmop',
+			__( 'Shared memory', 'traffic' ),
+			[ $form, 'echo_field_simple_text' ],
+			'traffic_plugin_options_section',
+			'traffic_plugin_options_section',
+			[
+				'text' => $help
+			]
+		);
+		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_shmop' );
 		add_settings_field(
 			'traffic_plugin_options_usecdn',
 			__( 'Resources', 'traffic' ),
@@ -429,13 +452,31 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_features_section', 'traffic_plugin_features_history' );
+		if ( SharedMemory::$available ) {
+			add_settings_field(
+				'traffic_plugin_features_livelog',
+				__( 'Live console', 'traffic' ),
+				[ $form, 'echo_field_checkbox' ],
+				'traffic_plugin_features_section',
+				'traffic_plugin_features_section',
+				[
+					'text'        => esc_html__( 'Activate monitoring', 'traffic' ),
+					'id'          => 'traffic_plugin_features_livelog',
+					'checked'     => Memory::is_enabled(),
+					'description' => esc_html__( 'If checked, Traffic will silently start the features needed by live console.', 'traffic' ),
+					'full_width'  => false,
+					'enabled'     => true,
+				]
+			);
+			register_setting( 'traffic_plugin_features_section', 'traffic_plugin_features_livelog' );
+		}
 	}
 
 	/**
 	 * Get the available history retentions.
 	 *
 	 * @return array An array containing the history modes.
-	 * @since  3.2.0
+	 * @since  1.0.0
 	 */
 	protected function get_retentions_array() {
 		$result = [];
@@ -446,6 +487,25 @@ class Traffic_Admin {
 		for ( $i = 1; $i < 7; $i++ ) {
 			// phpcs:ignore
 			$result[] = [ (int) ( 365 * $i ), esc_html( sprintf( _n( '%d year', '%d years', $i, 'traffic' ), $i ) ) ];
+		}
+		return $result;
+	}
+	/**
+	 * Get the available levels.
+	 *
+	 * @return array An array containing the levels.
+	 * @since  2.0.0
+	 */
+	protected function get_levels_array() {
+		$result      = [];
+		$log_enabled = defined( 'DECALOG_VERSION' ) && class_exists( '\Decalog\Logger' );
+		foreach ( [ 'debug', 'info', 'notice', 'warning' ] as $level ) {
+			if ( $log_enabled ) {
+				$result[] = [ $level, strtoupper( $level ) ];
+			} else {
+				$result[] = [ $level, 'N/A' ];
+			}
+
 		}
 		return $result;
 	}
@@ -473,6 +533,27 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_inbound_options_section', 'traffic_inbound_options_capture' );
+		$log_enabled = defined( 'DECALOG_VERSION' ) && class_exists( '\Decalog\Logger' );
+		$sup         = '';
+		if ( ! $log_enabled ) {
+			$sup = '<br/>' . sprintf( esc_html__( 'Note: you need to install %s to use this feature.', 'traffic' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
+		}
+		add_settings_field(
+			'traffic_inbound_options_level',
+			esc_html__( 'Logging', 'traffic' ),
+			[ $form, 'echo_field_select' ],
+			'traffic_inbound_options_section',
+			'traffic_inbound_options_section',
+			[
+				'list'        => $this->get_levels_array(),
+				'id'          => 'traffic_inbound_options_level',
+				'value'       => Option::network_get( 'inbound_level' ),
+				'description' => esc_html__( 'The level at which inbound API calls are logged.', 'traffic' ) . $sup,
+				'full_width'  => false,
+				'enabled'     => $log_enabled,
+			]
+		);
+		register_setting( 'traffic_inbound_options_section', 'traffic_inbound_options_level' );
 		add_settings_field(
 			'traffic_inbound_options_cut_path',
 			__( 'Path cut', 'traffic' ),
@@ -516,6 +597,27 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_capture' );
+		$log_enabled = defined( 'DECALOG_VERSION' ) && class_exists( '\Decalog\Logger' );
+		$sup         = '';
+		if ( ! $log_enabled ) {
+			$sup = '<br/>' . sprintf( esc_html__( 'Note: you need to install %s to use this feature.', 'traffic' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
+		}
+		add_settings_field(
+			'traffic_outbound_options_level',
+			esc_html__( 'Logging', 'traffic' ),
+			[ $form, 'echo_field_select' ],
+			'traffic_outbound_options_section',
+			'traffic_outbound_options_section',
+			[
+				'list'        => $this->get_levels_array(),
+				'id'          => 'traffic_outbound_options_level',
+				'value'       => Option::network_get( 'outbound_level' ),
+				'description' => esc_html__( 'The level at which outbound API calls are logged.', 'traffic' ) . $sup,
+				'full_width'  => false,
+				'enabled'     => $log_enabled,
+			]
+		);
+		register_setting( 'traffic_outbound_options_section', 'traffic_outbound_options_level' );
 		add_settings_field(
 			'traffic_outbound_options_cut_path',
 			__( 'Path cut', 'traffic' ),
