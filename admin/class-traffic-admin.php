@@ -59,6 +59,7 @@ class Traffic_Admin {
 	 */
 	public function enqueue_styles() {
 		$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'css/traffic.min.css' );
+		$this->assets->register_style( TRAFFIC_LIVELOG_ID, TRAFFIC_ADMIN_URL, 'css/livelog.min.css' );
 		$this->assets->register_style( 'traffic-daterangepicker', TRAFFIC_ADMIN_URL, 'css/daterangepicker.min.css' );
 		$this->assets->register_style( 'traffic-switchery', TRAFFIC_ADMIN_URL, 'css/switchery.min.css' );
 		$this->assets->register_style( 'traffic-tooltip', TRAFFIC_ADMIN_URL, 'css/tooltip.min.css' );
@@ -75,6 +76,7 @@ class Traffic_Admin {
 	 */
 	public function enqueue_scripts() {
 		$this->assets->register_script( TRAFFIC_ASSETS_ID, TRAFFIC_ADMIN_URL, 'js/traffic.min.js', [ 'jquery' ] );
+		$this->assets->register_script( TRAFFIC_LIVELOG_ID, TRAFFIC_ADMIN_URL, 'js/livelog.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-moment-with-locale', TRAFFIC_ADMIN_URL, 'js/moment-with-locales.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-daterangepicker', TRAFFIC_ADMIN_URL, 'js/daterangepicker.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-switchery', TRAFFIC_ADMIN_URL, 'js/switchery.min.js', [ 'jquery' ] );
@@ -82,6 +84,23 @@ class Traffic_Admin {
 		$this->assets->register_script( 'traffic-chartist-tooltip', TRAFFIC_ADMIN_URL, 'js/chartist-plugin-tooltip.min.js', [ 'traffic-chartist' ] );
 		$this->assets->register_script( 'traffic-jvectormap', TRAFFIC_ADMIN_URL, 'js/jquery-jvectormap-2.0.3.min.js', [ 'jquery' ] );
 		$this->assets->register_script( 'traffic-jvectormap-world', TRAFFIC_ADMIN_URL, 'js/jquery-jvectormap-world-mill.min.js', [ 'jquery' ] );
+	}
+
+	/**
+	 * The reference to the class that orchestrates the hooks with the plugin.
+	 *
+	 * @since  2.0.0
+	 */
+	public function disable_wp_emojis() {
+		if ( 'traffic-console' === filter_input( INPUT_GET, 'page' ) ) {
+			remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+			remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+			remove_action( 'wp_print_styles', 'print_emoji_styles' );
+			remove_action( 'admin_print_styles', 'print_emoji_styles' );
+			remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+			remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+			remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+		}
 	}
 
 	/**
@@ -127,6 +146,24 @@ class Traffic_Admin {
 				'plugin'        => TRAFFIC_SLUG,
 				'activated'     => true,
 				'remedy'        => '',
+			];
+		}
+		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
+			$perfops['consoles'][] = [
+				'name'          => esc_html__( 'Live API Calls', 'traffic' ),
+				/* translators: as in the sentence "Check the events that occurred on your network." or "Check the events that occurred on your website." */
+				'description'   => sprintf( esc_html__( 'Displays API traffic as soon as it happens on your %s.', 'traffic' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'traffic' ) : esc_html__( 'website', 'traffic' ) ),
+				'icon_callback' => [ \Traffic\Plugin\Core::class, 'get_base64_logo' ],
+				'slug'          => 'traffic-console',
+				/* translators: as in the sentence "Traffic Viewer" */
+				'page_title'    => sprintf( esc_html__( '%s Live API Calls', 'traffic' ), TRAFFIC_PRODUCT_NAME ),
+				'menu_title'    => esc_html__( 'Live API Calls', 'traffic' ),
+				'capability'    => 'manage_options',
+				'callback'      => [ $this, 'get_console_page' ],
+				'position'      => 50,
+				'plugin'        => TRAFFIC_SLUG,
+				'activated'     => SharedMemory::$available,
+				'remedy'        => esc_url( admin_url( 'admin.php?page=traffic&tab=misc' ) ),
 			];
 		}
 		return $perfops;
@@ -228,6 +265,19 @@ class Traffic_Admin {
 	public function get_viewer_page() {
 		$analytics = AnalyticsFactory::get_analytics();
 		include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-analytics.php';
+	}
+
+	/**
+	 * Get the content of the console page.
+	 *
+	 * @since 2.0.0
+	 */
+	public function get_console_page() {
+		if ( isset( $this->current_view ) ) {
+			$this->current_view->get();
+		} else {
+			include TRAFFIC_ADMIN_DIR . 'partials/traffic-admin-view-console.php';
+		}
 	}
 
 	/**

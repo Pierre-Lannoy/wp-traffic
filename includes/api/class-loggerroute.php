@@ -9,7 +9,7 @@
  * @since   2.0.0
  */
 
-namespace Traffic;
+namespace Traffic\API;
 
 use Traffic\System\Logger;
 use Traffic\System\Role;

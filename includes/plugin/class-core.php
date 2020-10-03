@@ -18,6 +18,7 @@ use Traffic\System\Assets;
 use Traffic\Library\Libraries;
 use Traffic\System\Nag;
 use Traffic\System\Role;
+use Traffic\API\LoggerRoute;
 
 /**
  * The core plugin class.
@@ -89,6 +90,9 @@ class Core {
 		add_shortcode( 'traffic-changelog', [ $updater, 'sc_get_changelog' ] );
 		add_shortcode( 'traffic-libraries', [ $libraries, 'sc_get_list' ] );
 		add_shortcode( 'traffic-statistics', [ 'Traffic\System\Statistics', 'sc_get_raw' ] );
+		// REST API
+		$routes = new LoggerRoute();
+		$this->loader->add_action( 'rest_api_init', $routes, 'register_routes' );
 	}
 
 	/**
@@ -101,6 +105,7 @@ class Core {
 	private function define_admin_hooks() {
 		$plugin_admin = new Traffic_Admin();
 		$nag          = new Nag();
+		$this->loader->add_action( 'init', $plugin_admin, 'disable_wp_emojis', PHP_INT_MAX );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'init_admin_menus' );

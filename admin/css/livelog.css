@@ -23,34 +23,12 @@
     color:#999999;
 }
 
-.traffic-logger-line-info {
-    color:#4444AA;
-}
-
-.traffic-logger-line-notice {
+.traffic-logger-line-inbound {
     color:#9999FF;
 }
 
-.traffic-logger-line-warning {
-    color:#FFAB10;
-}
-
-.traffic-logger-line-error {
+.traffic-logger-line-outbound {
     color:#FB7B00;
-}
-
-.traffic-logger-line-critical {
-    color:#FF0000;
-}
-
-.traffic-logger-line-alert {
-    color:#DD0000;
-    font-weight: bold;
-}
-
-.traffic-logger-line-emergency {
-    color:#AA0000;
-    font-weight: bold;
 }
 
 .traffic-control{
@@ -85,11 +63,4 @@
     float: right;
     margin-top: 12px;
     margin-right: 12px;
-    /*animation: blinker 1s linear infinite;*/
-}
-
-@keyframes blinker {
-    50% {
-        opacity: 0.2;
-    }
 }

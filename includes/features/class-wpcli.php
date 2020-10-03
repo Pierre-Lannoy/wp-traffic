@@ -42,14 +42,8 @@ class Wpcli {
 	 * @var array $bound_color Level colors.
 	 */
 	private static $bound_color = [
-		'debug'     => [ '', '' ],
-		'inbound'      => [ '%4%c', '%0%c' ],
-		//'inbound'    => [ '%4%C', '%0%C' ],
-		'outbound'   => [ '%3%r', '%0%Y' ],
-		'error'     => [ '%1%y', '%0%r' ],
-		'critical'  => [ '%1%Y', '%0%R' ],
-		'alert'     => [ '%F%1%Y', '%0%F%R' ],
-		'emergency' => [ '', '' ],
+		'inbound'  => [ '%4%c', '%0%c' ],
+		'outbound' => [ '%3%r', '%0%Y' ],
 	];
 
 	/**
@@ -215,7 +209,7 @@ class Wpcli {
 			foreach ( $filters as $key => $filter ) {
 				switch ( $key ) {
 					case 'bound':
-						if ( $record['bound'] !== $filter ) {
+						if ( $record['bound'] !== strtoupper( $filter ) ) {
 							continue 3;
 						}
 						break;
@@ -259,11 +253,12 @@ class Wpcli {
 			$line .= str_pad( $record['code'], 3, '0', STR_PAD_LEFT ) . ' ';
 			$line .= str_pad( Conversion::data_shorten( $record['size'] ), 7, ' ', STR_PAD_LEFT ) . ' ';
 			$line .= str_pad( $record['latency'] . 'ms', 7, ' ', STR_PAD_LEFT ) . ' ';
-			if ( Environment::is_wordpress_multisite() ) {
+			if ( !Environment::is_wordpress_multisite() ) {
 				$sid = ' SID:' . str_pad( (string) $record['site_id'], 4, '0', STR_PAD_LEFT ) . ' ';
 			} else {
 				$sid = ' ';
 			}
+			$line .= $sid;
 			if ( $geoip->is_installed() ) {
 				$country = EmojiFlag::get( $record['country'] ) . ' ';
 			} else {
@@ -280,79 +275,12 @@ class Wpcli {
 			}
 
 
-/*
-
-
-
-
-			switch ( $record['bound'] ) {
-				case 'INBOUND':
-					$message = ucfirst( strtolower( $record['bound'] ) ) . ' ' . $record['verb'] . ' from ' . $record['id'];
-					break;
-				case 'OUTBOUND':
-					$message = ucfirst( strtolower( $record['bound'] ) ). ' ' . $record['verb'] . ' to ' . $record['id'];
-					break;
-				default:
-					$message = '';
-			}
-
-
-			$message .= ' [response="' . $record['code'] . '/' . $record['message'] . '"]';
-			$message .= ' [endpoint="' . $record['endpoint'] . '"]';
-
-
-
-
-			$size = Conversion::data_shorten( $record['size'] );
-			$latency = $record['latency'] . 'ms';
-
-
-
-			$component     = $record['component'];
-			$message       = trim( $record['message'] );
-			if ( 'unknown' !== $record['verb'] ) {
-				$verb = str_pad( '[' . strtoupper( $record['verb'] ) . ']', 9 );
-			} else {
-				$verb = str_pad( '[-]', 9 );
-			}
-
-			if ( $geoip->is_installed() ) {
-				$ip = EmojiFlag::get( $geoip->get_iso3166_alpha2( $record['remote_ip'] ) ) . ' ' . $record['remote_ip'];
-			} else {
-				$ip = $record['remote_ip'];
-			}
-			$url = $record['url'];
-			if ( 'unknown' === $record['classname'] ) {
-				$func = $record['function'] . '()';
-			} else {
-				$func = $record['classname'] . '::' . $record['function'] . '()';
-			}
-			$file = PHP::normalized_file_line( $record['file'], $record['line'] );
-
-			$uid  = ' UID:' . str_pad( (string) $record['user_id'], 6, '0', STR_PAD_LEFT ) . ' ';
-			$line = "$timestamp $channel_level$sid";
-			switch ( $mode ) {
-				case 'http':
-					if ( 'unknown' !== $record['verb'] ) {
-						$line = $line . "$verb $ip → $url";
-					} else {
-						$line = $line . "$verb $ip <No HTTP request>";
-					}
-					break;
-				case 'php':
-					$line = $line . "$func in $file";
-					break;
-				default:
-					$line = $line . "$uid$component: $message";
-			}*/
-
-
 
 			$line = preg_replace( '/[\x00-\x1F\x7F\xA0]/u', '', $line );
 			if ( $pad - 1 < strlen( $line ) ) {
 				$line = substr( $line, 0, $pad - 1 ) . '…';
 			}
-			$result[$idx] = [ 'bound' => strtolower( $record['bound'] ), 'line' => traffic_mb_str_pad( $line, $pad ) ];
+			$result[ $idx ] = [ 'bound' => strtolower( $record['bound'] ), 'line' => traffic_mb_str_pad( $line, $pad ) ];
 		}
 		return $result;
 	}
@@ -379,7 +307,7 @@ class Wpcli {
 	 * wp log status
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function status( $args, $assoc_args ) {
@@ -483,7 +411,7 @@ class Wpcli {
 	 * + wp log type describe WordpressHandler
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function handler( $args, $assoc_args ) {
@@ -727,7 +655,7 @@ class Wpcli {
 	 * + wp log logger set 37cf1c00-d67d-4e7d-9518-e579f01407a7 --settings='{"proc_trace": false, "level":"warning"}'
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function logger( $args, $assoc_args ) {
@@ -955,7 +883,7 @@ class Wpcli {
 	 * + wp log listener auto-off --yes
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function listener( $args, $assoc_args ) {
@@ -1070,7 +998,7 @@ class Wpcli {
 	 * wp log settings disable early-loading --yes
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function settings( $args, $assoc_args ) {
@@ -1140,7 +1068,7 @@ class Wpcli {
 	 * wp log send warning 'Page not found' --code=404
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function send( $args, $assoc_args ) {
@@ -1190,7 +1118,7 @@ class Wpcli {
 	 * + wp log exitcode list --format=json
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function exitcode( $args, $assoc_args ) {
@@ -1224,8 +1152,8 @@ class Wpcli {
 	 * default: both
 	 * options:
 	 *  - both
-	 *  - in
-	 *  - out
+	 *  - inbound
+	 *  - outbound
 	 * ---
 	 *
 	 *[--filter=<filter>]
@@ -1234,7 +1162,7 @@ class Wpcli {
 	 * ---
 	 * default: '{}'
 	 * available fields: 'authority', 'scheme', 'endpoint', 'verb', 'code', 'message', 'size', 'latency', 'site_id'
-	 * example: '{"source":"/Jetpack/", "remote_ip":"/(135.|164.)/"}'
+	 * example: '{"authority":"/wordpress\.org/", "verb":"/GET/"}'
 	 * ---
 	 *
 	 * [--col=<columns>]
@@ -1257,12 +1185,11 @@ class Wpcli {
 	 *
 	 * wp api tail
 	 * wp api tail 20
-	 * wp api tail 20 --direction=out
-	 * wp api tail --filter='{"source":"/Jetpack/", "remote_ip":"/(135.|164.)/"}'
-	 * wp api tail --filter='{"source":"/WordPress/"} --soft --format=wp'
+	 * wp api tail 20 --direction=outbound
+	 * wp api tail --filter='{"authority":"/wordpress\.org/", "verb":"/GET/"}'
 	 *
 	 *
-	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-decalog/blob/master/WP-CLI.md ===
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
 	public static function tail( $args, $assoc_args ) {
@@ -1300,11 +1227,9 @@ class Wpcli {
 		}
 		$direction = isset( $assoc_args['direction'] ) ? (string) $assoc_args['direction'] : 'both';
 		switch ( $direction ) {
-			case 'in':
-				$filters['bound'] = 'INBOUND';
-				break;
-			case 'out':
-				$filters['bound'] = 'OUTBOUND';
+			case 'inbound':
+			case 'outbound':
+				$filters['bound'] = $direction;
 				break;
 			default:
 				if ( isset( $filters['bound'] ) ) {

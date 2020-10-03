@@ -53,6 +53,8 @@ class Environment {
 		define( 'TRAFFIC_PLUGIN_SIGNATURE', TRAFFIC_PRODUCT_NAME . ' v' . TRAFFIC_VERSION );
 		define( 'TRAFFIC_PLUGIN_AGENT', TRAFFIC_PRODUCT_NAME . ' (' . self::wordpress_version_id() . '; ' . self::plugin_version_id() . '; +' . TRAFFIC_PRODUCT_URL . ')' );
 		define( 'TRAFFIC_ASSETS_ID', TRAFFIC_PRODUCT_ABBREVIATION . '-assets' );
+		define( 'TRAFFIC_LIVELOG_ID', TRAFFIC_PRODUCT_ABBREVIATION . '-console' );
+		define( 'TRAFFIC_REST_NAMESPACE', TRAFFIC_SLUG . '/v' . TRAFFIC_API_VERSION );
 	}
 
 	/**

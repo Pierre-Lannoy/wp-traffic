@@ -1,11 +1,8 @@
 jQuery( document ).ready(
 	function($) {
 		function initialize() {
-			$('#traffic-select-level').change(function () {
-				level = $(this).val();
-			});
-			$('#traffic-select-format').change(function () {
-				mode = $(this).val();
+			$('#traffic-select-bound').change(function () {
+				bound = $(this).val();
 			});
 			$('#traffic-control-play').click(function () {
 				consoleRun();
@@ -44,7 +41,7 @@ jQuery( document ).ready(
 					{
 						type : 'GET',
 						url : livelog.restUrl,
-						data : { level: level, mode: mode, index: index },
+						data : { direction: bound, index: index },
 						beforeSend: function ( xhr ) { xhr.setRequestHeader( 'X-WP-Nonce', livelog.restNonce ); },
 						success: function( response ) {
 							if ( response ) {
@@ -63,7 +60,7 @@ jQuery( document ).ready(
 											function( item ){
 												elem = document.createElement( 'pre' );
 												elem.classList.add( 'traffic-logger-line' );
-												elem.classList.add( 'traffic-logger-line-' + item[1].level );
+												elem.classList.add( 'traffic-logger-line-' + item[1].bound );
 												elem.innerHTML = item[1].line.replace( ' ', '&nbsp;' );
 												if ( root.childElementCount > livelog.buffer ) {
 													root.removeChild( root.firstElementChild );
@@ -89,8 +86,7 @@ jQuery( document ).ready(
 			}
 		}
 
-		let level   = 'info';
-		let mode    = 'wp';
+		let bound   = 'both';
 		let index   = '0';
 		let running = true;
 		let init    = false;

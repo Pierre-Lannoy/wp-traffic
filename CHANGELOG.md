@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased - Will be 2.0.0]
 
 ### Added
+- New live console-in-browser to see API calls as soon as they occur.
+- [WP-CLI] New command to display (past or current) API calls in console: see `wp help api tail` for details.
 - Traffic now sends inbound and outbound events to [DecaLog](https://wordpress.org/plugins/decalog/).
 - New Site Health "info" section about shared memory.
 
