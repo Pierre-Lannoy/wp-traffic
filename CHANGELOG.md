@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased - Will be 2.0.0]
 
 ### Added
+- Traffic now sends inbound and outbound events to [DecaLog](https://wordpress.org/plugins/decalog/).
 - New Site Health "info" section about shared memory.
 
 ### Changed
