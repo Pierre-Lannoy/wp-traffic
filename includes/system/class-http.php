@@ -232,7 +232,7 @@ class Http {
 	 */
 	public static function format_record( $record ) {
 		$result              = [];
-		$result['timestamp'] = $record['timestamp'];
+		$result['timestamp'] = $record['ts'];
 		$result['site_id']   = 0;
 		$result['bound']     = strtoupper( $record['context'] );
 		$result['authority'] = '-';
@@ -255,6 +255,12 @@ class Http {
 		if ( 'INBOUND' === $result['bound'] ) {
 			$geo_ip  = new GeoIP();
 			$country = $geo_ip->get_iso3166_alpha2( $record['id'] );
+			if ( ! empty( $country ) ) {
+				$result['country'] = $country;
+			}
+		} else {
+			$geo_ip  = new GeoIP();
+			$country = $geo_ip->get_iso3166_alpha2( $record['authority'] );
 			if ( ! empty( $country ) ) {
 				$result['country'] = $country;
 			}

@@ -169,6 +169,7 @@ class Capture {
 			$record              = Schema::init_record();
 			$datetime            = new \DateTime( 'now', self::$local_timezone );
 			$record['timestamp'] = $datetime->format( 'Y-m-d' );
+			$record['ts']        = $datetime->format( 'Y-m-d H:i:s' );
 			$record['site']      = get_current_blog_id();
 			$record['context']   = $bound;
 			if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {

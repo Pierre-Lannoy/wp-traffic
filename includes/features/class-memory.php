@@ -88,7 +88,7 @@ class Memory {
 	 * @since    2.0.0
 	 */
 	public static function init() {
-		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Schema', 'write' ], 90, 0 );
+		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], 90, 0 );
 		self::$geo_ip = new GeoIP();
 	}
 
@@ -108,25 +108,26 @@ class Memory {
 	 */
 	public static function write() {
 		if ( self::is_enabled() ) {
-			self::write_statistics();
+			self::format_records();
+			self::write_records_to_memory();
 		}
 	}
 
 	/**
-	 * Write statistics.
+	 * Format records.
 	 *
-	 * @param boolean $final Optional. If false, allows recursive calls. This is to allow to write
+	 * @param boolean $final Optional. If false, allows recursive calls. This is to allow to format
 	 *                                 records generated while executing 'shutdown' hook.
 	 * @since    2.0.0
 	 */
-	private static function write_statistics( $final = false ) {
-		/*foreach ( self::$statistics_buffer as $key => $record ) {
-			self::write_statistics_records_to_memory( $record );
+	private static function format_records( $final = false ) {
+		foreach ( self::$statistics_buffer as $key => $record ) {
+			self::$messages_buffer[ $key ] = Http::format_record( $record );
 			unset( self::$statistics_buffer[ $key ] );
 		}
 		if ( 0 < count( self::$statistics_buffer ) && ! $final ) {
-			self::write_statistics( true );
-		}*/
+			self::format_records( true );
+		}
 	}
 
 	/**
@@ -152,7 +153,7 @@ class Memory {
 		$messages = self::$messages_buffer;
 		$mutex    = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
 		$ftok     = self::ftok();
-		$mutex->synchronized(function () use ($messages, $ftok) {
+		$mutex->synchronized( function () use ( $messages, $ftok ) {
 			$sm   = new SharedMemory( $ftok );
 			$data = $sm->read();
 			foreach ( $messages as $key => $message ) {
@@ -160,7 +161,7 @@ class Memory {
 					$data[ $key ] = $message;
 				}
 			}
-			$data = array_slice( $data, -$this->buffer );
+			$data = array_slice( $data, -self::$buffer );
 			if ( false === $sm->write( $data ) ) {
 				//error_log( 'ERROR' );
 			}
