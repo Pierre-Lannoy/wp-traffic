@@ -1,0 +1,95 @@
+.traffic-logger-view {
+    background-color: #23282d;
+    width: 100%;
+    height: 60vh;
+    float: right;
+    border-radius: 4px;
+}
+
+#traffic-logger-lines {
+    padding: 2px 14px;
+    overflow: scroll;
+    height: 58vh;
+}
+
+.traffic-logger-line {
+    display: block;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 0.9em;
+}
+
+.traffic-logger-line-init {
+    color:#999999;
+}
+
+.traffic-logger-line-info {
+    color:#4444AA;
+}
+
+.traffic-logger-line-notice {
+    color:#9999FF;
+}
+
+.traffic-logger-line-warning {
+    color:#FFAB10;
+}
+
+.traffic-logger-line-error {
+    color:#FB7B00;
+}
+
+.traffic-logger-line-critical {
+    color:#FF0000;
+}
+
+.traffic-logger-line-alert {
+    color:#DD0000;
+    font-weight: bold;
+}
+
+.traffic-logger-line-emergency {
+    color:#AA0000;
+    font-weight: bold;
+}
+
+.traffic-control{
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.traffic-control-inactive{
+    background-color: #f1f1f1;
+    color: #AAAAAA;
+    cursor: default;
+}
+
+.traffic-control-active{
+    background-color: #f1f1f1;
+    color: #0073aa;
+    cursor: pointer;
+}
+
+.traffic-control-active:hover{
+    background-color: #0073aa;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.traffic-control-hint {
+    font-size: 12px;
+    line-height: 2.4em;
+    font-family: sans-serif;
+    color: #808080;
+    text-align: right;
+    float: right;
+    margin-top: 12px;
+    margin-right: 12px;
+    /*animation: blinker 1s linear infinite;*/
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0.2;
+    }
+}
