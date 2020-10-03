@@ -75,8 +75,8 @@ class Option {
 		self::$defaults['outbound_cut_path'] = 3;
 		self::$defaults['outbound_capture']  = true;
 		self::$defaults['inbound_capture']   = true;
-		self::$defaults['outbound_level']    = 'info';
-		self::$defaults['inbound_level']     = 'info';
+		self::$defaults['outbound_level']    = 'notice';
+		self::$defaults['inbound_level']     = 'debug';
 		self::$defaults['livelog']           = true;
 		self::$defaults['history']           = 90;
 		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'inbound_level', 'outbound_level', 'livelog', 'history' ];
