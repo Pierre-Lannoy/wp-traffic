@@ -23,9 +23,14 @@ spl_autoload_register(
 				$filepath = TRAFFIC_INCLUDES_DIR . 'features/';
 			} elseif ( strpos( $class, 'Traffic\Plugin\\' ) === 0 ) {
 				$filepath = TRAFFIC_INCLUDES_DIR . 'plugin/';
-			}
-			if ( strpos( $class, 'Traffic\Library\\' ) === 0 ) {
+			} elseif ( strpos( $class, 'Traffic\Library\\' ) === 0 ) {
 				$filepath = TRAFFIC_VENDOR_DIR;
+			} elseif ( strpos( $class, 'Traffic\Library\\' ) === 0 ) {
+				$filepath = TRAFFIC_VENDOR_DIR;
+			} elseif ( strpos( $class, 'Traffic\Integration\\' ) === 0 ) {
+				$filepath = TRAFFIC_INCLUDES_DIR . 'integrations/';
+			} elseif ( strpos( $class, 'Traffic\API\\' ) === 0 ) {
+				$filepath = TRAFFIC_INCLUDES_DIR . 'api/';
 			}
 			if ( strpos( $filename, '-public' ) !== false ) {
 				$filepath = TRAFFIC_PUBLIC_DIR;
