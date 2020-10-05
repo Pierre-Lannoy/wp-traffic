@@ -635,6 +635,7 @@ class Wpcli {
 			Logger::notice( 'Live console launched.' );
 			while ( true ) {
 				self::records_display( self::records_filter( Memory::read(), $filters ), isset( $assoc_args['soft'] ), $col );
+				ob_flush();
 			}
 		} else {
 			self::records_display( array_slice( self::records_filter( $records, $filters ), -$count ), isset( $assoc_args['soft'] ), $col );

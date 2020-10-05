@@ -3,6 +3,11 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2020-10-05
+
+### Fixed
+- [WP-CLI] With some PHP configurations, there may be a delay in the display of lines.
+
 ## [2.0.1] - 2020-10-05
 
 ### Fixed
