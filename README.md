@@ -20,6 +20,15 @@ __Traffic__ supports multisite report delegation (see FAQ).
 
 __Traffic__ is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
+## WP-CLI
+
+__Traffic__ supports WP-CLI commands to:
+
+* display (past or current) API calls in console - see `wp help api tail` for details;
+* toggle on/off main settings - see `wp help api settings` for details.
+
+For a full help on WP-CLI commands in Traffic, please [read this guide](WP-CLI.md).
+
 ## Installation
 
 1. From your WordPress dashboard, visit _Plugins | Add New_.

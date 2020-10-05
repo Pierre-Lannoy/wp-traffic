@@ -26,6 +26,13 @@ At this time, **Traffic** can report, for inbound and outbound traffic:
 
 **Traffic** supports multisite report delegation (see FAQ).
 
+**Traffic** supports WP-CLI commands to:
+
+* display (past or current) API calls in console - see `wp help api tail` for details;
+* toggle on/off main settings - see `wp help api settings` for details.
+
+For a full help on WP-CLI commands in Traffic, please [read this guide](https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md).
+
 **Traffic** is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
 = Support =
