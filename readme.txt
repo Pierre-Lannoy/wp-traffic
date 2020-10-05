@@ -8,7 +8,7 @@ Stable tag: 2.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Full featured analytics for WordPress APIs.
+Full featured monitoring & analytics for WordPress APIs.
 
 == Description ==
 
