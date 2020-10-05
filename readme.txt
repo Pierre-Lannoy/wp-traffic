@@ -97,3 +97,4 @@ Please, see [full changelog](https://github.com/Pierre-Lannoy/wp-traffic/blob/ma
 4. HTTP Codes List
 5. Subdomain Details - Endpoints List
 6. Endpoint Summary
+7. Live Monitoring
