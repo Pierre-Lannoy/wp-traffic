@@ -56,14 +56,8 @@ class Wpcli {
 	 */
 	private static $exit_codes = [
 		0   => 'operation successful.',
-		1   => 'invalid logger type supplied.',
-		2   => 'invalid logger uuid supplied.',
-		3   => 'system loggers can\'t be managed.',
-		4   => 'unable to create a new logger.',
-		5   => 'unable to modify this logger.',
-		6   => 'invalid listener id supplied.',
-		7   => 'unrecognized setting.',
-		8   => 'unrecognized action.',
+		1   => 'unrecognized setting.',
+		2   => 'unrecognized action.',
 		255 => 'unknown error.',
 	];
 
@@ -350,24 +344,24 @@ class Wpcli {
 	}
 
 	/**
-	 * Modify DecaLog main settings.
+	 * Modify Traffic main settings.
 	 *
 	 * <enable|disable>
 	 * : The action to take.
 	 *
-	 * <early-loading|auto-logging|auto-start>
+	 * <inbound-analytics|outbound-analytics|auto-monitoring|smart-filter>
 	 * : The setting to change.
 	 *
 	 * [--yes]
 	 * : Answer yes to the confirmation message, if any.
 	 *
 	 * [--stdout]
-	 * : Use clean STDOUT output to use results in scripts. Unnecessary when piping commands because piping is detected by DecaLog.
+	 * : Use clean STDOUT output to use results in scripts. Unnecessary when piping commands because piping is detected by Traffic.
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp log settings enable auto-logging
-	 * wp log settings disable early-loading --yes
+	 * wp api settings enable auto-monitoring
+	 * wp api settings disable early-monitoring --yes
 	 *
 	 *
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
@@ -380,45 +374,54 @@ class Wpcli {
 		switch ( $action ) {
 			case 'enable':
 				switch ( $setting ) {
-					case 'early-loading':
-						Option::network_set( 'earlyloading', true );
-						self::success( 'early-loading is now activated.', '', $stdout );
+					case 'inbound-analytics':
+						Option::network_set( 'inbound_capture', true );
+						self::success( 'inbound analytics are now activated.', '', $stdout );
 						break;
-					case 'auto-start':
-						Option::network_set( 'logger_autostart', true );
-						self::success( 'auto-start is now activated.', '', $stdout );
+					case 'outbound-analytics':
+						Option::network_set( 'outbound_capture', true );
+						self::success( 'outbound analytics are now activated.', '', $stdout );
 						break;
-					case 'auto-logging':
-						Autolog::activate();
-						self::success( 'auto-logging is now activated.', '', $stdout );
+					case 'auto-monitoring':
+						Option::network_set( 'livelog', true );
+						self::success( 'auto-monitoring is now activated.', '', $stdout );
+						break;
+					case 'smart-filter':
+						Option::network_set( 'smart_filter', true );
+						self::success( 'smart filter is now activated.', '', $stdout );
 						break;
 					default:
-						self::error( 7, $stdout );
+						self::error( 1, $stdout );
 				}
 				break;
 			case 'disable':
 				switch ( $setting ) {
-					case 'early-loading':
-						\WP_CLI::confirm( 'Are you sure you want to deactivate early-loading?', $assoc_args );
-						Option::network_set( 'earlyloading', false );
-						self::success( 'early-loading is now deactivated.', '', $stdout );
+					case 'inbound-analytics':
+						\WP_CLI::confirm( 'Are you sure you want to deactivate inbound analytic?', $assoc_args );
+						Option::network_set( 'inbound_capture', false );
+						self::success( 'inbound analytics are now deactivated.', '', $stdout );
 						break;
-					case 'auto-start':
-						\WP_CLI::confirm( 'Are you sure you want to deactivate auto-start?', $assoc_args );
-						Option::network_set( 'logger_autostart', false );
-						self::success( 'auto-start is now deactivated.', '', $stdout );
+					case 'outbound-analytics':
+						\WP_CLI::confirm( 'Are you sure you want to deactivate outbound analytic?', $assoc_args );
+						Option::network_set( 'outbound_capture', false );
+						self::success( 'outbound analytics are now deactivated.', '', $stdout );
 						break;
-					case 'auto-logging':
-						\WP_CLI::confirm( 'Are you sure you want to deactivate auto-logging?', $assoc_args );
-						Autolog::deactivate();
-						self::success( 'auto-logging is now deactivated.', '', $stdout );
+					case 'auto-monitoring':
+						\WP_CLI::confirm( 'Are you sure you want to deactivate auto-monitoring?', $assoc_args );
+						Option::network_set( 'livelog', false );
+						self::success( 'auto-monitoring is now deactivated.', '', $stdout );
+						break;
+					case 'smart-filter':
+						\WP_CLI::confirm( 'Are you sure you want to deactivate smart filter?', $assoc_args );
+						Option::network_set( 'smart_filter', false );
+						self::success( 'smart filter is now deactivated.', '', $stdout );
 						break;
 					default:
-						self::error( 7, $stdout );
+						self::error( 1, $stdout );
 				}
 				break;
 			default:
-				self::error( 8, $stdout );
+				self::error( 2, $stdout );
 		}
 	}
 
