@@ -119,10 +119,12 @@ class DecaLog {
 	 */
 	public static function log( $record ) {
 		$record = Http::format_record( $record );
-		foreach ( self::$statistics_filter as $field => $filter ) {
-			foreach ( $filter as $f ) {
-				if ( preg_match( $f, $record[ $field ] ) ) {
-					return;
+		if ( Option::network_get( 'smart_filter' ) ) {
+			foreach ( self::$statistics_filter as $field => $filter ) {
+				foreach ( $filter as $f ) {
+					if ( preg_match( $f, $record[ $field ] ) ) {
+						return;
+					}
 				}
 			}
 		}
