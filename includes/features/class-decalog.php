@@ -32,11 +32,28 @@ use Traffic\System\Conversion;
 class DecaLog {
 
 	/**
+	 * Statistics filter.
+	 *
+	 * @since  2.0.0
+	 * @var    array    $statistics_filter    The statistics filters.
+	 */
+	private static $statistics_filter = [];
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    2.0.0
 	 */
 	public function __construct() {}
+
+	/**
+	 * Initialize static properties and hooks.
+	 *
+	 * @since    2.0.0
+	 */
+	public static function init() {
+		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
+	}
 
 	/**
 	 * Effectively write a buffer element in the database.
@@ -102,6 +119,13 @@ class DecaLog {
 	 */
 	public static function log( $record ) {
 		$record = Http::format_record( $record );
+		foreach ( self::$statistics_filter as $field => $filter ) {
+			foreach ( $filter as $f ) {
+				if ( preg_match( $f, $record[ $field ] ) ) {
+					return;
+				}
+			}
+		}
 		$level  = Option::network_get( strtolower( $record['bound'] ) . '_level', 'unknown' );
 		if ( ! in_array( $level, [ 'debug', 'info', 'notice', 'warning' ], true ) ) {
 			$level = 'info';
@@ -124,3 +148,5 @@ class DecaLog {
 		Logger::log( $level, $message, (int) $record['code'] );
 	}
 }
+
+DecaLog::init();

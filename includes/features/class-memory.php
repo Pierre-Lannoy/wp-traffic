@@ -35,6 +35,14 @@ use malkusch\lock\mutex\FlockMutex;
 class Memory {
 
 	/**
+	 * Statistics filter.
+	 *
+	 * @since  2.0.0
+	 * @var    array    $statistics_filter    The statistics filters.
+	 */
+	private static $statistics_filter = [];
+
+	/**
 	 * Statistics buffer.
 	 *
 	 * @since  2.0.0
@@ -88,6 +96,7 @@ class Memory {
 	 * @since    2.0.0
 	 */
 	public static function init() {
+		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
 		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], 90, 0 );
 		self::$geo_ip = new GeoIP();
 	}
@@ -211,6 +220,13 @@ class Memory {
 	 * @since    2.0.0
 	 */
 	public static function store_statistics( $record ) {
+		foreach ( self::$statistics_filter as $field => $filter ) {
+			foreach ( $filter as $f ) {
+				if ( preg_match( $f, $record[ $field ] ) ) {
+					return;
+				}
+			}
+		}
 		$date = new \DateTime();
 		self::$statistics_buffer[ $date->format( 'YmdHisu' ) ] = $record;
 	}

@@ -269,7 +269,7 @@ class Wpcli {
 
 			switch ( $record['bound'] ) {
 				case 'INBOUND':
-					$line .= '← ' . $country . $record['id'];
+					$line .= '← ' . $country . $record['id'] . '     ' . $record['endpoint'];
 					break;
 				case 'OUTBOUND':
 					$line .= '→ ' . $country . $record['authority'] . $record['endpoint'];
