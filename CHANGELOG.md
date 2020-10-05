@@ -3,6 +3,11 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2020-10-05
+
+### Fixed
+- Some minimized js files are missing.
+
 ## [2.0.0] - 2020-10-05
 
 ### Added
