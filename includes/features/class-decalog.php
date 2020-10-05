@@ -126,7 +126,7 @@ class DecaLog {
 				}
 			}
 		}
-		$level  = Option::network_get( strtolower( $record['bound'] ) . '_level', 'unknown' );
+		$level = Option::network_get( strtolower( $record['bound'] ) . '_level', 'unknown' );
 		if ( ! in_array( $level, [ 'debug', 'info', 'notice', 'warning' ], true ) ) {
 			$level = 'info';
 			Option::network_set( strtolower( $record['bound'] ) . '_level', $level );
