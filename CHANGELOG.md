@@ -3,14 +3,14 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - Will be 2.0.0]
+## [2.0.0] - 2020-10-05
 
 ### Added
 - New live console-in-browser to see API calls as soon as they occur.
 - [WP-CLI] New command to display (past or current) API calls in console: see `wp help api tail` for details.
 - [WP-CLI] New command to display Traffic status: see `wp help api status` for details.
 - [WP-CLI] New command to toggle on/off main settings: see `wp help api settings` for details.
-- Traffic now sends inbound and outbound events to [DecaLog](https://wordpress.org/plugins/decalog/).
+- Traffic now sends inbound and outbound events to [DecaLog](https://wordpress.org/plugins/decalog/) with settable level.
 - New "smart filter" options to exclude noisy internal calls.
 - New Site Health "info" section about shared memory.
 
