@@ -78,8 +78,9 @@ class Option {
 		self::$defaults['outbound_level']    = 'notice';
 		self::$defaults['inbound_level']     = 'debug';
 		self::$defaults['livelog']           = true;
+		self::$defaults['smart_filter']      = true;
 		self::$defaults['history']           = 90;
-		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'inbound_level', 'outbound_level', 'livelog', 'history' ];
+		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'inbound_level', 'outbound_level', 'livelog', 'smart_filter', 'history' ];
 	}
 
 	/**
@@ -244,6 +245,7 @@ class Option {
 		self::network_set( 'inbound_level', self::$defaults['inbound_level'] );
 		self::network_set( 'outbound_level', self::$defaults['outbound_level'] );
 		self::network_set( 'livelog', self::$defaults['livelog'] );
+		self::network_set( 'smart_filter', self::$defaults['smart_filter'] );
 	}
 
 	/**
