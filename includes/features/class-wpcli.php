@@ -249,29 +249,30 @@ class Wpcli {
 			$line .= str_pad( $record['code'], 3, '0', STR_PAD_LEFT ) . ' ';
 			$line .= str_pad( Conversion::data_shorten( $record['size'] ), 7, ' ', STR_PAD_LEFT ) . ' ';
 			$line .= str_pad( $record['latency'] . 'ms', 7, ' ', STR_PAD_LEFT ) . ' ';
-			if ( !Environment::is_wordpress_multisite() ) {
+			if ( Environment::is_wordpress_multisite() ) {
 				$sid = ' SID:' . str_pad( (string) $record['site_id'], 4, '0', STR_PAD_LEFT ) . ' ';
 			} else {
 				$sid = ' ';
 			}
-			$line .= $sid;
+			$url_parts = wp_parse_url( get_site_url( $record['site_id'] ) );
+			if ( array_key_exists( 'host', $url_parts ) && isset( $url_parts['host'] ) ) {
+				$sauth = $url_parts['host'];
+			} else {
+				$sauth = 'Local Site';
+			}
 			if ( $geoip->is_installed() ) {
 				$country = EmojiFlag::get( $record['country'] ) . ' ';
 			} else {
 				$country = '';
 			}
-
 			switch ( $record['bound'] ) {
 				case 'INBOUND':
-					$line .= '← ' . $country . $record['id'] . '     ' . $record['endpoint'];
+					$line .= $sid . $country . $record['id'] . ' → ' . $sauth . $record['endpoint'];
 					break;
 				case 'OUTBOUND':
-					$line .= '→ ' . $country . $record['authority'] . $record['endpoint'];
+					$line .= $sid . $sauth . ' → ' . $country . $record['authority'] . $record['endpoint'];
 					break;
 			}
-
-
-
 			$line = preg_replace( '/[\x00-\x1F\x7F\xA0]/u', '', $line );
 			if ( $pad - 1 < strlen( $line ) ) {
 				$line = substr( $line, 0, $pad - 1 ) . '…';
