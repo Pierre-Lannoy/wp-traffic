@@ -89,5 +89,4 @@ For most commands, Traffic lets you use the following flags:
 > It's not mandatory to use `--stdout` when using `--format=count` or `--format=ids`: in such cases `--stdout` is assumed.
 
 > Note Traffic sets exit code so you can use `$?` to write scripts.
-
 > To know the meaning of Traffic exit codes, just use the command `wp api exitcode list`.
