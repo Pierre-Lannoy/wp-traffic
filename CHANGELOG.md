@@ -8,10 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 - [WP-CLI] Improved documentation.
 
+### Fixed
+- The remote IP can be wrongly detected when behind some types of reverse-proxies.
+
 ## [2.0.2] - 2020-10-05
 
 ### Fixed
-- The remote IP can be wrongly detected when behind some types of reverse-proxies.
 - [WP-CLI] With some PHP configurations, there may be a (big) delay in the display of lines.
 
 ## [2.0.1] - 2020-10-05
