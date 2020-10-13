@@ -10,7 +10,7 @@
  * Plugin Name:       Traffic
  * Plugin URI:        https://github.com/Pierre-Lannoy/wp-traffic
  * Description:       Full featured monitoring & analytics for WordPress APIs.
- * Version:           2.0.2
+ * Version:           2.0.3
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Pierre Lannoy

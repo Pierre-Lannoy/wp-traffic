@@ -12,7 +12,7 @@ define( 'TRAFFIC_PRODUCT_URL', 'https://github.com/Pierre-Lannoy/wp-traffic' );
 define( 'TRAFFIC_PRODUCT_SHORTNAME', 'Traffic' );
 define( 'TRAFFIC_PRODUCT_ABBREVIATION', 'traffic' );
 define( 'TRAFFIC_SLUG', 'traffic' );
-define( 'TRAFFIC_VERSION', '2.0.3-dev0' );
+define( 'TRAFFIC_VERSION', '2.0.3' );
 define( 'TRAFFIC_API_VERSION', '1' );
 define( 'TRAFFIC_CODENAME', '"-"' );
 
