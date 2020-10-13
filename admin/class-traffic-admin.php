@@ -188,8 +188,8 @@ class Traffic_Admin {
 	 * @since 1.2.0
 	 */
 	public function blog_action( $actions, $user_blog ) {
-		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
-			$actions .= " | <a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $user_blog->userblog_id ) ) . "'>" . __( 'API usage', 'traffic' ) . '</a>';
+		if ( ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) && Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ) ) {
+			$actions .= " | <a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $user_blog->userblog_id ) ) . "'>" . __( 'API traffic', 'traffic' ) . '</a>';
 		}
 		return $actions;
 	}
@@ -205,8 +205,8 @@ class Traffic_Admin {
 	 * @since 1.2.0
 	 */
 	public function site_action( $actions, $blog_id, $blogname ) {
-		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) {
-			$actions['api_usage'] = "<a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $blog_id ) ) . "' rel='bookmark'>" . __( 'API usage', 'traffic' ) . '</a>';
+		if ( ( Role::SUPER_ADMIN === Role::admin_type() || Role::LOCAL_ADMIN === Role::admin_type() ) && Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ) ) {
+			$actions['api_usage'] = "<a href='" . esc_url( admin_url( 'admin.php?page=traffic-viewer&site=' . $blog_id ) ) . "' rel='bookmark'>" . __( 'API traffic', 'traffic' ) . '</a>';
 		}
 		return $actions;
 	}
@@ -237,7 +237,9 @@ class Traffic_Admin {
 	 */
 	public function add_actions_links( $actions, $plugin_file, $plugin_data, $context ) {
 		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'admin.php?page=traffic-settings' ) ), esc_html__( 'Settings', 'traffic' ) );
-		$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'admin.php?page=traffic-viewer' ) ), esc_html__( 'Statistics', 'traffic' ) );
+		if ( Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ) ) {
+			$actions[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'admin.php?page=traffic-viewer' ) ), esc_html__( 'Statistics', 'traffic' ) );
+		}
 		return $actions;
 	}
 
