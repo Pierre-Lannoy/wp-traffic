@@ -144,8 +144,8 @@ class Traffic_Admin {
 				'callback'      => [ $this, 'get_viewer_page' ],
 				'position'      => 50,
 				'plugin'        => TRAFFIC_SLUG,
-				'activated'     => true,
-				'remedy'        => '',
+				'activated'     => Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ),
+				'remedy'        => esc_url( admin_url( 'admin.php?page=traffic-settings' ) ),
 			];
 		}
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
