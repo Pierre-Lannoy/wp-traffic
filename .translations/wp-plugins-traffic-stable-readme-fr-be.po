@@ -2,12 +2,12 @@
 # This file is distributed under the same license as the Plugins - Traffic - Stable Readme (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-10-07 15:43+0200\n"
+"PO-Revision-Date: 2020-10-19 09:48+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 2.4.1\n"
 "Language: fr_BE\n"
 "Project-Id-Version: Plugins - Traffic - Stable Readme (latest release)\n"
 "POT-Creation-Date: \n"
@@ -15,12 +15,32 @@ msgstr ""
 "Language-Team: \n"
 
 #. Short description.
-msgid "Full featured analytics for WordPress APIs."
+msgid "Full featured monitoring &amp; analytics for WordPress APIs."
 msgstr "Analyse et rapports statistiques complets pour les API WordPress."
 
 #. Plugin name.
 msgid "Traffic"
 msgstr "Traffic"
+
+#. Found in description paragraph.
+msgid "For a full help on WP-CLI commands in Traffic, please <a href=\"https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md\">read this guide</a>."
+msgstr "Pour obtenir une aide complète sur les commandes WP-CLI dans Traffic, veuillez <a href=\"https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md\">lire ce guide</a>."
+
+#. Found in description paragraph.
+msgid "<strong>Traffic</strong> supports WP-CLI commands to:"
+msgstr "<strong>Traffic</strong> prend en charge un ensemble de commandes WP-CLI pour :"
+
+#. Found in description list item.
+msgid "toggle on/off main settings - see <code>wp help api settings</code> for details."
+msgstr "activer ou désactiver le réglages principaux - voir <code>wp help api settings</code> pour plus de détails."
+
+#. Found in description list item.
+msgid "display (past or current) API calls in console - see <code>wp help api tail</code> for details;"
+msgstr "afficher les appels d’API (passés ou en cour) dans la console - voir <code>wp help api tail</code> pour plus de détails ;"
+
+#. Screenshot description.
+msgid "Live Monitoring"
+msgstr "Supervision en direct"
 
 #. Found in faq paragraph.
 msgid "You can report bugs and suggest ideas via the <a href=\"https://github.com/Pierre-Lannoy/wp-traffic/issues\">GitHub issue tracker</a> of the plugin."
@@ -28,7 +48,7 @@ msgstr "Vous pouvez signaler des bogues et suggérer des améliorations via le <
 
 #. Found in faq paragraph.
 msgid "Support is provided via the official <a href=\"https://wordpress.org/support/plugin/traffic/\">WordPress page</a>."
-msgstr "L’assistance est proposée via la page officielle <a href=\"https://wordpress.org/support/plugin/traffic/« >d’assistance</a>."
+msgstr "L’assistance est proposée via la page officielle <a href=\"https://wordpress.org/support/plugin/traffic/\" >d’assistance</a>."
 
 #. Found in faq paragraph.
 msgid "Yes. It is designed to work on multisite too. Network Admins can configure the plugin and have access to all analytics reports. Sites Admins have access to the analytics reports of their sites."

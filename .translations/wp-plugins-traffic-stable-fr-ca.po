@@ -1,68 +1,180 @@
-# Translation of Plugins - Traffic - Stable (latest release) in French (Belgium)
+# Translation of Plugins - Traffic - Stable (latest release) in French (Canada)
 # This file is distributed under the same license as the Plugins - Traffic - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-03-01 21:03+0100\n"
+"PO-Revision-Date: 2020-10-19 10:12+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.2.4\n"
-"Language: fr_BE\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 2.4.1\n"
+"Language: fr_CA\n"
 "Project-Id-Version: Plugins - Traffic - Stable (latest release)\n"
 "POT-Creation-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#: perfopsone/class-adminmenus.php:378
+#: admin/class-traffic-admin.php:192 admin/class-traffic-admin.php:209
+msgid "API traffic"
+msgstr "Trafic API"
+
+#: perfopsone/class-adminmenus.php:74
+msgid "%s Consoles"
+msgstr "Consoles %s"
+
+#: perfopsone/class-adminmenus.php:74 perfopsone/class-adminmenus.php:75
+msgid "Available Consoles"
+msgstr "Consoles disponibles"
+
+#: includes/system/class-sitehealth.php:321
+msgid "You should consider using shared memory (PHP shmop) to allow inter-process communication."
+msgstr "Vous devriez envisager d’utiliser la mémoire partagée (PHP shmop) pour permettre la communication inter-processus."
+
+#: includes/system/class-sitehealth.php:315
+msgid "You should allow inter-process communication"
+msgstr "Vous devriez autoriser la communication inter-processus"
+
+#: includes/system/class-sitehealth.php:309
+msgid "Your site can use shared memory to allow inter-process communication. That's great."
+msgstr "Votre site peut utiliser la mémoire partagée pour permettre la communication inter-processus. C’est super."
+
+#: includes/system/class-sitehealth.php:303
+msgid "Your site can use shared memory"
+msgstr "Votre site peut utiliser la mémoire partagée"
+
+#: includes/system/class-sitehealth.php:286
+msgid "Shared Memory Test"
+msgstr "Test de mémoire partagée"
+
+#: includes/system/class-markdown.php:46
+msgid "Sorry, unable to find or read the specified file."
+msgstr "Désolé, il est impossible de trouver ou de lire le fichier spécifié."
+
+#: admin/class-traffic-admin.php:684
+msgid "The level at which outbound API calls are logged."
+msgstr "Niveau auquel les appels d’API sortants sont enregistrés."
+
+#: admin/class-traffic-admin.php:620
+msgid "The level at which inbound API calls are logged."
+msgstr "Niveau auquel les appels d’API entrants sont enregistrés."
+
+#: admin/class-traffic-admin.php:608 admin/class-traffic-admin.php:672
+msgid "Note: you need to install %s to use this feature."
+msgstr "Remarque : vous devez installer %s pour utiliser cette fonctionnalité."
+
+#: admin/class-traffic-admin.php:536
+msgid "If checked, Traffic will not take into account the calls that generate \"noise\" in monitoring."
+msgstr "Si coché, Traffic ne prendra pas en compte les appels qui génèrent du « bruit » dans la supervision."
+
+#: admin/class-traffic-admin.php:528
+msgid "Smart filter"
+msgstr "Filtre intelligent"
+
+#: admin/class-traffic-admin.php:519
+msgid "If checked, Traffic will silently start the features needed by live console."
+msgstr "Si coché, Traffic chargera discrètement les fonctionnalités nécessaires à la console en direct."
+
+#: admin/class-traffic-admin.php:516
+msgid "Activate monitoring"
+msgstr "Activer la supervision"
+
+#: admin/class-traffic-admin.php:511
+msgid "Live console"
+msgstr "Console en direct"
+
+#: admin/class-traffic-admin.php:442
+msgid "Shared memory"
+msgstr "Mémoire partagée"
+
+#: admin/class-traffic-admin.php:438
+msgid "Shared memory is not available on your server. To use live console you must activate %s PHP module."
+msgstr "La mémoire partagée n’est pas disponible sur votre serveur. Pour utiliser la console en direct, vous devez activer le module PHP %s."
+
+#: admin/class-traffic-admin.php:435
+msgid "Shared memory is available on your server: you can use live console."
+msgstr "La mémoire partagée est disponible sur votre serveur : vous pouvez utiliser la console en direct."
+
+#. translators: as in the sentence "Check the events that occurred on your
+#. network." or "Check the events that occurred on your website."
+#: admin/class-traffic-admin.php:155
+msgid "Displays API traffic as soon as it happens on your %s."
+msgstr "Affiche le trafic API dès qu’il se produit sur votre %s."
+
+#: admin/class-traffic-admin.php:153 admin/class-traffic-admin.php:160
+msgid "Live API Calls"
+msgstr "Appels d’API en direct"
+
+#: admin/partials/traffic-admin-view-console.php:44
+msgid "Outbounds"
+msgstr "Appels sortants"
+
+#: admin/partials/traffic-admin-view-console.php:43
+msgid "Inbounds"
+msgstr "Appels entrants"
+
+#: admin/partials/traffic-admin-view-console.php:42
+msgid "Both"
+msgstr "Les deux"
+
+#. translators: as in the sentence "Traffic Viewer"
+#: admin/partials/traffic-admin-view-console.php:34
+#: admin/class-traffic-admin.php:159
+msgid "%s Live API Calls"
+msgstr "Appels d’API en direct %s"
+
+#. Description of the plugin
+msgid "Full featured monitoring & analytics for WordPress APIs."
+msgstr "Analyse et rapports statistiques complets pour les API WordPress."
+
+#: perfopsone/class-adminmenus.php:406
 msgid "Requires at least PHP %1$s%2$s and WordPress %3$s%4$s."
 msgstr "Nécessite au moins PHP %1$s%2$s et WordPress %3$s%4$s."
 
-#: perfopsone/class-adminmenus.php:369
+#: perfopsone/class-adminmenus.php:397
 msgid "contribution"
 msgstr "contribution"
 
-#: perfopsone/class-adminmenus.php:368
+#: perfopsone/class-adminmenus.php:396
 msgid "support"
 msgstr "assistance"
 
-#: perfopsone/class-adminmenus.php:367
+#: perfopsone/class-adminmenus.php:395
 msgid "about"
 msgstr "à propos"
 
-#: perfopsone/class-adminmenus.php:366
+#: perfopsone/class-adminmenus.php:394
 msgid "settings"
 msgstr "réglages"
 
-#: perfopsone/class-adminmenus.php:241
+#: perfopsone/class-adminmenus.php:268
 msgid "No review yet."
 msgstr "Pas encore d’avis."
 
-#: perfopsone/class-adminmenus.php:238
+#: perfopsone/class-adminmenus.php:265
 msgid "%s reviews."
 msgstr "%s avis."
 
-#: perfopsone/class-adminmenus.php:233
+#: perfopsone/class-adminmenus.php:260
 msgid "%s downloads."
 msgstr "%s téléchargements."
 
-#: perfopsone/class-adminmenus.php:228
+#: perfopsone/class-adminmenus.php:255
 msgid "%s+ installs."
 msgstr "%s+ installations."
 
-#: perfopsone/class-adminmenus.php:211 perfopsone/class-adminmenus.php:218
+#: perfopsone/class-adminmenus.php:238 perfopsone/class-adminmenus.php:245
 msgid "need update"
 msgstr "nécessite une mise à jour"
 
-#: perfopsone/class-adminmenus.php:209 perfopsone/class-adminmenus.php:216
+#: perfopsone/class-adminmenus.php:236 perfopsone/class-adminmenus.php:243
 msgid "OK"
 msgstr "OK"
 
-#: perfopsone/class-adminmenus.php:203
+#: perfopsone/class-adminmenus.php:230
 msgid "Need to be updated to %s."
 msgstr "Nécessite d’être mis à jour vers %s."
 
-#: perfopsone/class-adminmenus.php:108
+#: perfopsone/class-adminmenus.php:112
 msgid "This analytics feature is currently disabled. Click here to activate it."
 msgstr "Cette fonctionnalité d’analyse est actuellement désactivée. Cliquez ici pour l’activer."
 
@@ -105,384 +217,388 @@ msgstr "Tableau de bord"
 #. translators: as in the sentence "Find out inbound and outbound API calls
 #. made to/from your network." or "Find out inbound and outbound API calls made
 #. to/from your website."
-#: admin/class-traffic-admin.php:116
+#. translators: as in the sentence "Check the events that occurred on your
+#. network." or "Check the events that occurred on your website."
+#: admin/class-traffic-admin.php:137 admin/class-traffic-admin.php:155
 msgid "website"
 msgstr "site web"
 
 #. translators: as in the sentence "Find out inbound and outbound API calls
 #. made to/from your network." or "Find out inbound and outbound API calls made
 #. to/from your website."
-#: admin/class-traffic-admin.php:116
+#. translators: as in the sentence "Check the events that occurred on your
+#. network." or "Check the events that occurred on your website."
+#: admin/class-traffic-admin.php:137 admin/class-traffic-admin.php:155
 msgid "network"
 msgstr "réseau"
 
 #. translators: as in the sentence "Find out inbound and outbound API calls
 #. made to/from your network." or "Find out inbound and outbound API calls made
 #. to/from your website."
-#: admin/class-traffic-admin.php:116
+#: admin/class-traffic-admin.php:137
 msgid "Find out inbound and outbound API calls made to/from your %s."
 msgstr "Apprenez en plus sur les appels API entrants et sortants effectués vers/à partir de votre %s."
 
 #. translators: as in the sentence "DecaLog Viewer"
-#: admin/class-traffic-admin.php:114 admin/class-traffic-admin.php:120
-#: admin/class-traffic-admin.php:121
+#: admin/class-traffic-admin.php:135 admin/class-traffic-admin.php:141
+#: admin/class-traffic-admin.php:142
 msgid "API Traffic"
 msgstr "Trafic API"
 
-#: includes/system/class-sitehealth.php:320
+#: includes/system/class-sitehealth.php:375
 msgid "You should consider using PHP Intl extension. It would improve localization features on your site."
 msgstr "Vous devriez envisager d’utiliser l’extension PHP Intl. Cela permettrait d’améliorer les fonctionnalités de traduction sur votre site."
 
-#: includes/system/class-sitehealth.php:314
+#: includes/system/class-sitehealth.php:369
 msgid "You should use Intl extension"
 msgstr "Vous devriez utiliser l’extension Intl"
 
-#: includes/system/class-sitehealth.php:308
+#: includes/system/class-sitehealth.php:363
 msgid "Your site uses PHP Intl extension to improve localization features. That's great."
 msgstr "Votre site utilise l’extension PHP Intl pour améliorer les fonctionnalités de traduction. C’est super."
 
-#: includes/system/class-sitehealth.php:305
-#: includes/system/class-sitehealth.php:317
+#: includes/system/class-sitehealth.php:360
+#: includes/system/class-sitehealth.php:372
 msgid "Internationalization"
 msgstr "Internationalisation"
 
-#: includes/system/class-sitehealth.php:302
+#: includes/system/class-sitehealth.php:357
 msgid "Your site uses Intl extension"
 msgstr "Votre site utilise l’extension Intl"
 
-#: includes/system/class-sitehealth.php:285
+#: includes/system/class-sitehealth.php:340
 msgid "I18n Extension Test"
 msgstr "Test d’extension I18n"
 
-#: includes/system/class-sitehealth.php:266
+#: includes/system/class-sitehealth.php:267
 msgid "You should consider using OPcache. It would improve PHP performance of your site."
 msgstr "Vous devriez envisager d’utiliser OPcache. Cela permettrait d’améliorer les performances PHP de votre site."
 
-#: includes/system/class-sitehealth.php:260
+#: includes/system/class-sitehealth.php:261
 msgid "You should use OPcache"
 msgstr "Vous devriez utiliser OPcache"
 
-#: includes/system/class-sitehealth.php:254
+#: includes/system/class-sitehealth.php:255
 msgid "Your site uses OPcache to improve PHP performance. That's great."
 msgstr "Votre site utilise OPcache pour améliorer les performances de PHP. C’est super."
 
-#: includes/system/class-sitehealth.php:248
+#: includes/system/class-sitehealth.php:249
 msgid "Your site uses OPcache"
 msgstr "Votre site utilise OPcache"
 
-#: includes/system/class-sitehealth.php:231
+#: includes/system/class-sitehealth.php:232
 msgid "OPcache Test"
 msgstr "Test OPcache"
 
-#: includes/system/class-sitehealth.php:212
+#: includes/system/class-sitehealth.php:213
 msgid "Your site uses a dedicated object caching mechanism. That's great."
-msgstr "Votre site utilise un mécanisme dédié de mise cache d’objets. C'est super."
+msgstr "Votre site utilise un mécanisme dédié de mise cache d’objets. C’est super."
 
-#: includes/system/class-sitehealth.php:206
+#: includes/system/class-sitehealth.php:207
 msgid "Your site uses object caching"
 msgstr "Votre site utilise la mise en cache d’objets"
 
-#: includes/system/class-sitehealth.php:200
+#: includes/system/class-sitehealth.php:201
 msgid "Your site uses APCu, but only a few plugins know how to take advantage of it."
 msgstr "Votre site utilise APCu, mais seules quelques extensions savent comment en profiter."
 
-#: includes/system/class-sitehealth.php:194
+#: includes/system/class-sitehealth.php:195
 msgid "You should improve object caching"
 msgstr "Vous devriez améliorer la mise en cache d’objets"
 
-#: includes/system/class-sitehealth.php:188
-#: includes/system/class-sitehealth.php:200
+#: includes/system/class-sitehealth.php:189
+#: includes/system/class-sitehealth.php:201
 msgid "You should consider using a dedicated object caching mechanism, like Memcached or Redis, to improve your site's speed."
 msgstr "Vous devriez envisager d’utiliser un mécanisme dédié de mise en cache d’objets, comme Memcached ou Redis, pour améliorer la vitesse de votre site."
 
-#: includes/system/class-sitehealth.php:188
+#: includes/system/class-sitehealth.php:189
 msgid "Your site uses database transient."
 msgstr "Votre site utilise des Transients stockés en base de données."
 
-#: includes/system/class-sitehealth.php:185
-#: includes/system/class-sitehealth.php:197
-#: includes/system/class-sitehealth.php:209
-#: includes/system/class-sitehealth.php:251
-#: includes/system/class-sitehealth.php:263
+#: includes/system/class-sitehealth.php:186
+#: includes/system/class-sitehealth.php:198
+#: includes/system/class-sitehealth.php:210
+#: includes/system/class-sitehealth.php:252
+#: includes/system/class-sitehealth.php:264
+#: includes/system/class-sitehealth.php:306
+#: includes/system/class-sitehealth.php:318
 msgid "Performance"
 msgstr "Performance"
 
-#: includes/system/class-sitehealth.php:182
+#: includes/system/class-sitehealth.php:183
 msgid "You should use object caching"
 msgstr "Vous devriez utiliser la mise en cache d’objets"
 
-#: includes/system/class-sitehealth.php:164
+#: includes/system/class-sitehealth.php:165
 msgid "Object Cache Test"
 msgstr "Test de cache d’objets"
 
-#: includes/system/class-sitehealth.php:147
+#: includes/system/class-sitehealth.php:148
 msgid "Plugin diagnostic information"
 msgstr "Informations de diagnostique de l’extension"
 
-#: includes/system/class-sitehealth.php:130
+#: includes/system/class-sitehealth.php:131
 msgid "OPcache settings and status"
 msgstr "Réglages et état OPcache"
 
-#: includes/system/class-sitehealth.php:122
+#: includes/system/class-sitehealth.php:123
 msgid "Object cache"
 msgstr "Cache d’objets"
 
-#: includes/features/class-analytics.php:1517
+#: includes/features/class-analytics.php:1516
 msgid "Sites Breakdown"
 msgstr "Répartition par sites"
 
-#: includes/features/class-analytics.php:1258
-#: includes/features/class-analytics.php:1279
-#: includes/features/class-analytics.php:1324
+#: includes/features/class-analytics.php:1257
+#: includes/features/class-analytics.php:1278
+#: includes/features/class-analytics.php:1323
 msgid "Countries Details"
 msgstr "Détails des pays"
 
-#: includes/features/class-analytics.php:1255
-#: includes/features/class-analytics.php:1276
-#: includes/features/class-analytics.php:1321
+#: includes/features/class-analytics.php:1254
+#: includes/features/class-analytics.php:1275
+#: includes/features/class-analytics.php:1320
 msgid "Methods Details"
 msgstr "Détails des méthodes"
 
-#: includes/features/class-analytics.php:1252
-#: includes/features/class-analytics.php:1273
-#: includes/features/class-analytics.php:1318
+#: includes/features/class-analytics.php:1251
+#: includes/features/class-analytics.php:1272
+#: includes/features/class-analytics.php:1317
 msgid "Protocols Details"
 msgstr "Détails des protocoles"
 
-#: includes/features/class-analytics.php:1249
-#: includes/features/class-analytics.php:1270
-#: includes/features/class-analytics.php:1315
+#: includes/features/class-analytics.php:1248
+#: includes/features/class-analytics.php:1269
+#: includes/features/class-analytics.php:1314
 msgid "HTTP Codes Details"
 msgstr "Détails des codes HTTP"
 
-#: includes/features/class-analytics.php:1487
+#: includes/features/class-analytics.php:1486
 msgid "Uptime variation."
 msgstr "Variation de disponibilité."
 
-#: admin/class-traffic-admin.php:448
+#: admin/class-traffic-admin.php:558
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d an"
 msgstr[1] "%d ans"
 
-#: admin/class-traffic-admin.php:444
+#: admin/class-traffic-admin.php:554
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] "%d mois"
 msgstr[1] "%d mois"
 
-#: admin/class-traffic-admin.php:426
+#: admin/class-traffic-admin.php:502
 msgid "Maximum age of data to keep for statistics."
 msgstr "Âge maximum des données à conserver pour les statistiques."
 
-#: admin/class-traffic-admin.php:418
+#: admin/class-traffic-admin.php:494
 msgid "Historical data"
 msgstr "Données d’historiques"
 
-#: admin/class-traffic-admin.php:183
+#: admin/class-traffic-admin.php:222
 msgid "Plugin features"
 msgstr "Fonctionnalités de l’extension"
 
-#: includes/features/class-analytics.php:706
-#: includes/features/class-analytics.php:712
-#: includes/features/class-analytics.php:714
-#: includes/features/class-analytics.php:716
+#: includes/features/class-analytics.php:705
+#: includes/features/class-analytics.php:711
+#: includes/features/class-analytics.php:713
+#: includes/features/class-analytics.php:715
 msgctxt "Unit symbol - Stands for \"millisecond\"."
 msgid "ms"
 msgstr "ms"
 
-#: includes/features/class-analytics.php:704
-#: includes/features/class-analytics.php:710
+#: includes/features/class-analytics.php:703
+#: includes/features/class-analytics.php:709
 msgctxt "Unit symbol - Stands for \"second\"."
 msgid "s"
 msgstr "s"
 
-#: includes/features/class-analytics.php:2165
+#: includes/features/class-analytics.php:2164
 msgid "Custom Range"
 msgstr "Personnalisé"
 
-#: includes/features/class-analytics.php:1900
+#: includes/features/class-analytics.php:1899
 msgid "View the details of all methods."
 msgstr "Voir les détails de toutes les méthodes."
 
-#: includes/features/class-analytics.php:1848
+#: includes/features/class-analytics.php:1847
 msgid "View the details of protocols breakdown."
 msgstr "Voir les détails de la ventilation par protocoles."
 
-#: includes/features/class-analytics.php:1796
+#: includes/features/class-analytics.php:1795
 msgid "View the details of all codes."
 msgstr "Voir les détails de tous les codes."
 
-#: includes/features/class-analytics.php:1744
+#: includes/features/class-analytics.php:1743
 msgid "View the details of all countries."
 msgstr "Voir les détails de tous les pays."
 
-#: includes/features/class-analytics.php:1692
+#: includes/features/class-analytics.php:1691
 msgid "View the details of all endpoints."
 msgstr "Voir les détails de tous les points de terminaison."
 
-#: includes/features/class-analytics.php:1663
+#: includes/features/class-analytics.php:1662
 msgid "View the details of all subdomains."
 msgstr "Voir les détails de tous les sous-domaines."
 
-#: includes/features/class-analytics.php:1634
+#: includes/features/class-analytics.php:1633
 msgid "View the details of all domains."
 msgstr "Voir les détails de tous les domaines."
 
-#: includes/features/class-analytics.php:1486
+#: includes/features/class-analytics.php:1485
 msgid "Data volume distribution."
 msgstr "Distribution des volume de données transférées."
 
-#: includes/features/class-analytics.php:1485
+#: includes/features/class-analytics.php:1484
 msgid "Responses types distribution."
 msgstr "Distribution des types de réponses."
 
-#: includes/features/class-analytics.php:1417
-#: includes/features/class-analytics.php:1419
+#: includes/features/class-analytics.php:1416
+#: includes/features/class-analytics.php:1418
 msgid "Site ID %s"
 msgstr "Site ID %s"
 
-#: includes/features/class-analytics.php:1413
+#: includes/features/class-analytics.php:1412
 msgid "All Sites"
 msgstr "Tous les sites"
 
-#: admin/class-traffic-admin.php:385
+#: admin/class-traffic-admin.php:461
 msgid "If checked, Traffic will use a public CDN (jsDelivr) to serve scripts and stylesheets."
 msgstr "Si coché, Traffic utilisera un CDN public (jsDelivr) pour la distribution des scripts et des feuilles de style."
 
-#: admin/class-traffic-admin.php:331
+#: admin/class-traffic-admin.php:389
 msgid "Note: This feature uses the (free) Google Favicon Service."
 msgstr "Remarque : cette fonctionnalité utilise le service Google Favicon (gratuit)."
 
-#: admin/class-traffic-admin.php:331
+#: admin/class-traffic-admin.php:389
 msgid "If checked, Traffic will download favicons of websites to display them in reports."
 msgstr "Si coché, Traffic téléchargera les favicons des sites Web pour les afficher dans les rapports."
 
-#: admin/class-traffic-admin.php:328
+#: admin/class-traffic-admin.php:386
 msgid "Download and display"
 msgstr "Téléchargement et affichage"
 
-#: admin/class-traffic-admin.php:323
+#: admin/class-traffic-admin.php:381
 msgid "Favicons"
 msgstr "Favicons"
-
-#: admin/class-traffic-admin.php:153 admin/class-traffic-admin.php:170
-msgid "API usage"
-msgstr "Utilisation de l’API"
 
 #: includes/plugin/class-updater.php:51
 msgid "See <a href=\"%s\">what's new</a>."
 msgstr "Voir <a href=\"%s\">les nouveautés</a>."
 
-#: admin/class-traffic-admin.php:382
+#: admin/class-traffic-admin.php:458
 msgid "Use public CDN"
 msgstr "Utiliser un CDN public"
 
-#: admin/class-traffic-admin.php:377
+#: admin/class-traffic-admin.php:453
 msgid "Resources"
 msgstr "Ressources"
 
-#: admin/class-traffic-admin.php:366
+#: admin/class-traffic-admin.php:424 admin/class-traffic-admin.php:612
+#: admin/class-traffic-admin.php:676
 msgid "Logging"
 msgstr "Enregistrement"
 
-#: admin/class-traffic-admin.php:362
+#: admin/class-traffic-admin.php:420
 msgid "Your site does not use any logging plugin. To log all events triggered in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory."
 msgstr "Votre site n’utilise aucune extension d’enregistrement. Pour enregistrer tous les évènements déclenchés par Traffic, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
 
-#: admin/class-traffic-admin.php:340 admin/class-traffic-admin.php:359
+#: admin/class-traffic-admin.php:398 admin/class-traffic-admin.php:417
 msgid "Your site is currently using %s."
 msgstr "Votre site utilise actuellement %s."
 
-#: admin/class-traffic-admin.php:513
+#: admin/class-traffic-admin.php:663
 msgid "If checked, Traffic will analyze outbound API calls (the calls made by your site to external services)."
 msgstr "Si coché, Traffic analysera les appels API sortants (les appels effectués par votre site vers des services externes)."
 
-#: admin/class-traffic-admin.php:488 admin/class-traffic-admin.php:531
+#: admin/class-traffic-admin.php:638 admin/class-traffic-admin.php:702
 msgid "Allows to keep only the first most significative elements of the endpoint path."
 msgstr "Permet de ne conserver que les premiers éléments les plus significatifs du chemin de point de terminaison."
 
-#: admin/class-traffic-admin.php:478 admin/class-traffic-admin.php:521
+#: admin/class-traffic-admin.php:628 admin/class-traffic-admin.php:692
 msgid "Path cut"
 msgstr "Coupure du chemin"
 
-#: admin/class-traffic-admin.php:470
+#: admin/class-traffic-admin.php:599
 msgid "If checked, Traffic will analyze inbound API calls (the calls made by external sites or apps to your site)."
 msgstr "Si coché, Traffic analysera les appels API entrants (les appels effectués par des sites ou des applications externes vers votre site)."
 
-#: admin/class-traffic-admin.php:467 admin/class-traffic-admin.php:510
+#: admin/class-traffic-admin.php:533 admin/class-traffic-admin.php:596
+#: admin/class-traffic-admin.php:660
 msgid "Activated"
 msgstr "Activé"
 
-#: admin/class-traffic-admin.php:462 admin/class-traffic-admin.php:505
+#: admin/class-traffic-admin.php:591 admin/class-traffic-admin.php:655
 msgid "Analytics"
 msgstr "Statistiques"
 
-#: admin/class-traffic-admin.php:401
+#: admin/class-traffic-admin.php:477
 msgid "Note: Traffic respects DISABLE_NAG_NOTICES flag."
 msgstr "Note : Traffic respecte l’indicateur DISABLE_NAG_NOTICES."
 
-#: admin/class-traffic-admin.php:401
+#: admin/class-traffic-admin.php:477
 msgid "Allows Traffic to display admin notices throughout the admin dashboard."
 msgstr "Autoriser Traffic à afficher les avis d’administration dans le Tableau de bord."
 
-#: admin/class-traffic-admin.php:398
+#: admin/class-traffic-admin.php:474
 msgid "Display"
 msgstr "Affichage"
 
-#: admin/class-traffic-admin.php:393
+#: admin/class-traffic-admin.php:469
 msgid "Admin notices"
 msgstr "Avis d’administration"
 
-#: admin/class-traffic-admin.php:347
+#: admin/class-traffic-admin.php:405
 msgid "IP information"
 msgstr "Géolocalisation IP"
 
-#: admin/class-traffic-admin.php:343
+#: admin/class-traffic-admin.php:401
 msgid "Your site does not use any IP geographic information plugin. To take advantage of the geographical distribution of calls in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory."
 msgstr "Votre site n’utilise aucune extension de géolocalisation d’IP. Pour profiter de la répartition géographique des appels dans Traffic, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
 
-#: admin/class-traffic-admin.php:306
+#: admin/class-traffic-admin.php:364
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr "Les réglages n’ont pas été réinitialisés à leurs valeurs par défaut. Veuillez réessayer."
 
-#: admin/class-traffic-admin.php:301
+#: admin/class-traffic-admin.php:359
 msgid "Plugin settings have been reset to defaults."
 msgstr "Le réglages ont été réinitialisées aux valeurs par défaut."
 
-#: admin/class-traffic-admin.php:284
+#: admin/class-traffic-admin.php:342
 msgid "Plugin settings have not been saved. Please try again."
 msgstr "Les réglages n’ont pas été mis à jour. Veuillez réessayer."
 
-#: admin/class-traffic-admin.php:279
+#: admin/class-traffic-admin.php:337
 msgid "Plugin settings have been saved."
 msgstr "Les réglages ont été mis à jour."
 
-#: admin/class-traffic-admin.php:216
+#: admin/class-traffic-admin.php:257
 msgid "GitHub repository"
 msgstr "Dépôt GitHub"
 
-#: admin/class-traffic-admin.php:215
+#: admin/class-traffic-admin.php:256
 msgid "Support"
 msgstr "Assistance"
 
-#: admin/class-traffic-admin.php:201
+#: admin/class-traffic-admin.php:241
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: admin/class-traffic-admin.php:200
+#: admin/class-traffic-admin.php:239
 msgid "Settings"
 msgstr "Réglages"
 
-#: admin/class-traffic-admin.php:184
+#: admin/class-traffic-admin.php:223
 msgid "Plugin options"
 msgstr "Options de l’extension"
 
-#: admin/class-traffic-admin.php:182
+#: admin/class-traffic-admin.php:221
 msgid "Outbound APIs"
 msgstr "API sortantes"
 
-#: admin/class-traffic-admin.php:181
+#: admin/class-traffic-admin.php:220
 msgid "Inbound APIs"
 msgstr "API entrants"
 
@@ -514,24 +630,20 @@ msgstr "Cette version de %s n’est pas destinée à être mise en production. I
 msgid "Reset to Defaults"
 msgstr "Réinitialiser les paramètres par défaut"
 
-#: admin/partials/traffic-admin-settings-main.php:57
+#: admin/partials/traffic-admin-settings-main.php:56
 msgid "About"
 msgstr "À propos"
 
-#: admin/partials/traffic-admin-settings-main.php:44
+#: admin/partials/traffic-admin-settings-main.php:43
 msgid "Options"
 msgstr "Options"
 
 #. translators: as in the sentence "Traffic Settings" or "WordPress Settings"
-#: admin/class-traffic-admin.php:100
-#: admin/partials/traffic-admin-settings-main.php:28
 #: perfopsone/class-adminmenus.php:70
+#: admin/partials/traffic-admin-settings-main.php:27
+#: admin/class-traffic-admin.php:121
 msgid "%s Settings"
 msgstr "Réglages %s"
-
-#: admin/partials/traffic-admin-settings-main.php:22
-msgid "Note: analytics reports are available via the <a href=\"%s\">tools menu</a>."
-msgstr "Remarque : les rapports d’analyse sont disponibles via le <a href=\"%s\">menu outils</a>."
 
 #. translators: as in the sentence "Product W version X by author Y (license
 #. Z)"
@@ -561,7 +673,7 @@ msgstr "Licence MIT"
 
 #: includes/libraries/class-libraries.php:67
 #: includes/libraries/class-libraries.php:78
-#: includes/libraries/class-libraries.php:90
+#: includes/libraries/class-libraries.php:89
 #: includes/libraries/class-libraries.php:183
 #: includes/libraries/class-libraries.php:191
 #: includes/libraries/class-libraries.php:199
@@ -571,10 +683,6 @@ msgstr "Licence MIT"
 msgid "%s & contributors"
 msgstr "%s et contributeurs"
 
-#: includes/plugin/class-updater.php:99
-msgid "Sorry, unable to find or read changelog file."
-msgstr "Désolé, il est impossible de trouver ou de lire le journal des modifications."
-
 #: includes/plugin/class-updater.php:48
 msgid "%1$s has been correctly updated from version %2$s to version %3$s."
 msgstr "%1$s a été correctement mis à jour de la version %2$s à la version %3$s."
@@ -583,19 +691,19 @@ msgstr "%1$s a été correctement mis à jour de la version %2$s à la version %
 msgid "%1$s has been correctly installed."
 msgstr "%1$s a été correctement installé."
 
-#: includes/system/class-environment.php:203
+#: includes/system/class-environment.php:206
 msgid "Debug disabled"
 msgstr "Débogage désactivé"
 
-#: includes/system/class-environment.php:203
+#: includes/system/class-environment.php:206
 msgid "Debug enabled"
 msgstr "Débogage activé"
 
-#: includes/system/class-environment.php:197
+#: includes/system/class-environment.php:200
 msgid "display"
 msgstr "affichage"
 
-#: includes/system/class-environment.php:192
+#: includes/system/class-environment.php:195
 msgid "log"
 msgstr "registre"
 
@@ -709,256 +817,256 @@ msgstr "actuellement"
 msgid "%s ago"
 msgstr "il y a %s"
 
-#: includes/features/class-analytics.php:2170
+#: includes/features/class-analytics.php:2169
 msgid "Last Month"
 msgstr "Mois dernier"
 
-#: includes/features/class-analytics.php:2169
+#: includes/features/class-analytics.php:2168
 msgid "This Month"
 msgstr "Mois en cours"
 
-#: includes/features/class-analytics.php:2168
+#: includes/features/class-analytics.php:2167
 msgid "Yesterday"
 msgstr "Hier"
 
-#: includes/features/class-analytics.php:2167
+#: includes/features/class-analytics.php:2166
 msgid "Today"
 msgstr "Aujourd’hui"
 
-#: includes/features/class-analytics.php:2165
+#: includes/features/class-analytics.php:2164
 msgid "Apply"
 msgstr "Appliquer"
 
-#: includes/features/class-analytics.php:2165
+#: includes/features/class-analytics.php:2164
 msgid "Cancel"
 msgstr "Annuler"
 
-#: includes/features/class-analytics.php:1951
+#: includes/features/class-analytics.php:1950
 msgid "Perceived uptime, from the viewpoint of the site."
 msgstr "Disponibilité perçue, du point de vue du site."
 
-#: includes/features/class-analytics.php:1950
+#: includes/features/class-analytics.php:1949
 msgctxt "Noun - Perceived uptime, from the viewpoint of the site."
 msgid "Perceived Uptime"
 msgstr "Disponibilité perçue"
 
-#: includes/features/class-analytics.php:1946
+#: includes/features/class-analytics.php:1945
 msgid "Ratio of the number of HTTP success to the total number of calls."
 msgstr "Ratio du nombre de succès HTTP sur le nombre total d’appels."
 
-#: includes/features/class-analytics.php:1945
+#: includes/features/class-analytics.php:1944
 msgctxt "Noun - Ratio of the number of HTTP success to the total number of calls."
 msgid "Effective Pass Rate"
 msgstr "Taux de réussite"
 
-#: includes/features/class-analytics.php:1941
+#: includes/features/class-analytics.php:1940
 msgid "Ratio of the quota enforcement number to the total number of calls."
 msgstr "Ratio du nombre de blocages par quota sur le nombre total d’appels."
 
-#: includes/features/class-analytics.php:1940
+#: includes/features/class-analytics.php:1939
 msgctxt "Noun - Ratio of the quota enforcement number to the total number of calls."
 msgid "Quotas Error Rate"
 msgstr "Taux d’erreur quotas"
 
-#: includes/features/class-analytics.php:1936
+#: includes/features/class-analytics.php:1935
 msgid "Ratio of the number of HTTP errors to the total number of calls."
 msgstr "Ratio du nombre d’erreurs HTTP sur le nombre total d’appels."
 
-#: includes/features/class-analytics.php:1935
+#: includes/features/class-analytics.php:1934
 msgctxt "Noun - Ratio of the number of HTTP errors to the total number of calls."
 msgid "Server Error Rate"
 msgstr "Taux d’erreur serveur"
 
-#: includes/features/class-analytics.php:1931
+#: includes/features/class-analytics.php:1930
 msgid "Volume of transferred data."
 msgstr "Volume de données transférées."
 
-#: includes/features/class-analytics.php:1930
+#: includes/features/class-analytics.php:1929
 msgctxt "Noun - Volume of transferred data."
 msgid "Data Volume"
 msgstr "Données"
 
-#: includes/features/class-analytics.php:1926
+#: includes/features/class-analytics.php:1925
 msgid "Number of API calls."
 msgstr "Nombre d’appels API."
 
-#: includes/features/class-analytics.php:1925
+#: includes/features/class-analytics.php:1924
 msgctxt "Noun - Number API calls."
 msgid "Number of Calls"
 msgstr "Nombre d’appels"
 
-#: includes/features/class-analytics.php:1902
+#: includes/features/class-analytics.php:1901
 msgid "Methods"
 msgstr "Méthodes"
 
-#: includes/features/class-analytics.php:1850
+#: includes/features/class-analytics.php:1849
 msgid "Protocols"
 msgstr "Protocoles"
 
-#: includes/features/class-analytics.php:1798
+#: includes/features/class-analytics.php:1797
 msgid "HTTP codes"
 msgstr "Codes HTTP"
 
-#: includes/features/class-analytics.php:1746
+#: includes/features/class-analytics.php:1745
 msgid "Countries"
 msgstr "Pays"
 
-#: includes/features/class-analytics.php:1694
+#: includes/features/class-analytics.php:1693
 msgid "Top Endpoints"
 msgstr "Points de terminaison principaux"
 
-#: includes/features/class-analytics.php:1665
+#: includes/features/class-analytics.php:1664
 msgid "Top Subdomains"
 msgstr "Sous-domaines principaux"
 
-#: includes/features/class-analytics.php:1636
+#: includes/features/class-analytics.php:1635
 msgid "Top Domains"
 msgstr "Domaines principaux"
 
-#: includes/features/class-analytics.php:1607
+#: includes/features/class-analytics.php:1606
 msgid "All Countries"
 msgstr "Tous les pays"
 
-#: includes/features/class-analytics.php:1604
+#: includes/features/class-analytics.php:1603
 msgid "All Methods"
 msgstr "Toutes les méthodes"
 
-#: includes/features/class-analytics.php:1601
+#: includes/features/class-analytics.php:1600
 msgid "All Protocols"
 msgstr "Tous les protocoles"
 
-#: includes/features/class-analytics.php:1598
+#: includes/features/class-analytics.php:1597
 msgid "All HTTP Codes"
 msgstr "Tous les codes HTTP"
 
-#: includes/features/class-analytics.php:1577
-#: includes/features/class-analytics.php:1610
+#: includes/features/class-analytics.php:1576
+#: includes/features/class-analytics.php:1609
 msgid "All Endpoints"
 msgstr "Tous les points de terminaison"
 
-#: includes/features/class-analytics.php:1557
+#: includes/features/class-analytics.php:1556
 msgid "All Subdomains"
 msgstr "Tous les sous-domaines"
 
-#: includes/features/class-analytics.php:1537
+#: includes/features/class-analytics.php:1536
 msgid "All Domains"
 msgstr "Tous les domaines"
 
-#: includes/features/class-analytics.php:1493
+#: includes/features/class-analytics.php:1492
 msgid "Metrics Variations"
 msgstr "Variations des métriques"
 
-#: includes/features/class-analytics.php:1389
+#: includes/features/class-analytics.php:1388
 msgid "Return to Traffic main page."
 msgstr "Retour à la page principale de Traffic."
 
-#: includes/features/class-analytics.php:1388
-#: includes/features/class-analytics.php:1435
+#: includes/features/class-analytics.php:1387
+#: includes/features/class-analytics.php:1434
 msgid "Main Summary"
 msgstr "Résumé principal"
 
-#: includes/features/class-analytics.php:1382
+#: includes/features/class-analytics.php:1381
 msgid "Country"
 msgstr "Pays"
 
-#: includes/features/class-analytics.php:1355
+#: includes/features/class-analytics.php:1354
 msgid "Endpoint Summary"
 msgstr "Résumé du point de terminaison"
 
-#: includes/features/class-analytics.php:1327
+#: includes/features/class-analytics.php:1326
 msgid "Subdomain Details"
 msgstr "Détails du sous-domaine"
 
-#: includes/features/class-analytics.php:1298
-#: includes/features/class-analytics.php:1330
-#: includes/features/class-analytics.php:1357
+#: includes/features/class-analytics.php:1297
+#: includes/features/class-analytics.php:1329
+#: includes/features/class-analytics.php:1356
 msgid "Subdomain Summary"
 msgstr "Résumé du sous-domaine"
 
-#: includes/features/class-analytics.php:1286
-#: includes/features/class-analytics.php:1301
-#: includes/features/class-analytics.php:1331
-#: includes/features/class-analytics.php:1343
-#: includes/features/class-analytics.php:1358
-#: includes/features/class-analytics.php:1370
+#: includes/features/class-analytics.php:1285
+#: includes/features/class-analytics.php:1300
+#: includes/features/class-analytics.php:1330
+#: includes/features/class-analytics.php:1342
+#: includes/features/class-analytics.php:1357
+#: includes/features/class-analytics.php:1369
 msgid "Return to %s"
 msgstr "Retour à %s"
 
-#: includes/features/class-analytics.php:1282
+#: includes/features/class-analytics.php:1281
 msgid "Domain Details"
 msgstr "Détails du domaine"
 
-#: includes/features/class-analytics.php:1265
-#: includes/features/class-analytics.php:1285
-#: includes/features/class-analytics.php:1300
-#: includes/features/class-analytics.php:1342
-#: includes/features/class-analytics.php:1369
+#: includes/features/class-analytics.php:1264
+#: includes/features/class-analytics.php:1284
+#: includes/features/class-analytics.php:1299
+#: includes/features/class-analytics.php:1341
+#: includes/features/class-analytics.php:1368
 msgid "Domain Summary"
 msgstr "Résumé du domaine"
 
-#: includes/features/class-analytics.php:1261
+#: includes/features/class-analytics.php:1260
 msgid "Domains Details"
 msgstr "Détails des domaines"
 
-#: includes/features/class-analytics.php:1228
+#: includes/features/class-analytics.php:1227
 msgid "down %s"
 msgstr "indisponibilité de %s"
 
-#: includes/features/class-analytics.php:1226
+#: includes/features/class-analytics.php:1225
 msgid "no downtime"
 msgstr "pas d’indisponibilité"
 
-#: includes/features/class-analytics.php:1220
+#: includes/features/class-analytics.php:1219
 msgid "%s successful calls"
 msgstr "%s appels réussis"
 
-#: includes/features/class-analytics.php:1217
+#: includes/features/class-analytics.php:1216
 msgid "%s blocked calls"
 msgstr "%s appels bloqués"
 
-#: includes/features/class-analytics.php:1214
+#: includes/features/class-analytics.php:1213
 msgid "%s calls in error"
 msgstr "%s appels en erreur"
 
-#: includes/features/class-analytics.php:1108
+#: includes/features/class-analytics.php:1107
 msgid "avg latency: %s ms."
 msgstr "latence moyenne : %s ms."
 
-#: includes/features/class-analytics.php:994
+#: includes/features/class-analytics.php:993
 msgid "Perceived Uptime"
 msgstr "Disponibilité perçue"
 
-#: includes/features/class-analytics.php:978
+#: includes/features/class-analytics.php:977
 msgid "Outcoming Data"
 msgstr "Données sortantes"
 
-#: includes/features/class-analytics.php:974
+#: includes/features/class-analytics.php:973
 msgid "Incoming Data"
 msgstr "Données entrantes"
 
-#: includes/features/class-analytics.php:945
+#: includes/features/class-analytics.php:944
 msgid "Quota Error"
 msgstr "Erreur de quota"
 
-#: includes/features/class-analytics.php:941
+#: includes/features/class-analytics.php:940
 msgid "Error"
 msgstr "Erreur"
 
-#: includes/features/class-analytics.php:937
+#: includes/features/class-analytics.php:936
 msgid "Success"
 msgstr "Succès"
 
-#: includes/features/class-analytics.php:778
+#: includes/features/class-analytics.php:777
 msgid "calls"
 msgstr "appels"
 
-#: includes/features/class-analytics.php:613
+#: includes/features/class-analytics.php:614
 msgid "%d endpoint"
 msgid_plural "%d endpoints"
 msgstr[0] "%d point de terminaison"
 msgstr[1] "%d points de terminaison"
 
-#: includes/features/class-analytics.php:612
+#: includes/features/class-analytics.php:613
 msgid "%d subdomain"
 msgid_plural "%d subdomains"
 msgstr[0] "%d sous-domaine"
@@ -983,7 +1091,7 @@ msgstr "Détails"
 #: includes/features/class-analytics.php:428
 #: includes/features/class-analytics.php:430
 #: includes/features/class-analytics.php:532
-#: includes/features/class-analytics.php:686
+#: includes/features/class-analytics.php:687
 msgid "Other"
 msgstr "Autre"
 
@@ -994,10 +1102,6 @@ msgstr "https://pierre.lannoy.fr"
 #. Author of the plugin
 msgid "Pierre Lannoy"
 msgstr "Pierre Lannoy"
-
-#. Description of the plugin
-msgid "Full featured analytics for WordPress APIs."
-msgstr "Analyse et rapports statistiques complets pour les API WordPress."
 
 #. Plugin URI of the plugin
 msgid "https://github.com/Pierre-Lannoy/wp-traffic"
