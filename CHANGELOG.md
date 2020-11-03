@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [2.0.3] - 2020-10-13
 
 ### Changed
+- Improvement in the way roles are detected.
 - [WP-CLI] Improved documentation.
 - Hardening (once again) IPs detection.
 - The analytics dashboard now displays a warning if analytics features are not activated.
