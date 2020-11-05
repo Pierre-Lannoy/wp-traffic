@@ -3,10 +3,17 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.3] - 2020-10-13
+[Unreleased - Will be 2.0.4]
 
 ### Changed
 - Improvement in the way roles are detected.
+
+### Fixed
+- [SEC001] User must be wrongly detected in XML-RPC or Rest API calls.
+
+## [2.0.3] - 2020-10-13
+
+### Changed
 - [WP-CLI] Improved documentation.
 - Hardening (once again) IPs detection.
 - The analytics dashboard now displays a warning if analytics features are not activated.
