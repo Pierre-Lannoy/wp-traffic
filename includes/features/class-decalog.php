@@ -138,7 +138,7 @@ class DecaLog {
 				$message = ucfirst( strtolower( $record['bound'] ) ) . ' ' . $record['verb'] . ' from ' . $record['id'];
 				break;
 			case 'OUTBOUND':
-				$message = ucfirst( strtolower( $record['bound'] ) ). ' ' . $record['verb'] . ' to ' . $record['id'];
+				$message = ucfirst( strtolower( $record['bound'] ) ) . ' ' . $record['verb'] . ' to ' . $record['id'];
 				break;
 			default:
 				$message = '';
