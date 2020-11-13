@@ -32,7 +32,7 @@ wp_enqueue_script( TRAFFIC_LIVELOG_ID );
 
 <div class="wrap">
 	<h2><?php echo sprintf( esc_html__( '%s Live API Calls', 'traffic' ), TRAFFIC_PRODUCT_NAME );?></h2>
-    <div class="media-toolbar wp-filter" style=border-radius:4px;>
+    <div class="media-toolbar wp-filter traffic-pilot-toolbar" style="border-radius:4px;">
         <div class="media-toolbar-secondary" data-children-count="2">
             <div class="view-switch media-grid-view-switch">
                 <span class="dashicons dashicons-controls-play traffic-control traffic-control-inactive" id="traffic-control-play"></span>

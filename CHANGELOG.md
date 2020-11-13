@@ -7,9 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 - Improvement in the way roles are detected.
+- Compatibility with WordPress 5.6.
+- Better web console layout.
 
 ### Fixed
-- [SEC001] User must be wrongly detected in XML-RPC or Rest API calls.
+- [SEC001] User may be wrongly detected in XML-RPC or Rest API calls.
 - When site is in english and a user choose another language for herself/himself, menu may be stuck in english.
 
 ## [2.0.3] - 2020-10-13
