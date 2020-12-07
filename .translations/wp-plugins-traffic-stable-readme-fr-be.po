@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Traffic - Stable Readme (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-10-19 09:48+0200\n"
+"PO-Revision-Date: 2020-12-07 17:11+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -52,7 +52,7 @@ msgstr "L’assistance est proposée via la page officielle <a href=\"https://wo
 
 #. Found in faq paragraph.
 msgid "Yes. It is designed to work on multisite too. Network Admins can configure the plugin and have access to all analytics reports. Sites Admins have access to the analytics reports of their sites."
-msgstr "Oui. Cette extension est conçue pour fonctionner sur un multisite aussi. Les administrateurs du réseau peuvent configurer l’extension et avoir accès à tous les rapports d’analyse. Les administrateurs de sites ont juste accès aux rapports d’analyse de leurs sites."
+msgstr "Oui. Cette extension est conçue pour fonctionner sur un multisite aussi. Les administratrices et administrateurs du réseau peuvent configurer l’extension et avoir accès à tous les rapports d’analyse. Les administratrices et administrateurs de sites ont juste accès aux rapports d’analyse de leurs sites."
 
 #. Found in faq paragraph.
 msgid "You need at least <strong>WordPress 5.2</strong> and <strong>PHP 7.2</strong>."
