@@ -324,7 +324,7 @@ class Traffic_Admin {
 			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'traffic-plugin-options' ) ) {
 				Option::network_set( 'use_cdn', array_key_exists( 'traffic_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_usecdn' ) : false );
 				Option::network_set( 'download_favicons', array_key_exists( 'traffic_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_favicons' ) : false );
-				Option::network_set( 'download_favicons', array_key_exists( 'traffic_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_favicons' ) : false );
+				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
 				Option::network_set( 'smart_filter', array_key_exists( 'traffic_plugin_features_smart_filter', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_smart_filter' ) : false );
 				Option::network_set( 'livelog', array_key_exists( 'traffic_plugin_features_livelog', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_livelog' ) : false );
 				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
