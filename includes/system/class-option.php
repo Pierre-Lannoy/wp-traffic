@@ -233,19 +233,11 @@ class Option {
 	 * @since 1.0.0
 	 */
 	public static function reset_to_defaults() {
-		self::network_set( 'use_cdn', self::$defaults['use_cdn'] );
-		self::network_set( 'download_favicons', self::$defaults['download_favicons'] );
-		self::network_set( 'script_in_footer', self::$defaults['script_in_footer'] );
-		self::network_set( 'display_nag', self::$defaults['display_nag'] );
-		self::network_set( 'inbound_cut_path', self::$defaults['inbound_cut_path'] );
-		self::network_set( 'outbound_cut_path', self::$defaults['outbound_cut_path'] );
-		self::network_set( 'inbound_capture', self::$defaults['inbound_capture'] );
-		self::network_set( 'outbound_capture', self::$defaults['outbound_capture'] );
-		self::network_set( 'history', self::$defaults['history'] );
-		self::network_set( 'inbound_level', self::$defaults['inbound_level'] );
-		self::network_set( 'outbound_level', self::$defaults['outbound_level'] );
-		self::network_set( 'livelog', self::$defaults['livelog'] );
-		self::network_set( 'smart_filter', self::$defaults['smart_filter'] );
+		foreach ( self::$network as $key ) {
+			if ( 'version' !== $key ) {
+				self::network_set( $key, self::$defaults[ $key ] );
+			}
+		}
 	}
 
 	/**
