@@ -52,7 +52,7 @@ class DecaLog {
 	 * @since    2.0.0
 	 */
 	public static function init() {
-		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
+		self::$statistics_filter['endpoint'] = [ '/^\/livelog/iU', '/^\/server-status/iU', '/^\/server-info/iU' ];
 	}
 
 	/**

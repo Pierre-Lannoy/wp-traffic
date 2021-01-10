@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Changed
+- Smart filter now filters `/server-status` and `/server-info` calls.
 - Consistent reset for settings.
 - Improved translation loading.
 
