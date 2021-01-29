@@ -27,9 +27,7 @@ use Traffic\System\Http;
 use Traffic\System\SharedMemory;
 
 /**
- * WP-CLI for Traffic.
- *
- * Defines methods and properties for WP-CLI commands.
+ * Manages Traffic and view current and past API activity.
  *
  * @package Features
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.
@@ -43,7 +41,7 @@ class Wpcli {
 	 * @since    2.0.0
 	 * @var array $bound_color Level colors.
 	 */
-	private static $bound_color = [
+	private $bound_color = [
 		'inbound'  => [ '%4%c', '%0%c' ],
 		'outbound' => [ '%3%r', '%0%Y' ],
 	];
@@ -54,7 +52,7 @@ class Wpcli {
 	 * @since    2.0.0
 	 * @var array $exit_codes Exit codes.
 	 */
-	private static $exit_codes = [
+	private $exit_codes = [
 		0   => 'operation successful.',
 		1   => 'unrecognized setting.',
 		2   => 'unrecognized action.',
@@ -66,7 +64,7 @@ class Wpcli {
 	 *
 	 * @since    2.0.2
 	 */
-	private static function flush() {
+	private function flush() {
 		// phpcs:ignore
 		set_error_handler( null );
 		// phpcs:ignore
@@ -82,7 +80,7 @@ class Wpcli {
 	 * @param   string  $field  Optional. The field to output.
 	 * @since   2.0.0
 	 */
-	private static function write_ids( $ids, $field = '' ) {
+	private function write_ids( $ids, $field = '' ) {
 		$result = '';
 		$last   = end( $ids );
 		foreach ( $ids as $key => $id ) {
@@ -106,7 +104,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   2.0.0
 	 */
-	private static function error( $code = 255, $stdout = false ) {
+	private function error( $code = 255, $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() ) {
 			// phpcs:ignore
 			fwrite( STDOUT, '' );
@@ -114,11 +112,11 @@ class Wpcli {
 			exit( $code );
 		} elseif ( $stdout ) {
 			// phpcs:ignore
-			fwrite( STDERR, ucfirst( self::$exit_codes[ $code ] ) );
+			fwrite( STDERR, ucfirst( $this->exit_codes[ $code ] ) );
 			// phpcs:ignore
 			exit( $code );
 		} else {
-			\WP_CLI::error( self::$exit_codes[ $code ] );
+			\WP_CLI::error( $this->exit_codes[ $code ] );
 		}
 	}
 
@@ -130,7 +128,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   2.0.0
 	 */
-	private static function warning( $msg, $result = '', $stdout = false ) {
+	private function warning( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -147,7 +145,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   2.0.0
 	 */
-	private static function success( $msg, $result = '', $stdout = false ) {
+	private function success( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -164,7 +162,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   2.0.0
 	 */
-	private static function line( $msg, $result = '', $stdout = false ) {
+	private function line( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -180,7 +178,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   2.0.0
 	 */
-	private static function log( $msg, $stdout = false ) {
+	private function log( $msg, $stdout = false ) {
 		if ( ! \WP_CLI\Utils\isPiped() && ! $stdout ) {
 			\WP_CLI::log( $msg );
 		}
@@ -193,7 +191,7 @@ class Wpcli {
 	 * @return  array The true parameters.
 	 * @since   2.0.0
 	 */
-	private static function get_params( $args ) {
+	private function get_params( $args ) {
 		$result = '';
 		if ( array_key_exists( 'settings', $args ) ) {
 			$result = \json_decode( $args['settings'], true );
@@ -207,9 +205,10 @@ class Wpcli {
 	/**
 	 * Filters records.
 	 *
-	 * @param   array   $records    The records to filter.
-	 * @param   array   $filters    Optional. The filter to apply.
-	 * @param   string  $index      Optional. The starting index.
+	 * @param array $records The records to filter.
+	 * @param array $filters Optional. The filter to apply.
+	 * @param string $index Optional. The starting index.
+	 *
 	 * @return  array   The filtered records.
 	 * @since   2.0.0
 	 */
@@ -247,9 +246,10 @@ class Wpcli {
 	/**
 	 * Format records records.
 	 *
-	 * @param   array   $records    The records to display.
-	 * @param   boolean $soft       Optional. Soften colors.
-	 * @param   integer $pad        Optional. Line padding.
+	 * @param array $records The records to display.
+	 * @param boolean $soft Optional. Soften colors.
+	 * @param integer $pad Optional. Line padding.
+	 *
 	 * @return  array   The ready to print records.
 	 * @since   2.0.0
 	 */
@@ -304,9 +304,9 @@ class Wpcli {
 	 * @param   integer $pad        Optional. Line padding.
 	 * @since   2.0.0
 	 */
-	private static function records_display( $records, $soft = false, $pad = 160 ) {
+	private function records_display( $records, $soft = false, $pad = 160 ) {
 		foreach ( self::records_format( $records, $soft, $pad ) as $record ) {
-			\WP_CLI::line( \WP_CLI::colorize( self::$bound_color[ strtolower( $record['bound'] ) ][$soft ? 1 : 0] ) . $record['line'] . \WP_CLI::colorize( '%n' ) );
+			\WP_CLI::line( \WP_CLI::colorize( $this->bound_color[ strtolower( $record['bound'] ) ][$soft ? 1 : 0] ) . $record['line'] . \WP_CLI::colorize( '%n' ) );
 		}
 	}
 
@@ -321,7 +321,7 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function status( $args, $assoc_args ) {
+	public function status( $args, $assoc_args ) {
 		\WP_CLI::line( sprintf( '%s is running.', Environment::plugin_version_text() ) );
 		if ( Option::network_get( 'inbound_capture' ) ) {
 			\WP_CLI::line( 'Inbound analytics: enabled.' );
@@ -384,7 +384,7 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function settings( $args, $assoc_args ) {
+	public function settings( $args, $assoc_args ) {
 		$stdout  = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$action  = isset( $args[0] ) ? (string) $args[0] : '';
 		$setting = isset( $args[1] ) ? (string) $args[1] : '';
@@ -393,22 +393,22 @@ class Wpcli {
 				switch ( $setting ) {
 					case 'inbound-analytics':
 						Option::network_set( 'inbound_capture', true );
-						self::success( 'inbound analytics are now activated.', '', $stdout );
+						$this->success( 'inbound analytics are now activated.', '', $stdout );
 						break;
 					case 'outbound-analytics':
 						Option::network_set( 'outbound_capture', true );
-						self::success( 'outbound analytics are now activated.', '', $stdout );
+						$this->success( 'outbound analytics are now activated.', '', $stdout );
 						break;
 					case 'auto-monitoring':
 						Option::network_set( 'livelog', true );
-						self::success( 'auto-monitoring is now activated.', '', $stdout );
+						$this->success( 'auto-monitoring is now activated.', '', $stdout );
 						break;
 					case 'smart-filter':
 						Option::network_set( 'smart_filter', true );
-						self::success( 'smart filter is now activated.', '', $stdout );
+						$this->success( 'smart filter is now activated.', '', $stdout );
 						break;
 					default:
-						self::error( 1, $stdout );
+						$this->error( 1, $stdout );
 				}
 				break;
 			case 'disable':
@@ -416,29 +416,29 @@ class Wpcli {
 					case 'inbound-analytics':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate inbound analytic?', $assoc_args );
 						Option::network_set( 'inbound_capture', false );
-						self::success( 'inbound analytics are now deactivated.', '', $stdout );
+						$this->success( 'inbound analytics are now deactivated.', '', $stdout );
 						break;
 					case 'outbound-analytics':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate outbound analytic?', $assoc_args );
 						Option::network_set( 'outbound_capture', false );
-						self::success( 'outbound analytics are now deactivated.', '', $stdout );
+						$this->success( 'outbound analytics are now deactivated.', '', $stdout );
 						break;
 					case 'auto-monitoring':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate auto-monitoring?', $assoc_args );
 						Option::network_set( 'livelog', false );
-						self::success( 'auto-monitoring is now deactivated.', '', $stdout );
+						$this->success( 'auto-monitoring is now deactivated.', '', $stdout );
 						break;
 					case 'smart-filter':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate smart filter?', $assoc_args );
 						Option::network_set( 'smart_filter', false );
-						self::success( 'smart filter is now deactivated.', '', $stdout );
+						$this->success( 'smart filter is now deactivated.', '', $stdout );
 						break;
 					default:
-						self::error( 1, $stdout );
+						$this->error( 1, $stdout );
 				}
 				break;
 			default:
-				self::error( 2, $stdout );
+				$this->error( 2, $stdout );
 		}
 	}
 
@@ -477,18 +477,18 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function exitcode( $args, $assoc_args ) {
+	public function exitcode( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		$action = isset( $args[0] ) ? $args[0] : 'list';
 		$codes  = [];
-		foreach ( self::$exit_codes as $key => $msg ) {
+		foreach ( $this->exit_codes as $key => $msg ) {
 			$codes[ $key ] = [ 'code' => $key, 'meaning' => ucfirst( $msg ) ];
 		}
 		switch ( $action ) {
 			case 'list':
 				if ( 'ids' === $format ) {
-					self::write_ids( $codes );
+					$this->write_ids( $codes );
 				} else {
 					\WP_CLI\Utils\format_items( $format, $codes, [ 'code', 'meaning' ] );
 				}
@@ -531,7 +531,7 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function httpstatus( $args, $assoc_args ) {
+	public function httpstatus( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		$action = isset( $args[0] ) ? $args[0] : 'list';
@@ -542,7 +542,7 @@ class Wpcli {
 		switch ( $action ) {
 			case 'list':
 				if ( 'ids' === $format ) {
-					self::write_ids( $codes );
+					$this->write_ids( $codes );
 				} else {
 					\WP_CLI\Utils\format_items( $format, $codes, [ 'code', 'meaning' ] );
 				}
@@ -604,7 +604,7 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function tail( $args, $assoc_args ) {
+	public function tail( $args, $assoc_args ) {
 		if ( ! function_exists( 'shmop_open' ) || ! function_exists( 'shmop_read' ) || ! function_exists( 'shmop_write' ) || ! function_exists( 'shmop_delete' ) || ! function_exists( 'shmop_close' )) {
 			\WP_CLI::error( 'unable to launch tail command, no shared memory manager found.' );
 		}
@@ -652,11 +652,11 @@ class Wpcli {
 		if ( 0 === $count ) {
 			Logger::notice( 'Live console launched.' );
 			while ( true ) {
-				self::records_display( self::records_filter( Memory::read(), $filters ), isset( $assoc_args['soft'] ), $col );
-				self::flush();
+				$this->records_display( self::records_filter( Memory::read(), $filters ), isset( $assoc_args['soft'] ), $col );
+				$this->flush();
 			}
 		} else {
-			self::records_display( array_slice( self::records_filter( $records, $filters ), -$count ), isset( $assoc_args['soft'] ), $col );
+			$this->records_display( array_slice( self::records_filter( $records, $filters ), -$count ), isset( $assoc_args['soft'] ), $col );
 		}
 	}
 
@@ -678,9 +678,5 @@ class Wpcli {
 add_shortcode( 'traffic-wpcli', [ 'Traffic\Plugin\Feature\Wpcli', 'sc_get_helpfile' ] );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	\WP_CLI::add_command( 'api tail', [ Wpcli::class, 'tail' ] );
-	\WP_CLI::add_command( 'api status', [ Wpcli::class, 'status' ] );
-	\WP_CLI::add_command( 'api settings', [ Wpcli::class, 'settings' ] );
-	\WP_CLI::add_command( 'api exitcode', [ Wpcli::class, 'exitcode' ] );
-	\WP_CLI::add_command( 'api httpstatus', [ Wpcli::class, 'httpstatus' ] );
+	\WP_CLI::add_command( 'api', 'Traffic\Plugin\Feature\Wpcli' );
 }
