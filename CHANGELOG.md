@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+- Compatibility with WordPress 5.7.
+
 ### Changed
 - Smart filter now filters `/server-status` and `/server-info` calls.
 - Consistent reset for settings.
