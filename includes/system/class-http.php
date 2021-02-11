@@ -179,15 +179,14 @@ class Http {
 		999 => 'Forbidden by quota manager',
 	];
 
+
 	/**
 	 * Set the plugin user agent.
 	 *
-	 * @param string $user_agent Plugin user agent string.
-	 * @param string $url        The request URL.
 	 * @return  string  The user agent to use.
 	 * @since  1.0.0
 	 */
-	public static function user_agent( $user_agent, $url ) {
+	public static function user_agent() {
 		return TRAFFIC_PRODUCT_NAME . ' (' . Environment::wordpress_version_id() . '; ' . Environment::plugin_version_id() . '; +' . TRAFFIC_PRODUCT_URL . ')';
 	}
 
