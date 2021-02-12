@@ -97,7 +97,7 @@ class Memory {
 	 */
 	public static function init() {
 		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
-		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], 90, 0 );
+		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], PHP_INT_MAX, 0 );
 		self::$geo_ip = new GeoIP();
 	}
 

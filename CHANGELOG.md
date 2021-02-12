@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Consistent reset for settings.
 - Improved translation loading.
 - [WP_CLI] `api` command have now a definition and all synopsis are up to date.
+- More precise statistics about outbound calls made in shutdown handler(s).
 
 ### Fixed
 - In Site Health section, Opcache status may be wrong (or generates PHP warnings) if OPcache API usage is restricted.

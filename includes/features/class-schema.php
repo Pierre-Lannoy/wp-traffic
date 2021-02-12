@@ -69,7 +69,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Schema', 'write' ], 90, 0 );
+		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Schema', 'write' ], PHP_INT_MAX, 0 );
 		self::$geo_ip = new GeoIP();
 	}
 
