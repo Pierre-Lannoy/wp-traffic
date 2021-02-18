@@ -163,6 +163,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	private static function record( $response, $args, $url, $bound = 'unknown', $b_in = 0, $b_out = 0 ) {
+		$log_enabled = ! ( array_key_exists( 'headers', $args ) && array_key_exists( 'Decalog-No-Log', $args['headers'] ) );
 		try {
 			$host                = '';
 			$url_parts           = wp_parse_url( $url );
@@ -230,10 +231,14 @@ class Capture {
 				Schema::store_statistics( $record );
 				$record['ts'] = $datetime->format( 'Y-m-d H:i:s' );
 				Memory::store_statistics( $record );
-				DecaLog::log( $record );
+				if ( $log_enabled ) {
+					DecaLog::log( $record );
+				}
 			}
 		} catch ( \Throwable $t ) {
-			Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
+			if ( $log_enabled ) {
+				Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
+			}
 		}
 	}
 
@@ -248,6 +253,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
+		$log_enabled = ! ( array_key_exists( 'headers', $args ) && array_key_exists( 'Decalog-No-Log', $args['headers'] ) );
 		try {
 			$b_in  = 0;
 			$b_out = 0;
@@ -322,7 +328,9 @@ class Capture {
 				}
 			}
 		} catch ( \Throwable $t ) {
-			Logger::warning( 'Outbound API post-analysis: ' . $t->getMessage(), $t->getCode() );
+			if ( $log_enabled ) {
+				Logger::warning( 'Outbound API post-analysis: ' . $t->getMessage(), $t->getCode() );
+			}
 		}
 		self::record( $response, $args, $url, 'outbound', $b_in, $b_out );
 	}

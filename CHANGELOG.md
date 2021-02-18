@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 - Compatibility with WordPress 5.7.
+- Adherence to the new `Decalog-No-Log` directive implemented by [DecaLog 2.4.0](https://wordpress.org/plugins/decalog/).
 
 ### Changed
 - Smart filter now filters `/server-status` and `/server-info` calls.
