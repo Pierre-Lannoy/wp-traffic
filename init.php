@@ -21,7 +21,7 @@ define( 'TRAFFIC_CDN_AVAILABLE', true );
 global $timestart;
 
 if ( ! defined( 'TRAFFIC_INBOUND_CHRONO' ) ) {
-	if ( ! defined( 'POWP_START_TIMESTAMP' ) ) {
+	if ( defined( 'POWP_START_TIMESTAMP' ) ) {
 		define( 'TRAFFIC_INBOUND_CHRONO', POWP_START_TIMESTAMP );
 	} elseif ( isset( $timestart ) ) {
 		define( 'TRAFFIC_INBOUND_CHRONO', $timestart );
