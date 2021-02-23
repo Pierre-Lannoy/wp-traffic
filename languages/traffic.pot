@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Traffic\n"
-"POT-Creation-Date: 2020-11-05 18:18+0100\n"
+"POT-Creation-Date: 2021-02-23 23:28+0100\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
@@ -913,19 +913,19 @@ msgid_plural "hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/system/class-environment.php:195
+#: includes/system/class-environment.php:208
 msgid "log"
 msgstr ""
 
-#: includes/system/class-environment.php:200
+#: includes/system/class-environment.php:213
 msgid "display"
 msgstr ""
 
-#: includes/system/class-environment.php:206
+#: includes/system/class-environment.php:219
 msgid "Debug enabled"
 msgstr ""
 
-#: includes/system/class-environment.php:206
+#: includes/system/class-environment.php:219
 msgid "Debug disabled"
 msgstr ""
 
