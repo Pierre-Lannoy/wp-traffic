@@ -18,6 +18,14 @@ define( 'TRAFFIC_CODENAME', '"-"' );
 
 define( 'TRAFFIC_CDN_AVAILABLE', true );
 
+global $timestart;
+
 if ( ! defined( 'TRAFFIC_INBOUND_CHRONO' ) ) {
-	define( 'TRAFFIC_INBOUND_CHRONO', microtime( true ) );
+	if ( ! defined( 'POWP_START_TIMESTAMP' ) ) {
+		define( 'TRAFFIC_INBOUND_CHRONO', POWP_START_TIMESTAMP );
+	} elseif ( isset( $timestart ) ) {
+		define( 'TRAFFIC_INBOUND_CHRONO', $timestart );
+	} else {
+		define( 'TRAFFIC_INBOUND_CHRONO', microtime( true ) );
+	}
 }
