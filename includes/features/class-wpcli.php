@@ -36,14 +36,22 @@ use Traffic\System\SharedMemory;
 class Wpcli {
 
 	/**
-	 * List of color format per level.
+	 * List of color format per bound.
 	 *
 	 * @since    2.0.0
-	 * @var array $bound_color Level colors.
+	 * @var array $level_color Level colors.
 	 */
-	private $bound_color = [
-		'inbound'  => [ '%4%c', '%0%c' ],
-		'outbound' => [ '%3%r', '%0%Y' ],
+	private $level_color = [
+		'standard' =>
+			[
+				'inbound'  => '%4%c',
+				'outbound' => '%3%r',
+			],
+		'soft'     =>
+			[
+				'inbound'  => '%0%c',
+				'outbound' => '%0%Y',
+			],
 	];
 
 	/**
@@ -246,14 +254,13 @@ class Wpcli {
 	/**
 	 * Format records records.
 	 *
-	 * @param array $records The records to display.
-	 * @param boolean $soft Optional. Soften colors.
+	 * @param array   $records    The records to display.
 	 * @param integer $pad Optional. Line padding.
 	 *
 	 * @return  array   The ready to print records.
 	 * @since   2.0.0
 	 */
-	public static function records_format( $records, $soft = false, $pad = 160 ) {
+	public static function records_format( $records, $pad = 160 ) {
 		$result = [];
 		$geoip  = new GeoIP();
 		foreach ( $records as $idx => $record ) {
@@ -300,13 +307,16 @@ class Wpcli {
 	 * Displays records.
 	 *
 	 * @param   array   $records    The records to display.
-	 * @param   boolean $soft       Optional. Soften colors.
+	 * @param   string  $theme      Optional. Colors scheme.
 	 * @param   integer $pad        Optional. Line padding.
 	 * @since   2.0.0
 	 */
-	private function records_display( $records, $soft = false, $pad = 160 ) {
-		foreach ( self::records_format( $records, $soft, $pad ) as $record ) {
-			\WP_CLI::line( \WP_CLI::colorize( $this->bound_color[ strtolower( $record['bound'] ) ][$soft ? 1 : 0] ) . $record['line'] . \WP_CLI::colorize( '%n' ) );
+	private function records_display( $records, $theme = 'standard', $pad = 160 ) {
+		if ( ! array_key_exists( $theme, $this->level_color ) ) {
+			$theme = 'standard';
+		}
+		foreach ( self::records_format( $records, $pad ) as $record ) {
+			\WP_CLI::line( \WP_CLI::colorize( $this->level_color[ $theme ][ strtolower( $record['bound'] ) ] ) . $record['line'] . \WP_CLI::colorize( '%n' ) );
 		}
 	}
 
@@ -580,8 +590,14 @@ class Wpcli {
 	 * [--col=<columns>]
 	 * : The Number of columns (char in a row) to display. Default is 160. Min is 80 and max is 400.
 	 *
-	 * [--soft]
-	 * : Soften the colors to save your eyes.
+	 * [--theme=<theme>]
+	 * : Modifies the colors scheme.
+	 * ---
+	 * default: standard
+	 * options:
+	 *  - standard
+	 *  - soft
+	 * ---
 	 *
 	 * [--yes]
 	 * : Answer yes to the confirmation message, if any.
@@ -652,11 +668,11 @@ class Wpcli {
 		if ( 0 === $count ) {
 			Logger::notice( 'Live console launched.' );
 			while ( true ) {
-				$this->records_display( self::records_filter( Memory::read(), $filters ), isset( $assoc_args['soft'] ), $col );
+				$this->records_display( self::records_filter( Memory::read(), $filters ), $assoc_args['theme'] ?? 'standard', $col );
 				$this->flush();
 			}
 		} else {
-			$this->records_display( array_slice( self::records_filter( $records, $filters ), -$count ), isset( $assoc_args['soft'] ), $col );
+			$this->records_display( array_slice( self::records_filter( $records, $filters ), -$count ), $assoc_args['theme'] ?? 'standard', $col );
 		}
 	}
 
