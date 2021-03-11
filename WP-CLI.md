@@ -8,7 +8,7 @@ Traffic is fully usable from command-line, thanks to [WP-CLI](https://wp-cli.org
 
 ## Viewing API calls
 
-Traffic lets you use command-line to view past and currents API calls. All is done via the `wp api tail [<count>] [--direction=<direction>] [--filter=<filter>] [--format=<format>] [--col=<columns>] [--soft] [--yes]` command.
+Traffic lets you use command-line to view past and currents API calls. All is done via the `wp api tail [<count>] [--direction=<direction>] [--filter=<filter>] [--format=<format>] [--col=<columns>] [--theme=<theme>] [--yes]` command.
 
 If you don't specify `<count>`, Traffic will launch an interactive monitoring session: it will display calls as soon as they occur on your site. To quit this session, hit `CTRL+C`.
 
@@ -34,7 +34,7 @@ By default, Traffic will output each call string on a 160 character basis. If yo
 
 ### Colors scheme
 
-To change the default color scheme to something more *eyes-saving*, use `--soft`.
+To change the default color scheme to something more *eyes-saving*, use `--theme`.
 
 If you prefer, you can even suppress all colorization with the standard `--no-color` flag.
 
