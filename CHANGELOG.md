@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - [BC] Inbound latency if far more precise - warning, you may see gaps in values/graphs after updating plugin.
 - Upgraded Lock library from version 2.1 to version 2.2.
 - [WP-CLI] Changing the color scheme for the `tail` command is now done via the `--theme=<theme>` parameter.
+- [WP-CLI] Updated documentation.
 
 ## [2.2.0] - 2021-02-24
 
