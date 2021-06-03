@@ -68,7 +68,7 @@ function traffic_uninstall() {
  * @since 1.0.0
  */
 function traffic_run() {
-	\DecaLog\Engine::initPlugin( TRAFFIC_SLUG, TRAFFIC_PRODUCT_NAME, TRAFFIC_VERSION );
+	\DecaLog\Engine::initPlugin( TRAFFIC_SLUG, TRAFFIC_PRODUCT_NAME, TRAFFIC_VERSION, \Traffic\Plugin\Core::get_base64_logo() );
 	$plugin = new Traffic\Plugin\Core();
 	$plugin->run();
 }
