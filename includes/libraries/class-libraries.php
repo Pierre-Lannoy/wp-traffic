@@ -94,7 +94,7 @@ class Libraries {
 		self::$psr4_libraries['psr-03']      = [
 			'name'    => 'PSR-3',
 			'prefix'  => 'Psr\\Log',
-			'base'    => IPLOCATOR_VENDOR_DIR . 'psr/log/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'psr/log/',
 			'version' => '',
 			'author'  => 'PHP Framework Interop Group',
 			'url'     => 'https://www.php-fig.org/',
@@ -104,7 +104,7 @@ class Libraries {
 		self::$psr4_libraries['psr-07']      = [
 			'name'    => 'PSR-7',
 			'prefix'  => 'Psr\\Http\\Message',
-			'base'    => IPLOCATOR_VENDOR_DIR . 'psr/http-message/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'psr/http-message/',
 			'version' => '',
 			'author'  => 'PHP Framework Interop Group',
 			'url'     => 'https://www.php-fig.org/',
@@ -114,7 +114,7 @@ class Libraries {
 		self::$psr4_libraries['psr-18']      = [
 			'name'    => 'PSR-18',
 			'prefix'  => 'Psr\\Http\\Client',
-			'base'    => IPLOCATOR_VENDOR_DIR . 'psr/http-client/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'psr/http-client/',
 			'version' => '',
 			'author'  => 'PHP Framework Interop Group',
 			'url'     => 'https://www.php-fig.org/',
@@ -124,7 +124,7 @@ class Libraries {
 		self::$psr4_libraries['decalog-sdk'] = [
 			'name'    => 'DecaLog SDK',
 			'prefix'  => 'DecaLog',
-			'base'    => IPLOCATOR_VENDOR_DIR . 'decalog-sdk/',
+			'base'    => TRAFFIC_VENDOR_DIR . 'decalog-sdk/',
 			'version' => '1.0.0',
 			'author'  => 'Pierre Lannoy',
 			'url'     => 'https://github.com/Pierre-Lannoy/wp-decalog-sdk',
