@@ -16,7 +16,6 @@ use Traffic\System\Option;
 use Traffic\System\Database;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
-
 use Traffic\System\Cache;
 use Traffic\System\Conversion;
 
@@ -56,62 +55,6 @@ class DecaLog {
 	}
 
 	/**
-	 * Effectively write a buffer element in the database.
-	 *
-	 * @param   array $record     The record to write.
-	 * @since    2.0.0
-	 */
-	private static function write_statistics_records_to_database( $record ) {
-		$host = '';
-		if ( array_key_exists( 'authority', $record ) ) {
-			$host = $record['authority'];
-		}
-		if ( array_key_exists( 'context', $record ) && array_key_exists( 'id', $record ) && 'inbound' === $record['context'] ) {
-			$host = $record['id'];
-		}
-		if ( '' !== $host ) {
-			$country = self::$geo_ip->get_iso3166_alpha2( $host );
-			if ( ! empty( $country ) ) {
-				$record['country'] = $country;
-			}
-		}
-		$record['id'] = Http::top_domain( $record['id'] );
-		Favicon::get_raw( $record['id'], true );
-		$site = Blog::get_blog_url( $record['site'] );
-		if ( '' !== $site ) {
-			Favicon::get_raw( $site, true );
-		}
-		$field_insert = [];
-		$value_insert = [];
-		$value_update = [];
-		foreach ( $record as $k => $v ) {
-			$field_insert[] = '`' . $k . '`';
-			$value_insert[] = "'" . $v . "'";
-			if ( 'country' === $k ) {
-				$value_update[] = '`country`="' . $v . '"';
-			}
-			if ( 'hit' === $k ) {
-				$value_update[] = '`hit`=hit + 1';
-			}
-			if ( 'kb_in' === $k ) {
-				$value_update[] = '`kb_in`=kb_in + ' . $v;
-			}
-			if ( 'kb_out' === $k ) {
-				$value_update[] = '`kb_out`=kb_out + ' . $v;
-			}
-			if ( 'latency_min' === $k ) {
-				$value_update[] = '`latency_min`=if(latency_min>' . $v . ',' . $v . ',latency_min)';
-			}
-			if ( 'latency_avg' === $k ) {
-				$value_update[] = '`latency_avg`=((latency_avg*hit)+' . $v . ')/(hit+1)';
-			}
-			if ( 'latency_max' === $k ) {
-				$value_update[] = '`latency_max`=if(latency_max<' . $v . ',' . $v . ',latency_max)';
-			}
-		}
-	}
-
-	/**
 	 * Log API call.
 	 *
 	 * @param   array $record     The record to log.
@@ -147,7 +90,7 @@ class DecaLog {
 		$message .= ' [latency=' . $record['latency'] . 'ms]';
 		$message .= ' [response="' . $record['code'] . '/' . $record['message'] . '"]';
 		$message .= ' [endpoint="' . $record['endpoint'] . '"]';
-		\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->log( $level, $message, (int) $record['code'] );
+		\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->log( $level, $message, [ 'code' => $record['code'] ] );
 	}
 }
 
