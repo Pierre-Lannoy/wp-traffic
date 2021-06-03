@@ -13,7 +13,6 @@ namespace Traffic\System;
 
 use Decalog\System\Option;
 use Decalog\System\File;
-use Decalog\Logger;
 
 /**
  * Define the shmop functionality.

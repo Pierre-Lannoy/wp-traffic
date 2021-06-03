@@ -16,7 +16,7 @@ use Traffic\System\Option;
 use Traffic\System\Database;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
-use Traffic\System\Logger;
+
 use Traffic\System\Cache;
 use Traffic\System\Conversion;
 
@@ -147,7 +147,7 @@ class DecaLog {
 		$message .= ' [latency=' . $record['latency'] . 'ms]';
 		$message .= ' [response="' . $record['code'] . '/' . $record['message'] . '"]';
 		$message .= ' [endpoint="' . $record['endpoint'] . '"]';
-		Logger::log( $level, $message, (int) $record['code'] );
+		\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->log( $level, $message, (int) $record['code'] );
 	}
 }
 

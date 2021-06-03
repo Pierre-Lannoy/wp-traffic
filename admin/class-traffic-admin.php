@@ -12,7 +12,7 @@ namespace Traffic\Plugin;
 use Traffic\Plugin\Feature\Analytics;
 use Traffic\Plugin\Feature\AnalyticsFactory;
 use Traffic\System\Assets;
-use Traffic\System\Logger;
+
 use Traffic\System\Role;
 use Traffic\System\Option;
 use Traffic\System\Form;
@@ -337,12 +337,12 @@ class Traffic_Admin {
 				$message = esc_html__( 'Plugin settings have been saved.', 'traffic' );
 				$code    = 0;
 				add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
-				Logger::info( 'Plugin settings updated.', $code );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->info( 'Plugin settings updated.', [ 'code' => $code ] );
 			} else {
 				$message = esc_html__( 'Plugin settings have not been saved. Please try again.', 'traffic' );
 				$code    = 2;
 				add_settings_error( 'traffic_nonce_error', $code, $message, 'error' );
-				Logger::warning( 'Plugin settings not updated.', $code );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( 'Plugin settings not updated.', [ 'code' => $code ] );
 			}
 		}
 	}
@@ -359,12 +359,12 @@ class Traffic_Admin {
 				$message = esc_html__( 'Plugin settings have been reset to defaults.', 'traffic' );
 				$code    = 0;
 				add_settings_error( 'traffic_no_error', $code, $message, 'updated' );
-				Logger::info( 'Plugin settings reset to defaults.', $code );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->info( 'Plugin settings reset to defaults.', [ 'code' => $code ] );
 			} else {
 				$message = esc_html__( 'Plugin settings have not been reset to defaults. Please try again.', 'traffic' );
 				$code    = 2;
 				add_settings_error( 'traffic_nonce_error', $code, $message, 'error' );
-				Logger::warning( 'Plugin settings not reset to defaults.', $code );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( 'Plugin settings not reset to defaults.', [ 'code' => $code ] );
 			}
 		}
 	}

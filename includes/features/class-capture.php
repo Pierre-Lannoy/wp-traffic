@@ -13,7 +13,7 @@ namespace Traffic\Plugin\Feature;
 
 use Traffic\System\Blog;
 use Traffic\System\Environment;
-use Traffic\System\Logger;
+
 use Traffic\Plugin\Feature\Schema;
 use Traffic\Plugin\Feature\Memory;
 use Traffic\Plugin\Feature\DecaLog;
@@ -77,7 +77,7 @@ class Capture {
 		add_filter( 'rest_pre_echo_response', [ 'Traffic\Plugin\Feature\Capture', 'rest_pre_echo_response' ], 10, 3 );
 		self::$default_chrono = microtime( true );
 		self::$local_timezone = Timezone::network_get();
-		Logger::debug( 'Capture engine started.' );
+		\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->debug( 'Capture engine started.' );
 	}
 
 	/**
@@ -237,7 +237,7 @@ class Capture {
 			}
 		} catch ( \Throwable $t ) {
 			if ( $log_enabled ) {
-				Logger::warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), $t->getCode() );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( ucfirst( $bound ) . ' API record: ' . $t->getMessage(), [ 'code' => $t->getCode() ] );
 			}
 		}
 	}
@@ -329,7 +329,7 @@ class Capture {
 			}
 		} catch ( \Throwable $t ) {
 			if ( $log_enabled ) {
-				Logger::warning( 'Outbound API post-analysis: ' . $t->getMessage(), $t->getCode() );
+				\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( 'Outbound API post-analysis: ' . $t->getMessage(), [ 'code' => $t->getCode() ] );
 			}
 		}
 		self::record( $response, $args, $url, 'outbound', $b_in, $b_out );
@@ -432,7 +432,7 @@ class Capture {
 				$response['response']['code'] = (int) $result['data']['status'];
 			}
 		} catch ( \Throwable $t ) {
-			Logger::warning( 'Inbound API pre-analysis: ' . $t->getMessage(), $t->getCode() );
+			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( 'Inbound API pre-analysis: ' . $t->getMessage(), [ 'code' => $t->getCode() ] );
 		}
 		self::record( $response, $args, $url, 'inbound', $b_in, $b_out );
 		return $result;
@@ -477,7 +477,7 @@ class Capture {
 			$start = self::$chrono[ $id ];
 			unset( self::$chrono[ $id ] );
 		} else {
-			Logger::debug( sprintf( 'Unmatched query for %s.', $url ) );
+			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->debug( sprintf( 'Unmatched query for %s.', $url ) );
 			$start = self::$default_chrono;
 		}
 		return (int) round( 1000 * ( $stop - $start ), 0 );

@@ -17,7 +17,7 @@ use Traffic\System\Cache;
 use Traffic\System\Date;
 use Traffic\System\Conversion;
 use Traffic\System\Role;
-use Traffic\System\Logger;
+
 use Traffic\System\L10n;
 use Traffic\System\Http;
 use Traffic\System\Favicon;

@@ -11,7 +11,7 @@
 
 namespace Traffic\API;
 
-use Traffic\System\Logger;
+
 use Traffic\System\Role;
 use Traffic\Plugin\Feature\Wpcli;
 use Traffic\Plugin\Feature\Memory;
@@ -99,7 +99,7 @@ class LoggerRoute extends \WP_REST_Controller {
 	 */
 	public function get_livelog_permissions_check( $request ) {
 		if ( ! is_user_logged_in() ) {
-			Logger::warning( 'Unauthenticated API call.', 401 );
+			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->warning( 'Unauthenticated API call.', [ 'code' => 401 ] );
 			return new \WP_Error( 'rest_not_logged_in', 'You must be logged in to access live logs.', [ 'status' => 401 ] );
 		}
 		return Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type();
@@ -135,7 +135,7 @@ class LoggerRoute extends \WP_REST_Controller {
 				$index = '0';
 			}
 			$records = [];
-			Logger::notice( 'Live console launched.' );
+			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->notice( 'Live console launched.' );
 		} else {
 			$records = Wpcli::records_format( Wpcli::records_filter( Memory::read(), ( 'both' !== $request['direction'] ? [ 'bound' => $request['direction'] ] : [] ), $request['index'] ), false, 320 );
 			$index   = array_key_last( $records );

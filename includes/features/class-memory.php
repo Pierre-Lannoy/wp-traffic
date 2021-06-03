@@ -16,7 +16,7 @@ use Traffic\System\Option;
 use Traffic\System\Database;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
-use Traffic\System\Logger;
+
 use Traffic\System\Cache;
 use Traffic\System\GeoIP;
 use Traffic\System\Environment;

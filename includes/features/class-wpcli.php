@@ -14,7 +14,7 @@ namespace Traffic\Plugin\Feature;
 use Traffic\Plugin\Feature\Memory;
 use Traffic\System\Cache;
 use Traffic\System\Conversion;
-use Traffic\System\Logger;
+
 use Traffic\System\Date;
 use Traffic\System\EmojiFlag;
 use Traffic\System\Environment;
@@ -666,7 +666,7 @@ class Wpcli {
 		}
 		$records = Memory::read();
 		if ( 0 === $count ) {
-			Logger::notice( 'Live console launched.' );
+			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->notice( 'Live console launched.' );
 			while ( true ) {
 				$this->records_display( self::records_filter( Memory::read(), $filters ), $assoc_args['theme'] ?? 'standard', $col );
 				$this->flush();

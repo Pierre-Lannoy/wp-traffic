@@ -68,7 +68,7 @@ function traffic_uninstall() {
  * @since 1.0.0
  */
 function traffic_run() {
-	\Traffic\System\Logger::init();
+	\DecaLog\Engine::initPlugin( TRAFFIC_SLUG, TRAFFIC_PRODUCT_NAME, TRAFFIC_VERSION );
 	$plugin = new Traffic\Plugin\Core();
 	$plugin->run();
 }
