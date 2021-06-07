@@ -69,6 +69,7 @@ class Option {
 		self::$defaults['download_favicons'] = false;
 		self::$defaults['script_in_footer']  = false;
 		self::$defaults['display_nag']       = false;
+		self::$defaults['metrics']           = true;
 		self::$defaults['nags']              = [];
 		self::$defaults['version']           = '0.0.0';
 		self::$defaults['inbound_cut_path']  = 4;
@@ -80,7 +81,7 @@ class Option {
 		self::$defaults['livelog']           = true;
 		self::$defaults['smart_filter']      = true;
 		self::$defaults['history']           = 90;
-		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'inbound_level', 'outbound_level', 'livelog', 'smart_filter', 'history' ];
+		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'metrics', 'inbound_cut_path', 'outbound_cut_path', 'inbound_capture', 'outbound_capture', 'inbound_level', 'outbound_level', 'livelog', 'smart_filter', 'history' ];
 	}
 
 	/**

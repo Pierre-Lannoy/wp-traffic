@@ -327,6 +327,7 @@ class Traffic_Admin {
 				Option::network_set( 'display_nag', array_key_exists( 'traffic_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_options_nag' ) : false );
 				Option::network_set( 'smart_filter', array_key_exists( 'traffic_plugin_features_smart_filter', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_smart_filter' ) : false );
 				Option::network_set( 'livelog', array_key_exists( 'traffic_plugin_features_livelog', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_livelog' ) : false );
+				Option::network_set( 'metrics', array_key_exists( 'traffic_plugin_features_metrics', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_plugin_features_metrics' ) : false );
 				Option::network_set( 'inbound_capture', array_key_exists( 'traffic_inbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_inbound_options_capture' ) : false );
 				Option::network_set( 'outbound_capture', array_key_exists( 'traffic_outbound_options_capture', $_POST ) ? (bool) filter_input( INPUT_POST, 'traffic_outbound_options_capture' ) : false );
 				Option::network_set( 'inbound_cut_path', array_key_exists( 'traffic_inbound_options_cut_path', $_POST ) ? (int) filter_input( INPUT_POST, 'traffic_inbound_options_cut_path' ) : Option::network_get( 'traffic_inbound_options_cut_path' ) );
@@ -412,9 +413,9 @@ class Traffic_Admin {
 		);
 		register_setting( 'traffic_plugin_options_section', 'traffic_plugin_options_geoip' );
 		
-		if ( defined( 'DECALOG_VERSION' ) ) {
+		if ( \DecaLog\Engine::isDecalogActivated() ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__('Your site is currently using %s.', 'traffic' ), '<em>DecaLog v' . DECALOG_VERSION .'</em>' );
+			$help .= sprintf( esc_html__('Your site is currently using %s.', 'traffic' ), '<em>' . \DecaLog\Engine::getVersionString() . '</em>' );
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__('Your site does not use any logging plugin. To log all events triggered in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'traffic' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
@@ -505,6 +506,22 @@ class Traffic_Admin {
 			]
 		);
 		register_setting( 'traffic_plugin_features_section', 'traffic_plugin_features_history' );
+		add_settings_field(
+			'traffic_plugin_features_metrics',
+			esc_html__( 'Metrics', 'traffic' ),
+			[ $form, 'echo_field_checkbox' ],
+			'traffic_plugin_features_section',
+			'traffic_plugin_features_section',
+			[
+				'text'        => esc_html__( 'Activated', 'traffic' ),
+				'id'          => 'traffic_plugin_features_metrics',
+				'checked'     => \DecaLog\Engine::isDecalogActivated() ? Option::network_get( 'metrics' ) : false,
+				'description' => esc_html__( 'If checked, Traffic will collate and publish API metrics.', 'traffic' ) . ( \DecaLog\Engine::isDecalogActivated() ? '' : '<br/>' . esc_html__( 'Note: for this to work, you must install DecaLog.', 'traffic' ) ),
+				'full_width'  => false,
+				'enabled'     => \DecaLog\Engine::isDecalogActivated(),
+			]
+		);
+		register_setting( 'traffic_plugin_features_section', 'traffic_plugin_features_metrics' );
 		if ( SharedMemory::$available ) {
 			add_settings_field(
 				'traffic_plugin_features_livelog',

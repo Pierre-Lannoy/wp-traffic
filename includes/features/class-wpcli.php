@@ -350,8 +350,13 @@ class Wpcli {
 		} else {
 			\WP_CLI::line( 'Auto-Monitoring: disabled.' );
 		}
-		if ( defined( 'DECALOG_VERSION' ) ) {
-			\WP_CLI::line( 'Logging support: yes (DecaLog v' . DECALOG_VERSION . ').');
+		if ( Option::network_get( 'metrics' ) ) {
+			\WP_CLI::line( 'Metrics collation: enabled.' );
+		} else {
+			\WP_CLI::line( 'Metrics collation: disabled.' );
+		}
+		if ( \DecaLog\Engine::isDecalogActivated() ) {
+			\WP_CLI::line( 'Logging support: ' . \DecaLog\Engine::getVersionString() . '.');
 		} else {
 			\WP_CLI::line( 'Logging support: no.' );
 		}
@@ -376,7 +381,7 @@ class Wpcli {
 	 * <enable|disable>
 	 * : The action to take.
 	 *
-	 * <inbound-analytics|outbound-analytics|auto-monitoring|smart-filter>
+	 * <inbound-analytics|outbound-analytics|auto-monitoring|smart-filter|metrics>
 	 * : The setting to change.
 	 *
 	 * [--yes]
@@ -417,6 +422,10 @@ class Wpcli {
 						Option::network_set( 'smart_filter', true );
 						$this->success( 'smart filter is now activated.', '', $stdout );
 						break;
+					case 'metrics':
+						Option::network_set( 'metrics', true );
+						$this->success( 'metrics collation is now activated.', '', $stdout );
+						break;
 					default:
 						$this->error( 1, $stdout );
 				}
@@ -442,6 +451,11 @@ class Wpcli {
 						\WP_CLI::confirm( 'Are you sure you want to deactivate smart filter?', $assoc_args );
 						Option::network_set( 'smart_filter', false );
 						$this->success( 'smart filter is now deactivated.', '', $stdout );
+						break;
+					case 'metrics':
+						\WP_CLI::confirm( 'Are you sure you want to deactivate metrics collation?', $assoc_args );
+						Option::network_set( 'metrics', false );
+						$this->success( 'metrics collation is now deactivated.', '', $stdout );
 						break;
 					default:
 						$this->error( 1, $stdout );

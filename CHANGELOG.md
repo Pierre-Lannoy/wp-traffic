@@ -3,12 +3,19 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.3.0] - 2021-06-xx
+
+### Added
+- Compatibility with WordPress 5.8.
+- Integration with DecaLog SDK.
+- Traces and metrics collation and publication.
+- New option, available via settings page and wp-cli, to disable/enable metrics collation.
 
 ### Changed
 - [BC] Inbound latency is far more precise - warning, you may see gaps in values/graphs after updating plugin.
 - Upgraded Lock library from version 2.1 to version 2.2.
 - [WP-CLI] Changing the color scheme for the `tail` command is now done via the `--theme=<theme>` parameter.
+- [WP-CLI] `api status` command now displays DecaLog SDK version too.
 - [WP-CLI] Updated documentation.
 
 ## [2.2.0] - 2021-02-24

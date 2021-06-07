@@ -58,7 +58,7 @@ To get detailed status and operation mode, use the `wp api status` command.
 
 ## Managing main settings
 
-To toggle on/off main settings, use `wp api settings <enable|disable> <inbound-analytics|outbound-analytics|auto-monitoring|smart-filter>`.
+To toggle on/off main settings, use `wp api settings <enable|disable> <inbound-analytics|outbound-analytics|auto-monitoring|smart-filter|metrics>`.
 
 ### Available settings
 
@@ -66,6 +66,7 @@ To toggle on/off main settings, use `wp api settings <enable|disable> <inbound-a
 - `outbound-analytics`: if activated, Traffic will analyze outbound API calls (the calls made by your site to external services).
 - `auto-monitoring`: if activated, Traffic will silently start the features needed by live console.
 - `smart-filter`: if activated, Traffic will not take into account the calls that generate "noise" in monitoring.
+- `metrics`: if activated, Traffic will collate metrics.
 
 ### Example
 
