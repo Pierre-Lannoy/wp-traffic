@@ -49,6 +49,14 @@ class Http {
 	public static $schemes = [ 'http', 'https', 'unknown' ];
 
 	/**
+	 * The list of summarized HTTP codes.
+	 *
+	 * @since  2.3.0
+	 * @var    array    $http_summary_codes    Maintains the summary codes list.
+	 */
+	public static $http_summary_codes = [ 1, 2, 3, 4, 5, 9 ];
+
+	/**
 	 * The list of HTTP codes meaning success.
 	 *
 	 * @since  1.0.0

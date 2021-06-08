@@ -19,6 +19,9 @@ use Traffic\Library\Libraries;
 use Traffic\System\Nag;
 use Traffic\System\Role;
 use Traffic\API\LoggerRoute;
+use Traffic\System\Environment;
+use Traffic\System\Option;
+use Traffic\System\Http;
 
 /**
  * The core plugin class.
@@ -55,6 +58,9 @@ class Core {
 		$this->define_global_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
+			$this->define_metrics();
+		}
 	}
 
 
@@ -116,6 +122,28 @@ class Core {
 		$plugin_public = new Traffic_Public();
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+	}
+
+	/**
+	 * Register all metrics of the plugin.
+	 *
+	 * @since  3.0.0
+	 * @access private
+	 */
+	private function define_metrics() {
+		$metrics = \DecaLog\Engine::metricsLogger( TRAFFIC_SLUG );
+		foreach ( array_diff( Http::$contexts, [ 'unknown' ] ) as $known_context ) {
+			foreach ( Http::$http_summary_codes as $http_summary_code ) {
+				$metrics->createProdCounter( $known_context . '_http_' . $http_summary_code . 'xx_total', 'Number of ' . $http_summary_code . 'xx ' . $known_context . ' response per request - [count]' );
+			}
+			foreach ( array_diff( Http::$verbs, [ 'unknown' ] ) as $verb ) {
+				$metrics->createProdCounter( $known_context . '_' . $verb . '_total', 'Number of ' . $known_context . ' ' . $verb . ' calls per request - [count]' );
+			}
+			$metrics->createProdCounter( $known_context . '_latency_avg', 'Average ' . $known_context . ' call time per request - [second]' );
+			$metrics->createProdCounter( $known_context . '_total', 'Number of ' . $known_context . ' calls per request - [count]' );
+		}
+		$metrics->createProdCounter( 'data_in_total', 'Data ingress per request - [byte]' );
+		$metrics->createProdCounter( 'data_out_total', 'Data egress per request - [byte]' );
 	}
 
 	/**

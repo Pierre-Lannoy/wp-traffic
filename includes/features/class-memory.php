@@ -16,7 +16,6 @@ use Traffic\System\Option;
 use Traffic\System\Database;
 use Traffic\System\Http;
 use Traffic\System\Favicon;
-
 use Traffic\System\Cache;
 use Traffic\System\GeoIP;
 use Traffic\System\Environment;
@@ -98,6 +97,9 @@ class Memory {
 	public static function init() {
 		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
 		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], PHP_INT_MAX, 0 );
+		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
+			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], PHP_INT_MAX - 3, 0 );
+		}
 		self::$geo_ip = new GeoIP();
 	}
 
@@ -162,19 +164,21 @@ class Memory {
 		$messages = self::$messages_buffer;
 		$mutex    = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
 		$ftok     = self::ftok();
-		$mutex->synchronized( function () use ( $messages, $ftok ) {
-			$sm   = new SharedMemory( $ftok );
-			$data = $sm->read();
-			foreach ( $messages as $key => $message ) {
-				if ( is_array( $message ) ) {
-					$data[ $key ] = $message;
+		$mutex->synchronized(
+			function () use ( $messages, $ftok ) {
+				$sm   = new SharedMemory( $ftok );
+				$data = $sm->read();
+				foreach ( $messages as $key => $message ) {
+					if ( is_array( $message ) ) {
+						$data[ $key ] = $message;
+					}
+				}
+				$data = array_slice( $data, -self::$buffer );
+				if ( false === $sm->write( $data ) ) {
+					//error_log( 'ERROR' );
 				}
 			}
-			$data = array_slice( $data, -self::$buffer );
-			if ( false === $sm->write( $data ) ) {
-				//error_log( 'ERROR' );
-			}
-		} );
+		);
 	}
 
 	/**
@@ -187,19 +191,23 @@ class Memory {
 		try {
 			$mutex = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
 			$ftok  = ftok( __FILE__, 'w' );
-			$data1 = $mutex->synchronized( function () use ( $ftok ) {
-				$log  = new SharedMemory( $ftok );
-				$data = $log->read();
-				return $data;
-			} );
+			$data1 = $mutex->synchronized(
+				function () use ( $ftok ) {
+					$log  = new SharedMemory( $ftok );
+					$data = $log->read();
+					return $data;
+				}
+			);
 			$ftok  = ftok( __FILE__, 'c' );
-			$data2 = $mutex->synchronized( function () use ( $ftok ) {
-				$log  = new SharedMemory( $ftok );
-				$data = $log->read();
-				return $data;
-			} );
+			$data2 = $mutex->synchronized(
+				function () use ( $ftok ) {
+					$log  = new SharedMemory( $ftok );
+					$data = $log->read();
+					return $data;
+				}
+			);
 			$data  = array_merge( $data1, $data2 );
-			uksort($data, 'strcmp' );
+			uksort( $data, 'strcmp' );
 		} catch ( \Throwable $e ) {
 			$data = [];
 		}
@@ -231,6 +239,51 @@ class Memory {
 		}
 		$date = new \DateTime();
 		self::$statistics_buffer[ $date->format( 'YmdHisu' ) ] = $record;
+	}
+
+	/**
+	 * Publish metrics.
+	 *
+	 * @since    2.3.0
+	 */
+	public static function collate_metrics() {
+		$span    = \DecaLog\Engine::tracesLogger( TRAFFIC_SLUG )->start_span( 'Metrics collation' );
+		$metrics = \DecaLog\Engine::metricsLogger( TRAFFIC_SLUG );
+		$in      = 0;
+		$out     = 0;
+		$cpt     = [
+			'inbound'  => [
+				'count'   => 0,
+				'latency' => 0,
+			],
+			'outbound' => [
+				'count'   => 0,
+				'latency' => 0,
+			],
+		];
+		foreach ( self::$statistics_buffer as $record ) {
+			$bound = $record['context'];
+			$verb  = $record['verb'];
+			$code  = (int) ( $record['code'] / 100 );
+			if ( ! in_array( $code, Http::$http_summary_codes, true ) ) {
+				continue;
+			}
+			$cpt[ $bound ]['count']++;
+			$cpt[ $bound ]['latency'] += $record['latency_avg'];
+			$in                       += $record['kb_in'];
+			$out                      += $record['kb_out'];
+			$metrics->incProdCounter( $bound . '_http_' . $code . 'xx_total' );
+			$metrics->incProdCounter( $bound . '_' . $verb . '_total' );
+		}
+		foreach ( array_diff( Http::$contexts, [ 'unknown' ] ) as $known_context ) {
+			if ( 0 < $cpt[ $known_context ]['count'] ) {
+				$metrics->incProdCounter( $known_context . '_latency_avg', $cpt[ $known_context ]['latency'] / ( $cpt[ $known_context ]['count'] * 1000 ) );
+				$metrics->incProdCounter( $known_context . '_total', $cpt[ $known_context ]['count'] );
+			}
+		}
+		$metrics->incProdCounter( 'data_in_total', $in * 1024 );
+		$metrics->incProdCounter( 'data_out_total', $out * 1024 );
+		\DecaLog\Engine::tracesLogger( TRAFFIC_SLUG )->end_span( $span );
 	}
 }
 
