@@ -96,9 +96,9 @@ class Memory {
 	 */
 	public static function init() {
 		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
-		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], PHP_INT_MAX, 0 );
+		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], DECALOG_MAX_SHUTDOWN_PRIORITY, 0 );
 		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
-			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], PHP_INT_MAX - 3, 0 );
+			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], DECALOG_MAX_SHUTDOWN_PRIORITY, 0 );
 		}
 		self::$geo_ip = new GeoIP();
 	}
