@@ -58,14 +58,6 @@ class Memory {
 	private static $messages_buffer = [];
 
 	/**
-	 * GeoIP instance.
-	 *
-	 * @since  2.0.0
-	 * @var    GeoIP    $geo_ip    Maintain the GeoIP instance..
-	 */
-	private static $geo_ip = null;
-
-	/**
 	 * The buffer size.
 	 *
 	 * @since  2.0.0
@@ -98,9 +90,8 @@ class Memory {
 		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
 		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], DECALOG_MAX_SHUTDOWN_PRIORITY, 0 );
 		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
-			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], DECALOG_MAX_SHUTDOWN_PRIORITY, 0 );
+			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], DECALOG_MAX_SHUTDOWN_PRIORITY - 1, 0 );
 		}
-		self::$geo_ip = new GeoIP();
 	}
 
 	/**
@@ -160,10 +151,10 @@ class Memory {
 	 * @since    2.0.0
 	 */
 	private static function write_records_to_memory() {
-		// phpcs:ignore
 		$messages = self::$messages_buffer;
-		$mutex    = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
-		$ftok     = self::ftok();
+		// phpcs:ignore
+		$mutex = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
+		$ftok  = self::ftok();
 		$mutex->synchronized(
 			function () use ( $messages, $ftok ) {
 				$sm   = new SharedMemory( $ftok );
@@ -189,6 +180,7 @@ class Memory {
 	 */
 	public static function read(): array {
 		try {
+			// phpcs:ignore
 			$mutex = new FlockMutex( fopen( __FILE__, 'r' ), 1 );
 			$ftok  = ftok( __FILE__, 'w' );
 			$data1 = $mutex->synchronized(
