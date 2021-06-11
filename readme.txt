@@ -31,7 +31,9 @@ At this time, **Traffic** can report, for inbound and outbound traffic:
 * display (past or current) API calls in console - see `wp help api tail` for details;
 * toggle on/off main settings - see `wp help api settings` for details.
 
-For a full help on WP-CLI commands in Traffic, please [read this guide](https://github.com/Pierre-Lannoy/wp-traffic/blob/master/WP-CLI.md).
+For a full help on WP-CLI commands in Traffic, please [read this guide](https://perfops.one/traffic-wpcli).
+
+> **Traffic** is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
 
 **Traffic** is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
@@ -85,7 +87,7 @@ You can report bugs and suggest ideas via the [GitHub issue tracker](https://git
 
 == Changelog ==
 
-Please, see [full changelog](https://github.com/Pierre-Lannoy/wp-traffic/blob/master/CHANGELOG.md) on GitHub.
+Please, see [full changelog](https://perfops.one/traffic-changelog).
 
 == Upgrade Notice ==
 

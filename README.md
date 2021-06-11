@@ -6,7 +6,7 @@
 
 __Traffic__ is a full featured analytics reporting tool that analyzes all inbound and outbound API calls made to/from your WordPress site.
 
-See [WordPress directory page](https://wordpress.org/plugins/traffic/). 
+See [WordPress directory page](https://wordpress.org/plugins/traffic/) or [official website](https://perfops.one/traffic).
 
 At this time, __Traffic__ can report, for inbound and outbound traffic:
 
@@ -28,6 +28,8 @@ __Traffic__ supports WP-CLI commands to:
 * toggle on/off main settings - see `wp help api settings` for details.
 
 For a full help on WP-CLI commands in Traffic, please [read this guide](WP-CLI.md).
+
+> __Traffic__ is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
 
 ## Installation
 
