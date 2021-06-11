@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - [WP-CLI] Changing the color scheme for the `tail` command is now done via the `--theme=<theme>` parameter.
 - [WP-CLI] `api status` command now displays DecaLog SDK version too.
 - [WP-CLI] Updated documentation.
+- Self cron jobs spawning are now excluded from analytics only if smart filter is activated.
 
 ## [2.2.0] - 2021-02-24
 

@@ -380,7 +380,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function rest_pre_echo_response( $result, $server, $request ) {
-		if ( 2 === Environment::exec_mode() ) {
+		if ( 2 === Environment::exec_mode() && Option::network_get( 'smart_filter' ) ) {
 			return $result;
 		}
 		try {
