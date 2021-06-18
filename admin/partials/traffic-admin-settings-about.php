@@ -28,7 +28,7 @@ $trademarks = esc_html__( 'All brands, icons and graphic illustrations are regis
 $icon       = '<img class="traffic-about-logo" style="opacity:0;" src="' . Traffic\Plugin\Core::get_base64_logo() . '" />';
 
 ?>
-<h2><?php echo esc_html( TRAFFIC_PRODUCT_NAME . ' ' . TRAFFIC_VERSION ); ?></h2>
+<h2><?php echo esc_html( TRAFFIC_PRODUCT_NAME . ' ' . TRAFFIC_VERSION ); ?> / <a href="https://perfops.one">PerfOps One</a></h2>
 <?php echo $icon; ?>
 <?php echo $warning; ?>
 <p><?php echo $intro; ?></p>
