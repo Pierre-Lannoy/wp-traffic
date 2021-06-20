@@ -125,7 +125,7 @@ class Libraries {
 			'name'    => 'DecaLog SDK',
 			'prefix'  => 'DecaLog',
 			'base'    => TRAFFIC_VENDOR_DIR . 'decalog-sdk/',
-			'version' => '1.1.0',
+			'version' => '1.2.0',
 			'author'  => 'Pierre Lannoy',
 			'url'     => 'https://github.com/Pierre-Lannoy/wp-decalog-sdk',
 			'license' => 'mit',

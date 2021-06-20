@@ -239,7 +239,7 @@ class Memory {
 	 * @since    2.3.0
 	 */
 	public static function collate_metrics() {
-		$span    = \DecaLog\Engine::tracesLogger( TRAFFIC_SLUG )->start_span( 'Metrics collation' );
+		$span    = \DecaLog\Engine::tracesLogger( TRAFFIC_SLUG )->start_span( 'Metrics collation', DECALOG_SPAN_SHUTDOWN );
 		$metrics = \DecaLog\Engine::metricsLogger( TRAFFIC_SLUG );
 		$in      = 0;
 		$out     = 0;
