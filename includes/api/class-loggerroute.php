@@ -137,7 +137,7 @@ class LoggerRoute extends \WP_REST_Controller {
 			$records = [];
 			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->notice( 'Live console launched.' );
 		} else {
-			$records = Wpcli::records_format( Wpcli::records_filter( Memory::read(), ( 'both' !== $request['direction'] ? [ 'bound' => $request['direction'] ] : [] ), $request['index'] ), false, 320 );
+			$records = Wpcli::records_format( Wpcli::records_filter( Memory::read(), ( 'both' !== $request['direction'] ? [ 'bound' => $request['direction'] ] : [] ), $request['index'] ), 320 );
 			$index   = array_key_last( $records );
 			if ( ! isset( $index ) ) {
 				$index = $request['index'];
