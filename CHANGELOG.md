@@ -3,6 +3,11 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2021-06-22
+
+### Fixed
+- wp.org distributes a wrong version.
+
 ## [2.3.0] - 2021-06-22
 
 ### Added
