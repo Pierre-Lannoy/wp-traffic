@@ -21,7 +21,7 @@ use Traffic\System\Date;
 use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
 use Traffic\System\Environment;
-use PerfOpsOne\AdminMenus;
+use PerfOpsOne\Menus;
 use Traffic\System\SharedMemory;
 use Traffic\Plugin\Feature\Memory;
 
@@ -110,7 +110,7 @@ class Traffic_Admin {
 	 * @return array    The completed menus array.
 	 * @since 1.0.0
 	 */
-	public function init_perfops_admin_menus( $perfops ) {
+	public function init_perfopsone_admin_menus( $perfops ) {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			$perfops['settings'][] = [
 				'name'          => TRAFFIC_PRODUCT_NAME,
@@ -122,7 +122,6 @@ class Traffic_Admin {
 				'menu_title'    => TRAFFIC_PRODUCT_NAME,
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_settings_page' ],
-				'position'      => 50,
 				'plugin'        => TRAFFIC_SLUG,
 				'version'       => TRAFFIC_VERSION,
 				'activated'     => true,
@@ -142,7 +141,6 @@ class Traffic_Admin {
 				'menu_title'    => esc_html__( 'API Traffic', 'traffic' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_viewer_page' ],
-				'position'      => 50,
 				'plugin'        => TRAFFIC_SLUG,
 				'activated'     => Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ),
 				'remedy'        => esc_url( admin_url( 'admin.php?page=traffic-settings' ) ),
@@ -160,7 +158,6 @@ class Traffic_Admin {
 				'menu_title'    => esc_html__( 'Live API Calls', 'traffic' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_console_page' ],
-				'position'      => 50,
 				'plugin'        => TRAFFIC_SLUG,
 				'activated'     => SharedMemory::$available,
 				'remedy'        => esc_url( admin_url( 'admin.php?page=traffic&tab=misc' ) ),
@@ -170,13 +167,22 @@ class Traffic_Admin {
 	}
 
 	/**
+	 * Dispatch the items in the settings menu.
+	 *
+	 * @since 2.0.0
+	 */
+	public function finalize_admin_menus() {
+		Menus::finalize();
+	}
+
+	/**
 	 * Set the items in the settings menu.
 	 *
 	 * @since 1.0.0
 	 */
 	public function init_admin_menus() {
-		add_filter( 'init_perfops_admin_menus', [ $this, 'init_perfops_admin_menus' ] );
-		AdminMenus::initialize();
+		add_filter( 'init_perfopsone_admin_menus', [ $this, 'init_perfopsone_admin_menus' ] );
+		Menus::initialize();
 	}
 
 	/**
