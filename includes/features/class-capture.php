@@ -163,7 +163,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	private static function record( $response, $args, $url, $bound = 'unknown', $b_in = 0, $b_out = 0 ) {
-		$log_enabled = ! ( array_key_exists( 'headers', $args ) && array_key_exists( 'Decalog-No-Log', $args['headers'] ) );
+		$log_enabled = ! ( array_key_exists( 'headers', $args ) && ( array_key_exists( 'Decalog-No-Log', $args['headers'] ) || array_key_exists( 'Mailarchiver-No-Log', $args['headers'] ) ) );
 		try {
 			$host                = '';
 			$url_parts           = wp_parse_url( $url );
@@ -253,7 +253,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function http_api_debug( $response, $context, $class, $args, $url ) {
-		$log_enabled = ! ( array_key_exists( 'headers', $args ) && array_key_exists( 'Decalog-No-Log', $args['headers'] ) );
+		$log_enabled = ! ( array_key_exists( 'headers', $args ) && ( array_key_exists( 'Decalog-No-Log', $args['headers'] ) || array_key_exists( 'Mailarchiver-No-Log', $args['headers'] ) ) );
 		try {
 			$b_in  = 0;
 			$b_out = 0;

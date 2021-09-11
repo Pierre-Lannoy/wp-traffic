@@ -3,6 +3,16 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - Not yet released
+
+### Added
+- Compatibility with WordPress 5.9.
+- Adherence to the new `Mailarchiver-No-Log` directive implemented by [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
+
+### Changed
+
+### Fixed
+
 ## [2.4.0] - 2021-09-07
 
 ### Added
