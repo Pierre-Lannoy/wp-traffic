@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Adherence to the new `Mailarchiver-No-Log` directive implemented by [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
 
 ### Changed
+- HTTP error codes 208 and 226 are now supported.
 
 ### Fixed
 
