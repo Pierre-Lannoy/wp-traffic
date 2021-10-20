@@ -12,8 +12,8 @@ define( 'TRAFFIC_PRODUCT_URL', 'https://github.com/Pierre-Lannoy/wp-traffic' );
 define( 'TRAFFIC_PRODUCT_SHORTNAME', 'Traffic' );
 define( 'TRAFFIC_PRODUCT_ABBREVIATION', 'traffic' );
 define( 'TRAFFIC_SLUG', 'traffic' );
-define( 'TRAFFIC_VERSION', '2.5.0-dev0' );
-define( 'TRAFFIC_API_VERSION', '1' );
+define( 'TRAFFIC_VERSION', '2.5.0-dev1' );
+define( 'TRAFFIC_API_VERSION', '2' );
 define( 'TRAFFIC_CODENAME', '"-"' );
 
 define( 'TRAFFIC_CDN_AVAILABLE', true );

@@ -19,7 +19,7 @@ wp_localize_script(
 	TRAFFIC_LIVELOG_ID,
 	'livelog',
 	[
-		'restUrl'   => esc_url_raw( rest_url() . 'traffic/v1/livelog' ),
+		'restUrl'   => esc_url_raw( rest_url() . TRAFFIC_REST_NAMESPACE . '/livelog' ),
 		'restNonce' => wp_create_nonce( 'wp_rest' ),
 		'buffer'    => 200,
 		'frequency' => 750,

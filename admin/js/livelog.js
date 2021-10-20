@@ -1,15 +1,21 @@
 jQuery( document ).ready(
 	function($) {
 		function initialize() {
-			$('#traffic-select-bound').change(function () {
-				bound = $(this).val();
-			});
-			$('#traffic-control-play').click(function () {
-				consoleRun();
-			});
-			$('#traffic-control-pause').click(function () {
-				consolePause();
-			});
+			$( '#traffic-select-bound' ).change(
+				function () {
+					bound = $( this ).val();
+				}
+			);
+			$( '#traffic-control-play' ).click(
+				function () {
+					consoleRun();
+				}
+			);
+			$( '#traffic-control-pause' ).click(
+				function () {
+					consolePause();
+				}
+			);
 		}
 		function consoleRun() {
 			document.querySelector( '#traffic-control-pause' ).classList.remove( 'traffic-control-inactive' );
@@ -42,7 +48,7 @@ jQuery( document ).ready(
 						type : 'GET',
 						url : livelog.restUrl,
 						data : { direction: bound, index: index },
-						beforeSend: function ( xhr ) { xhr.setRequestHeader( 'X-WP-Nonce', livelog.restNonce ); },
+						beforeSend: function ( xhr ) { xhr.setRequestHeader( 'X-WP-Nonce', livelog.restNonce ); xhr.setRequestHeader( 'Traffic-No-Log', 'inbound' ); },
 						success: function( response ) {
 							if ( response ) {
 								if ( undefined !== response.index ) {
@@ -66,16 +72,13 @@ jQuery( document ).ready(
 													root.removeChild( root.firstElementChild );
 												}
 												root.appendChild( elem );
-												$('#traffic-logger-lines').animate( { scrollTop: elem.offsetTop }, 20 );
+												$( '#traffic-logger-lines' ).animate( { scrollTop: elem.offsetTop }, 20 );
 											}
 										);
 									}
 								}
 							}
 						},
-						/*error: function( response ) {
-                            console.log( response );
-                        },*/
 						complete:function( response ) {
 							setTimeout( loadLines, livelog.frequency );
 						}

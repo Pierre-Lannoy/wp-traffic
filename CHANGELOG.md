@@ -8,11 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Compatibility with WordPress 5.9.
 - Adherence to the new `Mailarchiver-No-Log` directive implemented by [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
+- Adherence to the new `Traffic-No-Log` internal directive.
 
 ### Changed
 - HTTP error codes 208 and 226 are now supported.
 
 ### Fixed
+- Internal API version is not consistent with plugin version.
+- Some noisy calls, linked to live logging, escape the smart filter.
 
 ## [2.4.0] - 2021-09-07
 
