@@ -7,11 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 - Compatibility with WordPress 5.9.
+- The available hooks (filters and actions) are now described in `HOOKS.md` file.
 - Adherence to the new `Mailarchiver-No-Log` directive implemented by [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
 - Adherence to the new `Traffic-No-Log` internal directive.
 
 ### Changed
 - HTTP error codes 208 and 226 are now supported.
+- Updated the `README.md` file.
 
 ### Fixed
 - Internal API version is not consistent with plugin version.

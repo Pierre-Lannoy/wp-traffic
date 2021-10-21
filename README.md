@@ -18,18 +18,17 @@ At this time, __Traffic__ can report, for inbound and outbound traffic:
 
 __Traffic__ supports multisite report delegation (see FAQ).
 
+> __Traffic__ is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
+
 __Traffic__ is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
 ## WP-CLI
 
-__Traffic__ supports WP-CLI commands to:
+__Traffic__ implements a set of WP-CLI commands. For a full help on these commands, please read [this guide](WP-CLI.md).
 
-* display (past or current) API calls in console - see `wp help api tail` for details;
-* toggle on/off main settings - see `wp help api settings` for details.
+## Hooks
 
-For a full help on WP-CLI commands in Traffic, please [read this guide](WP-CLI.md).
-
-> __Traffic__ is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
+__Traffic__ introduces some filters and actions to allow plugin customization. Please, read the [hooks reference](HOOKS.md) to learn more about them.
 
 ## Installation
 
