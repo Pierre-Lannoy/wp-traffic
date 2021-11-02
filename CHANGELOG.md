@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Adherence to the new `Traffic-No-Log` internal directive.
 
 ### Changed
+- Improved update process on high-traffic sites to avoid concurrent resources accesses.
 - HTTP error codes 208 and 226 are now supported.
 - Updated the `README.md` file.
 
