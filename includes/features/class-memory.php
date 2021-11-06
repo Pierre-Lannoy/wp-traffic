@@ -87,7 +87,7 @@ class Memory {
 	 * @since    2.0.0
 	 */
 	public static function init() {
-		self::$statistics_filter['endpoint'] = [ '/\/livelog/' ];
+		self::$statistics_filter['endpoint'] = [ '/\/livelog/iU', '/\/beacon/iU' ];
 		add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'write' ], DECALOG_MAX_SHUTDOWN_PRIORITY, 0 );
 		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
 			add_action( 'shutdown', [ 'Traffic\Plugin\Feature\Memory', 'collate_metrics' ], DECALOG_MAX_SHUTDOWN_PRIORITY - 1, 0 );

@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Compatibility with WordPress 5.9.
 - The available hooks (filters and actions) are now described in `HOOKS.md` file.
-- Adherence to the new `Mailarchiver-No-Log` directive implemented by [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
+- Adherence to the `Mailarchiver-No-Log` directive implemented since [MailArchiver 2.5.0](https://wordpress.org/plugins/mailarchiver/).
 - Adherence to the new `Traffic-No-Log` internal directive.
 
 ### Changed
@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Internal API version is not consistent with plugin version.
 - Some noisy calls, linked to live logging, escape the smart filter.
 - There's typos in `CHANGELOG.md`.
+
+### Removed
+- Display of beacon inbound calls in live console.
 
 ## [2.4.0] - 2021-09-07
 
