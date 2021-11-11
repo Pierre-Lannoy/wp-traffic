@@ -8,13 +8,13 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Traffic
- * Plugin URI:        https://github.com/Pierre-Lannoy/wp-traffic
+ * Plugin URI:        https://perfops.one/traffic
  * Description:       Full featured monitoring & analytics for WordPress APIs.
  * Version:           2.4.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
- * Author:            Pierre Lannoy
- * Author URI:        https://pierre.lannoy.fr
+ * Author:            PerfOps One / Pierre Lannoy
+ * Author URI:        https://perfops.one
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       traffic

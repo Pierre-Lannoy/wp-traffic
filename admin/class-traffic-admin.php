@@ -269,7 +269,6 @@ class Traffic_Admin {
 	public function add_row_meta( $links, $file ) {
 		if ( 0 === strpos( $file, TRAFFIC_SLUG . '/' ) ) {
 			$links[] = '<a href="https://wordpress.org/support/plugin/' . TRAFFIC_SLUG . '/">' . __( 'Support', 'traffic' ) . '</a>';
-			$links[] = '<a href="https://perfops.one">PefOps One</a>';
 		}
 		return $links;
 	}
