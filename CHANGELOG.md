@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Improved update process on high-traffic sites to avoid concurrent resources accesses.
 - HTTP error codes 208 and 226 are now supported.
 - Added beacon endpoints to the smart-filtered list.
+- Updated labels and links in plugins page.
 - Updated the `README.md` file.
 
 ### Fixed
