@@ -6,7 +6,6 @@ It is possible to customize the default path cutting value (set in the plugin se
 To do so, use the `traffic_path_level` filter.
 
 #### Example
-To add an "eye" icon near the IP (in list view) to perform a quick lookup of each IP with infobyip.com service:
 ```php
   add_filter(
     'traffic_path_level',
