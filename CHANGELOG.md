@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 - Internal API version is not consistent with plugin version.
 - Some noisy calls, linked to live logging, escape the smart filter.
+- Country translation with i18n module may be wrong.
 - There's typos in `CHANGELOG.md`.
 
 ### Removed
