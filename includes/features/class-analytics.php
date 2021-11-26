@@ -578,7 +578,7 @@ class Analytics {
 				$group = 'country';
 				break;
 			case 'sites':
-				$group  = 'site';
+				$group = 'site';
 				break;
 		}
 		$data         = Schema::get_grouped_list( $group, [ 'authority', 'endpoint' ], $this->filter, ! $this->is_today, '', [], false, 'ORDER BY sum_hit DESC' );
@@ -1000,14 +1000,14 @@ class Analytics {
 		$json_uptime     = str_replace( ')","y"', '),"y"', $json_uptime );
 		$json_uptime     = str_replace( '"null"', 'null', $json_uptime );
 		// Rendering.
-		if ( 4 < $this->duration ) {
-			if ( 1 === $this->duration % 2 ) {
-				$divisor = 6;
-			} else {
-				$divisor = 5;
+		$divisor = $this->duration + 1;
+		while ( 11 < $divisor ) {
+			foreach ( [ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397 ] as $divider ) {
+				if ( 0 === $divisor % $divider ) {
+					$divisor = $divisor / $divider;
+					break;
+				}
 			}
-		} else {
-			$divisor = $this->duration + 1;
 		}
 		$result  = '<div class="traffic-multichart-handler">';
 		$result .= '<div class="traffic-multichart-item active" id="traffic-chart-calls">';
