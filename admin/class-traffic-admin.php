@@ -22,6 +22,7 @@ use Traffic\System\Timezone;
 use Traffic\System\GeoIP;
 use Traffic\System\Environment;
 use PerfOpsOne\Menus;
+use PerfOpsOne\AdminBar;
 use Traffic\System\SharedMemory;
 use Traffic\Plugin\Feature\Memory;
 
@@ -192,6 +193,7 @@ class Traffic_Admin {
 	public function init_admin_menus() {
 		add_filter( 'init_perfopsone_admin_menus', [ $this, 'init_perfopsone_admin_menus' ] );
 		Menus::initialize();
+		AdminBar::initialize();
 	}
 
 	/**
@@ -321,6 +323,26 @@ class Traffic_Admin {
 								}
 							}
 							break;
+						case 'install-decalog':
+							if ( class_exists( 'PerfOpsOne\Installer' ) ) {
+								$result = \PerfOpsOne\Installer::do( 'decalog', true );
+								if ( '' === $result ) {
+									add_settings_error( 'traffic_no_error', '', esc_html__( 'Plugin successfully installed and activated with default settings.', 'traffic' ), 'info' );
+								} else {
+									add_settings_error( 'traffic_install_error', '', sprintf( esc_html__( 'Unable to install or activate the plugin. Error message: %s.', 'traffic' ), $result ), 'error' );
+								}
+							}
+							break;
+						case 'install-iplocator':
+							if ( class_exists( 'PerfOpsOne\Installer' ) ) {
+								$result = \PerfOpsOne\Installer::do( 'ip-locator', true );
+								if ( '' === $result ) {
+									add_settings_error( 'traffic_no_error', '', esc_html__( 'Plugin successfully installed and activated with default settings.', 'traffic' ), 'info' );
+								} else {
+									add_settings_error( 'traffic_install_error', '', sprintf( esc_html__( 'Unable to install or activate the plugin. Error message: %s.', 'traffic' ), $result ), 'error' );
+								}
+							}
+							break;
 					}
 					break;
 			}
@@ -414,6 +436,9 @@ class Traffic_Admin {
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__('Your site does not use any IP geographic information plugin. To take advantage of the geographical distribution of calls in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'traffic' ), '<a href="https://wordpress.org/plugins/ip-locator/">IP Locator</a>' );
+			if ( class_exists( 'PerfOpsOne\Installer' ) && ! Environment::is_wordpress_multisite() ) {
+				$help .= '<br/><a href="' . esc_url( admin_url( 'admin.php?page=traffic-settings&tab=misc&action=install-iplocator' ) ) . '" class="poo-button-install"><img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'download-cloud', 'none', '#FFFFFF', 3 ) . '" />&nbsp;&nbsp;' . esc_html__('Install It Now', 'traffic' ) . '</a>';
+			}
 		}
 		add_settings_field(
 			'traffic_plugin_options_geoip',
@@ -433,6 +458,9 @@ class Traffic_Admin {
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__('Your site does not use any logging plugin. To log all events triggered in Traffic, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'traffic' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
+			if ( class_exists( 'PerfOpsOne\Installer' ) && ! Environment::is_wordpress_multisite() ) {
+				$help .= '<br/><a href="' . esc_url( admin_url( 'admin.php?page=traffic-settings&tab=misc&action=install-decalog' ) ) . '" class="poo-button-install"><img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'download-cloud', 'none', '#FFFFFF', 3 ) . '" />&nbsp;&nbsp;' . esc_html__('Install It Now', 'traffic' ) . '</a>';
+			}
 		}
 		add_settings_field(
 			'traffic_plugin_options_logger',
