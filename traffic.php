@@ -15,8 +15,8 @@
  * Requires PHP:      7.2
  * Author:            PerfOps One / Pierre Lannoy
  * Author URI:        https://perfops.one
- * License:           GPLv2 or later
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * License:           GPLv3
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       traffic
  * Domain Path:       /languages
  */
