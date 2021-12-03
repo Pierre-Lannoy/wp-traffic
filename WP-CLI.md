@@ -20,7 +20,7 @@ Whether it's an interactive session or viewing past calls, you can filter what i
 
 ### Direction
 
-To display only events having a specific, use `--direction=<direction>` parameter. `<direction>` can be `both`, `inbound` or `outbound`.
+To display only events having a specific direction, use `--direction=<direction>` parameter. `<direction>` can be `both`, `inbound` or `outbound`.
 
 ### Field filters
 
