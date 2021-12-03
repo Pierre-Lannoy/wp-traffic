@@ -279,4 +279,8 @@ class Memory {
 	}
 }
 
+if ( ! defined( 'DECALOG_MAX_SHUTDOWN_PRIORITY' ) ) {
+	define( 'DECALOG_MAX_SHUTDOWN_PRIORITY', PHP_INT_MAX - 1000 );
+}
+
 Memory::init();
