@@ -411,10 +411,10 @@ class Capture {
 				$body  = wp_json_encode( $result );
 				$b_out = strlen( $header ) + strlen( $body );
 			}
-			$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_STRING );
+			$url = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			if ( 0 !== strpos( strtolower( $url ), 'http' ) ) {
-				$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_STRING ) );
-				$server = strtolower( filter_input( INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_STRING ) );
+				$scheme = strtolower( filter_input( INPUT_SERVER, 'REQUEST_SCHEME', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
+				$server = strtolower( filter_input( INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) );
 				$port   = filter_input( INPUT_SERVER, 'SERVER_PORT', FILTER_SANITIZE_NUMBER_INT );
 				if ( ( 'http' === $scheme && 80 === (int) $port ) || ( 'https' === $scheme && 443 === (int) $port ) ) {
 					$port = '';
@@ -424,7 +424,7 @@ class Capture {
 				$url = $scheme . '://' . $server . $port . $url;
 			}
 			$args                         = [
-				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
+				'method'    => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
 				'remote_ip' => IP::get_current(),
 			];
 			$response['response']['code'] = 200;
