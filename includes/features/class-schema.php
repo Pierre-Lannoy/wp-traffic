@@ -79,7 +79,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function write() {
-		if ( Option::network_get( 'outbound_capture' ) || Option::network_get( 'inbound_capture' ) ) {
+		if ( Option::network_get( 'outbound_capture', false ) || Option::network_get( 'inbound_capture', false ) ) {
 			self::write_statistics();
 		}
 	}
@@ -192,6 +192,8 @@ class Schema {
 			$this->create_table();
 			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->debug( sprintf( 'Table "%s" created.', $wpdb->base_prefix . self::$statistics ) );
 			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->info( 'Schema installed.' );
+			Option::network_set( 'outbound_capture', true );
+			Option::network_set( 'inbound_capture', true );
 		} catch ( \Throwable $e ) {
 			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->alert( sprintf( 'Unable to create "%s" table: %s', $wpdb->base_prefix . self::$statistics, $e->getMessage() ), [ 'code' => $e->getCode() ] );
 			\DecaLog\Engine::eventsLogger( TRAFFIC_SLUG )->alert( 'Schema not installed.', [ 'code' => $e->getCode() ] );
