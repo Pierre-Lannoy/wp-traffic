@@ -4,7 +4,7 @@ Tags: api, analytics, reports, rest-api, statistics
 Requires at least: 5.2
 Requires PHP: 7.2
 Tested up to: 5.9
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,6 +15,8 @@ Full featured monitoring & analytics for WordPress APIs.
 **Full featured analytics for WordPress APIs.**
 
 **Traffic** is a full featured analytics reporting tool that analyzes all inbound and outbound API calls made to/from your site.
+
+> 🎁 Give this plugin a drive test on a free dummy site: [One-Click Test!](https://tastewp.com/new/?pre-installed-plugin-slug=traffic)
 
 At this time, **Traffic** can report, for inbound and outbound traffic:
 
