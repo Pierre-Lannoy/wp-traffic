@@ -635,7 +635,7 @@ class Wpcli {
 	 *
 	 */
 	public function tail( $args, $assoc_args ) {
-		if ( ! function_exists( 'shmop_open' ) || ! function_exists( 'shmop_read' ) || ! function_exists( 'shmop_write' ) || ! function_exists( 'shmop_delete' ) || ! function_exists( 'shmop_close' )) {
+		if ( ! function_exists( 'shmop_open' ) || ! function_exists( 'shmop_read' ) || ! function_exists( 'shmop_write' ) || ! function_exists( 'shmop_delete' ) ) {
 			\WP_CLI::error( 'unable to launch tail command, no shared memory manager found.' );
 		}
 		if ( ! Option::network_get( 'livelog' ) ) {
