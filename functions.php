@@ -49,6 +49,21 @@ function traffic_mb_str_pad( $input, $length, $padding = ' ', $padType = STR_PAD
 }
 
 /**
+ * Verify if a resource is a shmop resource.
+ *
+ * @since 2.8.0
+ *
+ * @param mixed     $value  URL to retrieve.
+ * @return bool     True if it's a shmop resource, false otherwise.
+ */
+function traffic_is_shmop_resource( $value ) {
+	if ( class_exists( 'Shmop' ) ) {
+		return $value instanceof Shmop;
+	}
+	return ( is_resource( $value ) );
+}
+
+/**
  * Provide PHP 7.3 compatibility for array_key_last() function.
  */
 if ( ! function_exists( 'array_key_last' ) ) {

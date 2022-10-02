@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Improved ephemeral cache in analytics.
 
 ### Fixed
+- Live console with PHP 8 may be broken (thanks to [stuffeh](https://github.com/stuffeh)).
 - [SEC003] Moment.js library updated to 2.29.4 / [Regular Expression Denial of Service (ReDoS)](https://github.com/moment/moment/issues/6012).
 
 ## [2.7.1] - 2022-04-20

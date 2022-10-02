@@ -106,7 +106,7 @@ class SharedMemory {
 	 * @since    2.0.0
 	 */
 	private function exists() {
-		$result = is_resource( $this->acquire() );
+		$result = traffic_is_shmop_resource( $this->acquire() );
 		if ( $result ) {
 			shmop_close( $this->shmid );
 		}
@@ -129,14 +129,14 @@ class SharedMemory {
 			$cpt = 0;
 			while ( 20 > $cpt ) {
 				$this->shmid = $this->acquire( 'w', $this->perms, 0 );
-				if ( is_resource( $this->shmid ) ) {
+				if ( traffic_is_shmop_resource( $this->shmid ) ) {
 					break;
 				} else {
 					$cpt++;
 					usleep( 100 );
 				}
 			}
-			if ( is_resource( $this->shmid ) ) {
+			if ( traffic_is_shmop_resource( $this->shmid ) ) {
 				shmop_delete( $this->shmid );
 				shmop_close( $this->shmid );
 			} else {
@@ -144,7 +144,7 @@ class SharedMemory {
 			}
 		}
 		$this->shmid = $this->acquire( 'c', $this->perms, $size );
-		if ( is_resource( $this->shmid ) ) {
+		if ( traffic_is_shmop_resource( $this->shmid ) ) {
 			$result = shmop_write( $this->shmid, $data, 0 );
 			shmop_close( $this->shmid );
 			return $result;
@@ -167,14 +167,14 @@ class SharedMemory {
 			$cpt = 0;
 			while ( 20 > $cpt ) {
 				$this->shmid = $this->acquire( 'w', $this->perms, 0 );
-				if ( is_resource( $this->shmid ) ) {
+				if ( traffic_is_shmop_resource( $this->shmid ) ) {
 					break;
 				} else {
 					$cpt++;
 					usleep( 100 );
 				}
 			}
-			if ( is_resource( $this->shmid ) ) {
+			if ( traffic_is_shmop_resource( $this->shmid ) ) {
 				$size = shmop_size( $this->shmid );
 				$data = shmop_read( $this->shmid, 0, $size );
 				shmop_close( $this->shmid );
