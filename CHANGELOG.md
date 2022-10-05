@@ -7,9 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 - Compatibility with WordPress 6.1.
+- [WPCLI] The result of `wp api` commands are now logged in [DecaLog](https://wordpress.org/plugins/decalog/).
 
 ### Changed
 - Improved ephemeral cache in analytics.
+- [WPCLI] The result of `wp api` commands are now prefixed by the product name.
 
 ### Fixed
 - Live console with PHP 8 may be broken (thanks to [stuffeh](https://github.com/stuffeh)).
