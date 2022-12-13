@@ -45,7 +45,7 @@ class Traffic_Public {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_PUBLIC_URL, 'css/traffic.min.css' );
+		//$this->assets->register_style( TRAFFIC_ASSETS_ID, TRAFFIC_PUBLIC_URL, 'css/traffic.min.css' );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Traffic_Public {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		$this->assets->register_script( TRAFFIC_ASSETS_ID, TRAFFIC_PUBLIC_URL, 'js/traffic.min.js', [ 'jquery' ] );
+		//$this->assets->register_script( TRAFFIC_ASSETS_ID, TRAFFIC_PUBLIC_URL, 'js/traffic.min.js', [ 'jquery' ] );
 	}
 
 }
