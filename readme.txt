@@ -1,5 +1,5 @@
 === Traffic ===
-Contributors: PierreLannoy
+Contributors: PierreLannoy, hosterra
 Tags: api, analytics, reports, rest-api, statistics
 Requires at least: 5.2
 Requires PHP: 7.2
