@@ -3,7 +3,19 @@ All notable changes to **Traffic** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Traffic** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.12.0] - 2024-03-02
+## [2.13.0] - 2024-03-02
+
+### Added
+- Compatibility with WordPress 6.5.
+
+### Changed
+- Minimal required WordPress version is now 6.1.
+- Minimal required PHP version is now 8.1.
+
+### Fixed
+- Mismatch in plugin versions
+
+## [2.12.0] - withdrawn
 
 ### Added
 - Compatibility with WordPress 6.5.
