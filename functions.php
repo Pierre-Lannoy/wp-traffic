@@ -7,6 +7,38 @@
  * @since   2.0.0
  */
 
+if ( ! function_exists('decalog_get_psr_log_version') ) {
+	/**
+	 * Get the needed version of PSR-3.
+	 *
+	 * @return  int  The PSR-3 needed version.
+	 * @since 4.0.0
+	 */
+	function decalog_get_psr_log_version() {
+		$required = 1;
+		if ( ! defined( 'DECALOG_PSR_LOG_VERSION') ) {
+			define( 'DECALOG_PSR_LOG_VERSION', 'V1' );
+		}
+		switch ( strtolower( DECALOG_PSR_LOG_VERSION ) ) {
+			case 'v3':
+				$required = 3;
+				break;
+			case 'auto':
+				if ( class_exists( '\Psr\Log\NullLogger') ) {
+					$reflection = new \ReflectionMethod(\Psr\Log\NullLogger::class, 'log');
+					foreach ( $reflection->getParameters() as $param ) {
+						if ( 'message' === $param->getName() ) {
+							if ( str_contains($param->getType() ?? '', '|') ) {
+								$required = 3;
+							}
+						}
+					}
+				}
+		}
+		return $required;
+	}
+}
+
 /**
  * Multibyte String Pad
  *
@@ -74,28 +106,4 @@ function traffic_is_shmop_resource( $value ) {
 		return $value instanceof Shmop;
 	}
 	return ( is_resource( $value ) );
-}
-
-/**
- * Provide PHP 7.3 compatibility for array_key_last() function.
- */
-if ( ! function_exists( 'array_key_last' ) ) {
-	// phpcs:ignore
-	function array_key_last( array $array ) {
-		if ( ! empty( $array ) ) {
-			return key( array_slice( $array, -1, 1, true ) );
-		}
-	}
-}
-
-/**
- * Provide PHP 7.3 compatibility for array_key_first() function.
- */
-if ( ! function_exists( 'array_key_first' ) ) {
-	// phpcs:ignore
-	function array_key_first( array $arr ) {
-		foreach ( $arr as $key => $unused ) {
-			return $key;
-		}
-	}
 }
