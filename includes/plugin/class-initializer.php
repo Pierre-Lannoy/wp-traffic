@@ -39,10 +39,6 @@ class Initializer {
 		\Traffic\System\Sitehealth::init();
 		\Traffic\Plugin\Feature\Capture::init();
 		\Traffic\System\APCu::init();
-		//if ( 'en_US' !== determine_locale() ) {
-			unload_textdomain( TRAFFIC_SLUG );
-			load_plugin_textdomain( TRAFFIC_SLUG );
-		//}
 	}
 
 	/**
