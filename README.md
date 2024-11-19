@@ -8,8 +8,6 @@ __Traffic__ is a full featured analytics reporting tool that analyzes all inboun
 
 See [WordPress directory page](https://wordpress.org/plugins/traffic/) or [official website](https://perfops.one/traffic).
 
-> 🎁 Give this plugin a drive test on a free dummy site: [One-Click Test!](https://tastewp.com/new/?pre-installed-plugin-slug=traffic)
-
 At this time, __Traffic__ can report, for inbound and outbound traffic:
 
 * KPIs: number of calls, data volume, server error rate, quotas error rate, effective pass rate and perceived uptime;
