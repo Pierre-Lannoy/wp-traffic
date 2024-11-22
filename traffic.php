@@ -10,7 +10,7 @@
  * Plugin Name:       Traffic
  * Plugin URI:        https://perfops.one/traffic
  * Description:       Full featured monitoring & analytics for WordPress APIs.
- * Version:           3.0.0
+ * Version:           3.1.0
  * Requires at least: 6.2
  * Requires PHP:      8.1
  * Author:            Pierre Lannoy / PerfOps One
