@@ -197,7 +197,7 @@ class Http {
 	 * @since  1.0.0
 	 */
 	public static function user_agent() {
-		return TRAFFIC_PRODUCT_NAME . ' (' . Environment::wordpress_version_id() . '; ' . Environment::plugin_version_id() . '; +' . TRAFFIC_PRODUCT_URL . ')';
+		return 'PerfOps One - ' . TRAFFIC_PRODUCT_NAME . ' / ' . TRAFFIC_VERSION . ' (https://perfops.one/' . TRAFFIC_SLUG . ')';
 	}
 
 	/**
