@@ -30,13 +30,13 @@ use Traffic\System\Markdown;
  */
 class Updater {
 
-	private $name = POKM_PRODUCT_NAME;
+	private $name = TRAFFIC_PRODUCT_NAME;
 
-	private $slug = POKM_SLUG;
+	private $slug = TRAFFIC_SLUG;
 
-	private $version = POKM_VERSION;
+	private $version = TRAFFIC_VERSION;
 
-	private $product = POKM_PRODUCT_URL;
+	private $product = TRAFFIC_PRODUCT_URL;
 
 	/**
 	 * Initializes the class, set its properties and performs
