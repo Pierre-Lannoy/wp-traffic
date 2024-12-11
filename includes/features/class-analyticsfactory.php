@@ -36,6 +36,14 @@ class AnalyticsFactory {
 	private static $allowed_types = [ 'domain', 'domains', 'authority', 'authorities', 'endpoint', 'endpoints' ];
 
 	/**
+	 * Allowed extras.
+	 *
+	 * @since  1.0.0
+	 * @var    array    $allowed_extras    Maintain the allowed extra views.
+	 */
+	private static $allowed_extras = [ 'codes', 'schemes', 'methods', 'countries' ];
+
+	/**
 	 * Ajax callback.
 	 *
 	 * @since    1.0.0
@@ -63,6 +71,7 @@ class AnalyticsFactory {
 		if ( empty( $id ) ) {
 			$id = '';
 		}
+		$id = str_replace( ['http://', 'https://'], '', sanitize_url( $id ) );
 		// Domain.
 		if ( ! ( $domain = filter_input( INPUT_GET, 'domain' ) ) ) {
 			$domain = filter_input( INPUT_POST, 'domain' );
@@ -70,11 +79,12 @@ class AnalyticsFactory {
 		if ( empty( $domain ) ) {
 			$domain = '';
 		}
+		$domain = str_replace( ['http://', 'https://'], '', sanitize_url( $domain ) );
 		// Extra>.
 		if ( ! ( $extra = filter_input( INPUT_GET, 'extra' ) ) ) {
 			$extra = filter_input( INPUT_POST, 'extra' );
 		}
-		if ( empty( $extra ) ) {
+		if ( empty( $extra ) || ! in_array( $extra, self::$allowed_extras ) ) {
 			$extra = '';
 		}
 		// Analytics type.
